@@ -45,6 +45,7 @@
     "react": "17.0.1",
     "react-apexcharts": "1.3.6",
     "react-chartjs-2": "2.9.0",
+    "react-color": "^2.19.3",
     "react-contexify": "5.0.0",
     "react-copy-to-clipboard": "5.0.2",
     "react-country-flag": "2.0.1",
