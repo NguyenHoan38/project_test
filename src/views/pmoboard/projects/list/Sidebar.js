@@ -20,9 +20,9 @@ import { Button, FormGroup, Label, FormText, Form, Input, TabContent, TabPane, N
 import { addProject } from '../store/action'
 import { useDispatch } from 'react-redux'
 import ColorPicker from '@components/pick-color'
- 
-import {columns} from '../constant'
 
+import { columns } from '../constant'
+import RangeSlider from 'react-bootstrap-range-slider'
 const SidebarNewProjects = ({ open, toggleSidebar }) => {
   // ** States
   const [projectType, setProjectType] = useState(null)
@@ -118,7 +118,7 @@ const SidebarNewProjects = ({ open, toggleSidebar }) => {
     }
   }
   const [activeTab, setActiveTab] = useState('1')
-
+  const [value, setValue] = useState(0)
   const toggle = tab => {
     if (activeTab !== tab) setActiveTab(tab)
   }
@@ -140,6 +140,10 @@ const SidebarNewProjects = ({ open, toggleSidebar }) => {
     } else {
       return store.allData.slice(0, rowsPerPage)
     }
+  }
+
+  const myStyle = {
+    color: "red"
   }
 
   return (
@@ -412,14 +416,35 @@ const SidebarNewProjects = ({ open, toggleSidebar }) => {
                     />
                   </FormGroup>
                 </div>
+                <div className='col-6'>
+                  <FormGroup >
+                  <span className='title mr-4'> Main Headcount:</span>
+                      <Input type="checkbox" />{' '}
+                  </FormGroup>
+                </div>
+
+                <div className='col-6 d-flex w-100 mr-2'>
+                  <FormGroup className="w-100">
+                    <span className='title'>Effort:</span>
+                    <RangeSlider
+                      value={value}
+                      onChange={changeEvent => setValue(changeEvent.target.value)}
+                      className="w-100 mr-2"
+                    />
+                  </FormGroup>
+                  <span>{value}%</span>
+                  {/* </div> */}
+
+                </div>
                 <div className='col-12'>
                   <FormGroup>
                     <Label for="exampleText">Text Area</Label>
                     <Input type="textarea" name="text" id="exampleText" />
                   </FormGroup>
+
                 </div>
                 <div className='col-12'>
-                <Button className='btn btn-primary btn-lg'>Assign Employee </Button>
+                  <Button className='btn btn-primary btn-lg'>Assign Employee </Button>
                   <DataTable
                     noHeader
                     pagination
@@ -431,7 +456,7 @@ const SidebarNewProjects = ({ open, toggleSidebar }) => {
                     data={data}
                     // sortIcon={<ChevronDown />}
                     className='react-dataTable'
-                  paginationComponent={false}
+                    paginationComponent={false}
                   // data={dataToRender()}
                   // subHeaderComponent={
                   //   <CustomHeader
@@ -461,5 +486,6 @@ const SidebarNewProjects = ({ open, toggleSidebar }) => {
     </Sidebar>
   )
 }
+
 
 export default SidebarNewProjects
