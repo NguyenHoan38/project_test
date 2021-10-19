@@ -26,6 +26,12 @@ export default [
         title: 'Edit',
         icon: <Circle size={12} />,
         navLink: '/pmoboard/projects/edit'
+      },
+      {
+        id: 'test',
+        title: 'test',
+        icon: <Circle size={12} />,
+        navLink: '/pmoboard/projects/test'
       }
     ]
   },
