@@ -20,6 +20,8 @@ import { Button, FormGroup, Label, FormText, Form, Input, TabContent, TabPane, N
 import { addProject } from '../store/action'
 import { useDispatch } from 'react-redux'
 import ColorPicker from '@components/pick-color'
+ 
+import {columns} from '../constant'
 
 const SidebarNewProjects = ({ open, toggleSidebar }) => {
   // ** States
@@ -75,20 +77,20 @@ const SidebarNewProjects = ({ open, toggleSidebar }) => {
   // ** Store Vars
   const dispatch = useDispatch()
   const data = [{ id: 1, title: 'Conan the Barbarian', year: '1982' }]
-  const columns = [
-    {
-      name: 'Title',
-      selector: 'title',
-      sortable: true,
-      filterable: true
-    },
-    {
-      name: 'Year',
-      selector: 'year',
-      sortable: true,
-      right: true
-    }
-  ]
+  // const columns = [
+  //   {
+  //     name: 'Title',
+  //     selector: 'title',
+  //     sortable: true,
+  //     filterable: true
+  //   },
+  //   {
+  //     name: 'Year',
+  //     selector: 'year',
+  //     sortable: true,
+  //     right: true
+  //   }
+  // ]
   // ** Vars
   const { register, errors, handleSubmit } = useForm()
 
@@ -417,6 +419,7 @@ const SidebarNewProjects = ({ open, toggleSidebar }) => {
                   </FormGroup>
                 </div>
                 <div className='col-12'>
+                <Button className='btn btn-primary btn-lg'>Assign Employee </Button>
                   <DataTable
                     noHeader
                     pagination
