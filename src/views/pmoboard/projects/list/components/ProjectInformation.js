@@ -69,15 +69,14 @@ function ProjectInformation(props) {
         }
     }
     // add mileStone
-const handleAddMilestone = (newMilestone) => {
-    console.log('222222222222')
-    milestone.push(newMilestone)
-    setMilestone(milestone)
-}
+    function handleAddMilestone() {
+        const a = new Date()
+        setMilestone([...milestone, a])
+    }
 
-const editMilestones = (date, i) => {
-    milestone[i] = date
-}
+    const editMilestones = (date, i) => {
+        milestone[i] = date
+    }
     // function handleAddMilestone() {
     //     console.log('22222222222222222')
     // }
@@ -127,30 +126,35 @@ const editMilestones = (date, i) => {
 
                         <FormGroup>
                             <span className='title'>Milestones:</span>
-                            <div className='d-flex'>
-                                <div style={{ width: '90%' }}>
+                            <div >
+                                <div >
                                     {
                                         milestone.map((m, i) => {
                                             return (
-                                                <div className={i > 0 ? 'mt-2' : 'mt-0'}>
+                                                <div className='d-flex' key={i}>
+                                                    <div  style={{ width: '100%' }}>
                                                     <Flatpickr
                                                         key={i}
                                                         value={m}
                                                         onChange={date => editMilestones(date, i)}
-                                                        className='form-control invoice-edit-input date-picker'
+                                                        className='form-control invoice-edit-input date-picker mr-4 mb-2'
                                                     />
+                                                    </div>
+                                                  
+                                                     <span className='ml-4'  >delete</span>
                                                 </div>
 
                                             )
                                         })
                                     }
                                 </div>
-                                <div className='d-flex justify-content-center' >
-                                    <span onClick={handleAddMilestone}>+</span>
-                                </div>
+
 
                             </div>
-
+                                {/* <div className='d-flex justify-content-center' > */}
+                                    {/* <span onClick={handleAddMilestone}>+</span> */}
+                                    <Button color="secondary" size="lg" onClick={handleAddMilestone} active>add</Button>
+                                {/* </div> */}
                         </FormGroup>
                     </div>
                     <div className='col-4'>

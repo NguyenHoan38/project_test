@@ -1,6 +1,7 @@
 import React, {useState} from 'react'
 import { TabContent, TabPane, Nav, NavItem, NavLink, Card, Button, CardTitle, CardText, Row, Col } from 'reactstrap'
 import classnames from 'classnames'
+import {FaPlusCircle} from 'react-icons/fa'
 
 const Test = (props) => {
   const [activeTab, setActiveTab] = useState('1')
