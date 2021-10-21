@@ -4,8 +4,14 @@ import { useForm } from 'react-hook-form'
 import classnames from 'classnames'
 import Select from 'react-select'
 import Flatpickr from 'react-flatpickr'
-import { Button, FormGroup, Label, FormText, Form, Input, TabContent, TabPane, Nav, NavItem, NavLink, Card, CardTitle, CardText, Row, Col } from 'reactstrap'
-import {FaTrash, FaPlusCircle} from 'react-icons/fa'
+import { Collapse, Button, CardBody, FormGroup, Label, FormText, Form, Input, TabContent, TabPane, Nav, NavItem, NavLink, Card, CardTitle, CardText, Row, Col } from 'reactstrap'
+import { FaTrash, FaPlusCircle, FaCheck } from 'react-icons/fa'
+import '../../../../../assets/scss/projects/styleProjectInformation.scss'
+import { isObjEmpty } from '@utils'
+import { projectColor } from '../../constant'
+// ** Store & Actions
+import { addProject } from '../../store/action'
+import { useDispatch } from 'react-redux'
 // fake data
 const projectTypeData = [
     { value: 1, label: 'T&M' },
@@ -43,28 +49,35 @@ const industryData = [
     { value: 2, label: 'Devops' },
     { value: 3, label: 'Intune' }
 ]
-
+// ** Store Vars
+//   const dispatch = useDispatch()
 function ProjectInformation(props) {
+    // ** Store Vars
+    const dispatch = useDispatch()
     const [milestone, setMilestone] = useState([new Date(), new Date()])
-
-    const [startProject, setStartProject] = useState(new Date())
+    const [startProject, setStartProject] = useState('')
     const [projectType, setProjectType] = useState(null)
     const [customer, setCustomer] = useState(null)
     const [endProject, setEndProject] = useState(new Date())
     const [color, setColor] = useState('#ffff')
     const [pmLead, setPmLead] = useState(null)
     const [technologyStack, setTechnologyStack] = useState(null)
+    const [isOpen, setIsOpen] = useState(false)
+    const [checkColor, setcheckColor] = useState(null)
+    const [colorButton, setColorButton] = useState(null)
+    const toggle = () => setIsOpen(!isOpen)
     // ** Vars
     const { register, errors, handleSubmit } = useForm()
+
     // ** Function to handle form submit
     const onSubmit = values => {
         if (isObjEmpty(errors)) {
-            toggleSidebar()
+            // toggleSidebar()
             dispatch(
                 addProject({
                     projectName: values['projectName'],
-                    projectType
-
+                    projectType: values['projectName'],
+                    startProject:startProject[0]
                 })
             )
         }
@@ -74,19 +87,23 @@ function ProjectInformation(props) {
         const a = new Date()
         setMilestone([...milestone, a])
     }
-
+    function handleDeleteMilestone (i) {
+        const newMilestone = milestone.filter((item, index) => index !== i)
+        setMilestone(newMilestone)
+    }
     const editMilestones = (date, i) => {
         milestone[i] = date
     }
-    // function handleAddMilestone() {
-    //     console.log('22222222222222222')
-    // }
+    function handleClickColor(m) {
+        setcheckColor(m.id)
+        setColorButton(m)
+    }
     return (
         <div>
             <Form onSubmit={handleSubmit(onSubmit)}>
                 <div className='row mt-2'>
                     <div className='col-4'>
-                       
+
                         <FormGroup>
                             <Label for='projectName'>
                                 Project Name <span className='text-danger'>*</span>
@@ -134,30 +151,23 @@ function ProjectInformation(props) {
                                         milestone.map((m, i) => {
                                             return (
                                                 <div className='d-flex' key={i}>
-                                                    <div  style={{ width: '100%' }}>
-                                                    <Flatpickr
-                                                        key={i}
-                                                        value={m}
-                                                        onChange={date => editMilestones(date, i)}
-                                                        className='form-control invoice-edit-input date-picker mr-4 mb-2'
-                                                    />
+                                                    <div style={{ width: '100%' }}>
+                                                        <Flatpickr
+                                                            key={i}
+                                                            value={m}
+                                                            onChange={date => editMilestones(date, i)}
+                                                            className='form-control invoice-edit-input date-picker mr-4 mb-2'
+                                                        />
                                                     </div>
-                                                  
-                                                     <span className='ml-4'  > <FaTrash/></span>
-                                                     {/* <Button color="success" size="lg" onClick={handleAddMilestone} active> <FaPlusCircle size="30px"/> </Button> */}
-                                                </div>
 
+                                                    <span className='ml-4'  onClick={() => handleDeleteMilestone(i)}  > <FaTrash /></span>
+                                                </div>
                                             )
                                         })
                                     }
                                 </div>
-
-
                             </div>
-                                {/* <div className='d-flex justify-content-center' > */}
-                                    {/* <span onClick={handleAddMilestone}>+</span> */}
-                                    <Button color="success" size="lg" onClick={handleAddMilestone} active> <FaPlusCircle size="25px"/> </Button>
-                                {/* </div> */}
+                            <Button color="success" size="lg" onClick={handleAddMilestone} active> <FaPlusCircle size="25px" /> </Button>
                         </FormGroup>
                     </div>
                     <div className='col-4'>
@@ -202,20 +212,24 @@ function ProjectInformation(props) {
                     </div>
                     <div className='col-4'>
                         <FormGroup>
-                            <Label for='projectCode'>
-                                Project Code <span className='text-danger'>*</span>
+                            <Label for='projectCode' className="mr-2 w-100" >
+                                Project Color <span className='text-danger'>*</span>
                             </Label>
-                            <Input
-                                type='color'
-                                name='projectCode'
-                                id='projectCode'
-                                value={color}
-                                onChange={e => setColor(e.target.value)}
-                                innerRef={register({ required: true })}
-                                className={classnames({ 'is-invalid': errors['projectCode'] })}
-                                innerRef={register({ required: true })}
-                                className={classnames({ 'is-invalid': errors['projectCode'] })}
-                            />
+                            <Button style={colorButton} color="color-Button" onClick={toggle} className="button-color">KA</Button>
+                            <Collapse isOpen={isOpen} className="collapse-color">
+                                <Card>
+                                    <div className="d-flex flex-wrap">
+                                        {
+                                            projectColor.map((m, i) => {
+                                                return (
+                                                    <div style={projectColor[i]} key={i} className="blook-color text-center text-justify" onClick={() => handleClickColor(m)}>{m.id === checkColor ? <FaCheck color="white" /> : ""} </div>
+                                                )
+                                            })
+                                        }
+                                    </div>
+
+                                </Card>
+                            </Collapse>
                         </FormGroup>
 
                         <FormGroup>
