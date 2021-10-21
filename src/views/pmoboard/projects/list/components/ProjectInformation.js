@@ -5,6 +5,7 @@ import classnames from 'classnames'
 import Select from 'react-select'
 import Flatpickr from 'react-flatpickr'
 import { Button, FormGroup, Label, FormText, Form, Input, TabContent, TabPane, Nav, NavItem, NavLink, Card, CardTitle, CardText, Row, Col } from 'reactstrap'
+import {FaTrash, FaPlusCircle} from 'react-icons/fa'
 // fake data
 const projectTypeData = [
     { value: 1, label: 'T&M' },
@@ -85,6 +86,7 @@ function ProjectInformation(props) {
             <Form onSubmit={handleSubmit(onSubmit)}>
                 <div className='row mt-2'>
                     <div className='col-4'>
+                       
                         <FormGroup>
                             <Label for='projectName'>
                                 Project Name <span className='text-danger'>*</span>
@@ -141,7 +143,8 @@ function ProjectInformation(props) {
                                                     />
                                                     </div>
                                                   
-                                                     <span className='ml-4'  >delete</span>
+                                                     <span className='ml-4'  > <FaTrash/></span>
+                                                     {/* <Button color="success" size="lg" onClick={handleAddMilestone} active> <FaPlusCircle size="30px"/> </Button> */}
                                                 </div>
 
                                             )
@@ -153,7 +156,7 @@ function ProjectInformation(props) {
                             </div>
                                 {/* <div className='d-flex justify-content-center' > */}
                                     {/* <span onClick={handleAddMilestone}>+</span> */}
-                                    <Button color="secondary" size="lg" onClick={handleAddMilestone} active>add</Button>
+                                    <Button color="success" size="lg" onClick={handleAddMilestone} active> <FaPlusCircle size="25px"/> </Button>
                                 {/* </div> */}
                         </FormGroup>
                     </div>

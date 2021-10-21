@@ -206,7 +206,7 @@ const SidebarNewProjects = ({ open, toggleSidebar }) => {
               className={classnames({ active: activeTab === '1' })}
               onClick={() => { toggle('1') }}
             >
-              Project Information
+              Project Information xxxx
             </NavLink>
           </NavItem>
           <NavItem>
