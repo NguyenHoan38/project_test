@@ -6,6 +6,7 @@ import Avatar from '@components/avatar'
 // ** Store & Actions
 import { getUser, deleteUser } from '../store/action'
 import { store } from '@store/storeConfig/store'
+import moment from 'moment'
 
 // ** Third Party Components
 import { Badge, UncontrolledDropdown, DropdownToggle, DropdownMenu, DropdownItem } from 'reactstrap'
@@ -56,9 +57,8 @@ const renderDomainIndustry = row => {
 const renderDuration = row => {
   return (
     <div>
-      {/* <span className='text-capitalize pl-1'>{<Moment date={row.startDate} />}</span> */}
-      <span className='text-capitalize pl-1'>{row.startDate}</span>
-      <span className='text-capitalize pl-1'>{row.endDate}</span>
+      <span className='text-capitalize pl-1'>{moment(row.startDate).format('MM-DD-YYYY')} /</span>
+      <span className='text-capitalize pl-1'>{moment(row.startDate).format('MM-DD-YYYY')}</span>
     </div>
   )
 }
