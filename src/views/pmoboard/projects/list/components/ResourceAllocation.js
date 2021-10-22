@@ -7,6 +7,8 @@ import Flatpickr from 'react-flatpickr'
 import RangeSlider from 'react-bootstrap-range-slider'
 import DataTable from 'react-data-table-component'
 import { columns } from '../../constant'
+import { FaTrash, FaPlusCircle, FaCheck } from 'react-icons/fa'
+import '../../../../../assets/scss/projects/styleResourceAllocation.scss'
 import { Button, FormGroup, Label, FormText, Form, Input, TabContent, TabPane, Nav, NavItem, NavLink, Card, CardTitle, CardText, Row, Col } from 'reactstrap'
 const projectTypeData = [
     { value: 1, label: 'T&M' },
@@ -122,11 +124,27 @@ function ResourceAllocation(props) {
                     </div>
                     <div className='col-6'>
                         <FormGroup >
-                            <span className='title mr-4'> Main Headcount:</span>
-                            <Input type="checkbox" />{' '}
+                            <label className='title mr-4 w-100'> Main Headcount:</label>
+                            <Input className='ml-0' type="checkbox"   />
                         </FormGroup>
                     </div>
-
+                    <div className='col-6'>
+                        <FormGroup >
+                            <span className='title mr-4'> Shadow for:</span>
+                            <Select
+                                id="projectType"
+                                className="basic-single"
+                                classNamePrefix="select"
+                                isSearchable={true}
+                                isClearable={true}
+                                maxMenuHeight={220}
+                                name="projectType"
+                                value={projectType}
+                                onChange={setProjectType}
+                                options={projectTypeData}
+                            />
+                        </FormGroup>
+                    </div>
                     <div className='col-6 d-flex w-100 mr-2'>
                         <FormGroup className="w-100">
                             <span className='title'>Effort:</span>
@@ -142,19 +160,22 @@ function ResourceAllocation(props) {
                     </div>
                     <div className='col-12'>
                         <FormGroup>
-                            <Label for="exampleText">Text Area</Label>
+                            <Label for="exampleText">Note</Label>
                             <Input type="textarea" name="text" id="exampleText" />
                         </FormGroup>
 
                     </div>
                     <div className='col-12'>
-                        <Button className='btn btn-primary btn-lg'>Assign Employee </Button>
+                        <div className="d-flex justify-content-end mb-3">
+                            <Button color="info">Assign Employee <FaPlusCircle size="25px" /> </Button>
+                        </div>
                         <DataTable
-                            noHeader
+                            noHeader={true}
                             pagination
-                            subHeader
+                            subHeader={false}
                             responsive
                             paginationServer={false}
+                            header={false}
                             pagination={false}
                             columns={columns}
                             data={data}

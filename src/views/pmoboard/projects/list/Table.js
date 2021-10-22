@@ -87,20 +87,24 @@ const ProjectsList = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false)
   const [currentStatus, setCurrentStatus] = useState({ value: '', label: 'Select Status', number: 0 })
 
+  const projectsTest = useSelector(state => state.projects)
+
+  console.log("storee", projectsTest)
+
   // ** Function to toggle sidebar
   const toggleSidebar = () => setSidebarOpen(!sidebarOpen)
 
   // ** Get data on mount
   useEffect(() => {
     dispatch(getAllData())
-    dispatch(
-      getData({
-        page: currentPage,
-        perPage: rowsPerPage,
-        status: currentStatus.value,
-        q: searchTerm
-      })
-    )
+    // dispatch(
+    //   getData({
+    //     page: currentPage,
+    //     perPage: rowsPerPage,
+    //     status: currentStatus.value,
+    //     q: searchTerm
+    //   })
+    // )
   }, [dispatch, store.data.length])
 
   // ** Projects filter options
@@ -180,7 +184,7 @@ const ProjectsList = () => {
       status: currentStatus.value,
       q: searchTerm
     }
-
+    console.log('store.allData', store.allData)
     const isFiltered = Object.keys(filters).some(function (k) {
       return filters[k].length > 0
     })

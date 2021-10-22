@@ -58,12 +58,20 @@ const dataTest = [
 
 export const getAllData = () => {
   return async dispatch => {
-    dispatch(
-      {
-        type: 'GET_ALL_DATA',
-        data: dataTest
-      }
-    )
+    await axios
+      .get('http://[::1]:80/api/resource/getAllProjectInfo')
+      .then(response => {
+        console.log('response.data response.data', response.data.data)
+        if (response && response.data && response.data.data && response.data.data.length > 0) {
+          const result = response.data.data
+        } else result = []
+        dispatch({
+          type: 'GET_ALL_DATA',
+          data: result
+        })
+      })
+
+      .catch(err => console.log(err))
   }
 }
 
@@ -127,8 +135,18 @@ export const getUser = id => {
 
 // ** Add new project
 export const addProject = project => {
-  return (dispatch, getState) => {
-
+  console.log('222222222222222222222', project)
+  return async dispatch => {
+    await axios
+      .post('http://[::1]:80/api/resource/addProject', project)
+      .then(response => {
+        console.log('222222222222222222222 response', response)
+        // dispatch({
+        //   type: 'GET_USER',
+        //   selectedUser: response.data.user
+        // })
+      })
+      .catch(err => console.log(err))
   }
 }
 

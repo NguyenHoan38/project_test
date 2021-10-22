@@ -1,34 +1,64 @@
 // ** React Imports
 import { Link } from 'react-router-dom'
-
 // ** Custom Components
 import Avatar from '@components/avatar'
 
 // ** Store & Actions
 import { getUser, deleteUser } from '../store/action'
 import { store } from '@store/storeConfig/store'
+import moment from 'moment'
 
 // ** Third Party Components
 import { Badge, UncontrolledDropdown, DropdownToggle, DropdownMenu, DropdownItem } from 'reactstrap'
 import { Slack, User, Settings, Database, Edit2, MoreVertical, FileText, Trash2, Archive } from 'react-feather'
-
+import { projectColor } from '../constant'
 const statusObj = {
   1: {color: 'light-success', name: 'active'},
   2: {color: 'light-secondary', name: 'closed'}
 }
-
-const projectColor = {
-  1: 'primary',
-  2: 'light-secondary'
-}
-
 const renderProjectName = row => {
   return (
     <div className="d-flex">
-      <Badge className='text-capitalize' color={projectColor[row.projectColor]}>
-        {row.projectSignal}
+      <Badge className='text-capitalize' style={projectColor.find(element => element.id === row.color)}>
+        {row.signal}
       </Badge>
-      <span className='text-capitalize pl-1'>{row.projectName}</span>
+      <span className='text-capitalize pl-1'>{row.name}</span>
+    </div>
+  )
+}
+const renderTechnologyStack = row => {
+  return (
+    <div>
+      {
+        row.technology.map((t, i) => {
+          return (
+            <span className='text-capitalize pl-1' key={i}>{t.name}</span>
+          )
+        })
+      }
+
+    </div>
+  )
+}
+const renderDomainIndustry = row => {
+  return (
+    <div>
+      {
+        row.domain.map((m, i) => {
+          return (
+            <span className='text-capitalize ' key={i}> {m.name} </span>
+          )
+        })
+      }
+
+    </div>
+  )
+}
+const renderDuration = row => {
+  return (
+    <div>
+      <span className='text-capitalize pl-1'>{moment(row.startDate).format('MM-DD-YYYY')} /</span>
+      <span className='text-capitalize pl-1'>{moment(row.startDate).format('MM-DD-YYYY')}</span>
     </div>
   )
 }
@@ -46,14 +76,14 @@ export const columns = [
     minWidth: '150px',
     selector: 'projectType',
     sortable: true,
-    cell: row => <span className='text-capitalize'>{row.projectType}</span>
+    cell: row => <span className='text-capitalize'>{row.projectType.name}</span>
   },
   {
     name: 'Customer',
     minWidth: '150px',
     selector: 'customer',
     sortable: true,
-    cell: row => <span className='text-capitalize'>{row.customer}</span>
+    cell: row => <span className='text-capitalize'>{row.customer.name}</span>
   },
   {
     name: 'PM/Lead',
@@ -67,14 +97,14 @@ export const columns = [
     minWidth: '150px',
     selector: 'technologyStack',
     sortable: true,
-    cell: row => <span className='text-capitalize'>{row.technologyStack}</span>
+    cell: row => renderTechnologyStack(row)
   },
   {
     name: 'Domain/Industry',
     minWidth: '150px',
     selector: 'domainIndustry',
     sortable: true,
-    cell: row => <span className='text-capitalize'>{row.domainIndustry}</span>
+    cell: row => renderDomainIndustry(row)
   },
   {
     name: 'Mile stone',
@@ -88,7 +118,8 @@ export const columns = [
     minWidth: '150px',
     selector: 'duration',
     sortable: true,
-    cell: row => <span className='text-capitalize'>{row.duration}</span>
+    cell: row => renderDuration(row) 
+    // <span className='text-capitalize'>{row.duration}</span>
   },
   {
     name: 'Status',

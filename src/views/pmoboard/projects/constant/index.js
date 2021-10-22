@@ -36,6 +36,26 @@ export const columns = [
         right: true
     }
   ]
+  export const  projectColor = [
+    {
+      id:1,
+      background:' Black'
+    },
+    {
+      id:2,
+      background:' Red'
+    },
+    {
+      id:3,
+      background:'Lime'
+    },
+    {
+      id:4,
+      background:'Blue'
+    }
+    
+  ]
   export default {
-    columns
+    columns,
+    projectColor
   }
