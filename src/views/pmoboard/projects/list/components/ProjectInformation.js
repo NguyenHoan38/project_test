@@ -9,11 +9,12 @@ import { FaTrash, FaPlusCircle, FaCheck } from 'react-icons/fa'
 import '../../../../../assets/scss/projects/styleProjectInformation.scss'
 import { isObjEmpty } from '@utils'
 import { projectColor } from '../../constant'
+import ModalAddTechnologis from './ModalAddTechnologis'
 // ** Store & Actions
 import { addProject } from '../../store/action'
 import { useDispatch } from 'react-redux'
 // fake data
-const projectTypeData = [
+const typeData = [
     { value: 1, label: 'T&M' },
     { value: 2, label: 'Project Based' },
     { value: 3, label: 'Body shoping' }
@@ -56,8 +57,8 @@ function ProjectInformation(props) {
     const dispatch = useDispatch()
     const [milestone, setMilestone] = useState([new Date(), new Date()])
     const [startProject, setStartProject] = useState('')
-    const [projectType, setProjectType] = useState(null)
-    const [customer, setCustomer] = useState(null)
+    const [type, settype] = useState(null)
+    const [customerId, setCustomer] = useState(null)
     const [endProject, setEndProject] = useState(new Date())
     const [color, setColor] = useState('#ffff')
     const [pmLead, setPmLead] = useState(null)
@@ -69,15 +70,35 @@ function ProjectInformation(props) {
     // ** Vars
     const { register, errors, handleSubmit } = useForm()
 
+    const [modal, setModal] = useState(false)
+
+    const toggleAddFormTech = () => {
+        console.log('4444444444444444444444')
+        setModal(!modal)
+    }
+
     // ** Function to handle form submit
     const onSubmit = values => {
+        const technologys = []
+        technologyStack.map(res => {
+            technologys.push(res.value)
+        })
         if (isObjEmpty(errors)) {
             // toggleSidebar()
             dispatch(
                 addProject({
-                    projectName: values['projectName'],
-                    projectType: values['projectName'],
-                    startProject:startProject[0]
+                    name: values['name'],
+                    type:type.value,
+                    color: checkColor,
+                    signal: values['signal'],
+                    startDate:startProject[0],
+                    endDate:endProject[0],
+                    status: 1,
+                    pmId:pmLead.value,
+                    mileStone:['2021-11-09'],
+                    customerId:customerId.value,
+                    technologys,
+                    domains: [1, 2]
                 })
             )
         }
@@ -105,32 +126,32 @@ function ProjectInformation(props) {
                     <div className='col-4'>
 
                         <FormGroup>
-                            <Label for='projectName'>
+                            <Label for='name'>
                                 Project Name <span className='text-danger'>*</span>
                             </Label>
                             <Input
-                                name='projectName'
-                                id='projectName'
+                                name='name'
+                                id='name'
                                 innerRef={register({ required: true })}
-                                className={classnames({ 'is-invalid': errors['projectName'] })}
+                                className={classnames({ 'is-invalid': errors['name'] })}
                             />
                         </FormGroup>
 
                         <FormGroup>
-                            <Label for='projectType'>
+                            <Label for='type'>
                                 Project Type <span className='text-danger'>*</span>
                             </Label>
                             <Select
-                                id="projectType"
+                                id="type"
                                 className="basic-single"
                                 classNamePrefix="select"
                                 isSearchable={true}
                                 isClearable={true}
                                 maxMenuHeight={220}
-                                name="projectType"
-                                value={projectType}
-                                onChange={setProjectType}
-                                options={projectTypeData}
+                                name="type"
+                                value={type}
+                                onChange={settype}
+                                options={typeData}
                             />
                         </FormGroup>
 
@@ -172,30 +193,30 @@ function ProjectInformation(props) {
                     </div>
                     <div className='col-4'>
                         <FormGroup>
-                            <Label for='projectCode'>
+                            <Label for='signal'>
                                 Project Code <span className='text-danger'>*</span>
                             </Label>
                             <Input
-                                name='projectCode'
-                                id='projectCode'
+                                name='signal'
+                                id='signal'
                                 innerRef={register({ required: true })}
-                                className={classnames({ 'is-invalid': errors['projectCode'] })}
+                                className={classnames({ 'is-invalid': errors['signal'] })}
                             />
                         </FormGroup>
 
                         <FormGroup>
-                            <Label for='customer'>
+                            <Label for='customerId'>
                                 Customer <span className='text-danger'>*</span>
                             </Label>
                             <Select
-                                id="projectType"
+                                id="customerId"
                                 className="basic-single"
                                 classNamePrefix="select"
                                 isSearchable={true}
                                 isClearable={true}
                                 maxMenuHeight={220}
-                                name="customer"
-                                value={customer}
+                                name="customerId"
+                                value={customerId}
                                 onChange={setCustomer}
                                 options={customerData}
                             />
@@ -207,6 +228,21 @@ function ProjectInformation(props) {
                                 value={endProject}
                                 onChange={date => setEndProject(date)}
                                 className='form-control invoice-edit-input date-picker'
+                            />
+                        </FormGroup>
+                        <FormGroup>
+                            <Label for='technologyStack'>Project lead</Label>
+                            <Select
+                                isMulti
+                                id="pmLead"
+                                className="basic-single"
+                                classNamePrefix="select"
+                                isSearchable={true}
+                                maxMenuHeight={220}
+                                name="technologyStack"
+                                value={technologyStack}
+                                onChange={setTechnologyStack}
+                                options={technologyStackData}
                             />
                         </FormGroup>
                     </div>
@@ -227,7 +263,6 @@ function ProjectInformation(props) {
                                             })
                                         }
                                     </div>
-
                                 </Card>
                             </Collapse>
                         </FormGroup>
@@ -263,9 +298,29 @@ function ProjectInformation(props) {
                                 options={technologyStackData}
                             />
                         </FormGroup>
+                        <FormGroup>
+                            <Label for='technologyStack'>Technologies</Label>
+                            <div className="d-flex align-items-center">
+                            <Select
+                                isMulti
+                                id="pmLead"
+                                style={{with:'100%', marginRight:'20px'}}
+                                className="basic-single"
+                                classNamePrefix="select"
+                                isSearchable={true}
+                                maxMenuHeight={220}
+                                name="technologyStack"
+                                value={technologyStack}
+                                onChange={setTechnologyStack}
+                                options={technologyStackData}
+                            />
+                            <FaPlusCircle size="25px" onClick={() => toggleAddFormTech()} /> 
+                            </div>
+
+                        </FormGroup>
                     </div>
                 </div>
-
+                 <ModalAddTechnologis modal={modal} toggle={toggleAddFormTech}/>                           
                 <div style={{ float: 'right' }}>
                     <Button type='submit' className='mr-1' color='primary'>
                         Save

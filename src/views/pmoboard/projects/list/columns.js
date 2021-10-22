@@ -30,9 +30,9 @@ const renderTechnologyStack = row => {
   return (
     <div>
       {
-        row.technologyName.map((m, i) => {
+        row.technology.map((t, i) => {
           return (
-            <span className='text-capitalize pl-1' key={i}>{m}</span>
+            <span className='text-capitalize pl-1' key={i}>{t.name}</span>
           )
         })
       }
@@ -44,9 +44,9 @@ const renderDomainIndustry = row => {
   return (
     <div>
       {
-        row.domainName.map((m, i) => {
+        row.domain.map((m, i) => {
           return (
-            <span className='text-capitalize ' key={i}> {m} </span>
+            <span className='text-capitalize ' key={i}> {m.name} </span>
           )
         })
       }
@@ -76,14 +76,14 @@ export const columns = [
     minWidth: '150px',
     selector: 'projectType',
     sortable: true,
-    cell: row => <span className='text-capitalize'>{row.projectType}</span>
+    cell: row => <span className='text-capitalize'>{row.projectType.name}</span>
   },
   {
     name: 'Customer',
     minWidth: '150px',
     selector: 'customer',
     sortable: true,
-    cell: row => <span className='text-capitalize'>{row.customer}</span>
+    cell: row => <span className='text-capitalize'>{row.customer.name}</span>
   },
   {
     name: 'PM/Lead',

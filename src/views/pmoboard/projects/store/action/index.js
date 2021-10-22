@@ -59,14 +59,18 @@ const dataTest = [
 export const getAllData = () => {
   return async dispatch => {
     await axios
-      .get('http://[::1]/api/resource/getAllProjectInfo')
+      .get('http://[::1]:80/api/resource/getAllProjectInfo')
       .then(response => {
-        console.log('response.data response.data', response.data.data) 
+        console.log('response.data response.data', response.data.data)
+        if (response && response.data && response.data.data && response.data.data.length > 0) {
+          const result = response.data.data
+        } else result = []
         dispatch({
           type: 'GET_ALL_DATA',
-          data: response.data.data
+          data: result
         })
       })
+
       .catch(err => console.log(err))
   }
 }
@@ -134,12 +138,13 @@ export const addProject = project => {
   console.log('222222222222222222222', project)
   return async dispatch => {
     await axios
-      .get('/api/users/user', { id })
+      .post('http://[::1]:80/api/resource/addProject', project)
       .then(response => {
-        dispatch({
-          type: 'GET_USER',
-          selectedUser: response.data.user
-        })
+        console.log('222222222222222222222 response', response)
+        // dispatch({
+        //   type: 'GET_USER',
+        //   selectedUser: response.data.user
+        // })
       })
       .catch(err => console.log(err))
   }

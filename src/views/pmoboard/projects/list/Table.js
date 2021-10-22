@@ -184,7 +184,7 @@ const ProjectsList = () => {
       status: currentStatus.value,
       q: searchTerm
     }
-
+    console.log('store.allData', store.allData)
     const isFiltered = Object.keys(filters).some(function (k) {
       return filters[k].length > 0
     })
