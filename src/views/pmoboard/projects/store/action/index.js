@@ -61,17 +61,12 @@ export const getAllData = () => {
     await axios
       .get('http://[::1]:80/api/resource/getAllProjectInfo')
       .then(response => {
-        console.log('response.data response.data', response.data.data)
-        if (response && response.data && response.data.data && response.data.data.length > 0) {
-          const result = response.data.data
-        } else result = []
         dispatch({
           type: 'GET_ALL_DATA',
-          data: result
+          data: response && response.data && response.data.data && response.data.data.length > 0 ? response.data.data : []
         })
       })
-
-      .catch(err => console.log(err))
+      .catch(err => console.log('22222222222222', err))
   }
 }
 

@@ -16,6 +16,8 @@ const statusObj = {
   1: {color: 'light-success', name: 'active'},
   2: {color: 'light-secondary', name: 'closed'}
 }
+  // ** Function to toggle sidebar
+  const toggleSidebar = () => setSidebarOpen(!sidebarOpen)
 const renderProjectName = row => {
   return (
     <div className="d-flex">
@@ -47,6 +49,20 @@ const renderDomainIndustry = row => {
         row.domain.map((m, i) => {
           return (
             <span className='text-capitalize ' key={i}> {m.name} </span>
+          )
+        })
+      }
+
+    </div>
+  )
+}
+const renderCollaborators = row => {
+  return (
+    <div>
+      {
+        row.collaborators.map((m, i) => {
+          return (
+            <span className='text-capitalize pl-1' key={i}> {m.name} </span>
           )
         })
       }
@@ -141,7 +157,7 @@ export const columns = [
     minWidth: '150px',
     selector: 'collaborator',
     sortable: true,
-    cell: row => <span className='text-capitalize'>{row.collaborators}</span>
+    cell: row =>  renderCollaborators(row) 
   },
   {
     name: 'Actions',
