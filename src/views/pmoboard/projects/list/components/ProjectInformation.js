@@ -12,7 +12,7 @@ import { projectColor } from '../../constant'
 import ModalAddTechnologis from './ModalAddTechnologis'
 // ** Store & Actions
 import { addProject } from '../../store/action'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 // fake data
 const typeData = [
     { value: 1, label: 'T&M' },
@@ -53,14 +53,17 @@ const industryData = [
 // ** Store Vars
 //   const dispatch = useDispatch()
 function ProjectInformation(props) {
+    console.log('toggleSidebar', props)
     // ** Store Vars
     const dispatch = useDispatch()
-    const [milestone, setMilestone] = useState([new Date(), new Date()])
+    const [milestone, setMilestone] = useState([new Date()])
     const [startProject, setStartProject] = useState('')
     const [type, settype] = useState(null)
     const [customerId, setCustomer] = useState(null)
     const [endProject, setEndProject] = useState(new Date())
+    const [signal, setSignal] = useState('')
     const [color, setColor] = useState('#ffff')
+    const [status, setStatus] = useState(null)
     const [pmLead, setPmLead] = useState(null)
     const [technologyStack, setTechnologyStack] = useState(null)
     const [isOpen, setIsOpen] = useState(false)
@@ -69,14 +72,13 @@ function ProjectInformation(props) {
     const toggle = () => setIsOpen(!isOpen)
     // ** Vars
     const { register, errors, handleSubmit } = useForm()
-
+    // get state store
+    const projects = useSelector(state => state.projects)
     const [modal, setModal] = useState(false)
 
     const toggleAddFormTech = () => {
-        console.log('4444444444444444444444')
         setModal(!modal)
     }
-
     // ** Function to handle form submit
     const onSubmit = values => {
         const technologys = []
@@ -88,15 +90,15 @@ function ProjectInformation(props) {
             dispatch(
                 addProject({
                     name: values['name'],
-                    type:type.value,
+                    type: type.value,
                     color: checkColor,
                     signal: values['signal'],
-                    startDate:startProject[0],
-                    endDate:endProject[0],
-                    status: 1,
-                    pmId:pmLead.value,
-                    mileStone:['2021-11-09'],
-                    customerId:customerId.value,
+                    startDate: startProject[0],
+                    endDate: endProject[0],
+                    status: status.value,
+                    pmId: pmLead.value,
+                    mileStone: ['2021-11-09'],
+                    customerId: customerId.value,
                     technologys,
                     domains: [1, 2]
                 })
@@ -108,7 +110,7 @@ function ProjectInformation(props) {
         const a = new Date()
         setMilestone([...milestone, a])
     }
-    function handleDeleteMilestone (i) {
+    function handleDeleteMilestone(i) {
         const newMilestone = milestone.filter((item, index) => index !== i)
         setMilestone(newMilestone)
     }
@@ -116,9 +118,17 @@ function ProjectInformation(props) {
         milestone[i] = date
     }
     function handleClickColor(m) {
+        setIsOpen(false)
         setcheckColor(m.id)
         setColorButton(m)
     }
+
+    const handleChangeSignal = (e) => {
+        setSignal(e.target.value)
+    }
+    const hideSidebar  = () => {
+        props.hideSidebar()
+      }
     return (
         <div>
             <Form onSubmit={handleSubmit(onSubmit)}>
@@ -151,7 +161,7 @@ function ProjectInformation(props) {
                                 name="type"
                                 value={type}
                                 onChange={settype}
-                                options={typeData}
+                                options={projects.dataListProjectType}
                             />
                         </FormGroup>
 
@@ -163,7 +173,23 @@ function ProjectInformation(props) {
                                 className='form-control invoice-edit-input date-picker'
                             />
                         </FormGroup>
-
+                        <FormGroup>
+                            <Label for='type'>
+                                Project lead <span className='text-danger'>*</span>
+                            </Label>
+                            <Select
+                                id="type"
+                                className="basic-single"
+                                classNamePrefix="select"
+                                isSearchable={true}
+                                isClearable={true}
+                                maxMenuHeight={220}
+                                name="type"
+                                value={type}
+                                onChange={settype}
+                                options={typeData}
+                            />
+                        </FormGroup>
                         <FormGroup>
                             <span className='title'>Milestones:</span>
                             <div >
@@ -181,7 +207,7 @@ function ProjectInformation(props) {
                                                         />
                                                     </div>
 
-                                                    <span className='ml-4'  onClick={() => handleDeleteMilestone(i)}  > <FaTrash /></span>
+                                                    <span className='ml-4' onClick={() => handleDeleteMilestone(i)}  > <FaTrash /></span>
                                                 </div>
                                             )
                                         })
@@ -200,6 +226,9 @@ function ProjectInformation(props) {
                                 name='signal'
                                 id='signal'
                                 innerRef={register({ required: true })}
+                                value={signal}
+                                // onChange={setSignal}
+                                onChange={handleChangeSignal}
                                 className={classnames({ 'is-invalid': errors['signal'] })}
                             />
                         </FormGroup>
@@ -215,10 +244,10 @@ function ProjectInformation(props) {
                                 isSearchable={true}
                                 isClearable={true}
                                 maxMenuHeight={220}
-                                name="customerId"
+                                name="name"
                                 value={customerId}
                                 onChange={setCustomer}
-                                options={customerData}
+                                options={projects.dataCustomer}
                             />
                         </FormGroup>
 
@@ -231,18 +260,20 @@ function ProjectInformation(props) {
                             />
                         </FormGroup>
                         <FormGroup>
-                            <Label for='technologyStack'>Project lead</Label>
+                            <Label for='type'>
+                                Status <span className='text-danger'>*</span>
+                            </Label>
                             <Select
-                                isMulti
-                                id="pmLead"
+                                id="type"
                                 className="basic-single"
                                 classNamePrefix="select"
                                 isSearchable={true}
+                                isClearable={true}
                                 maxMenuHeight={220}
-                                name="technologyStack"
-                                value={technologyStack}
-                                onChange={setTechnologyStack}
-                                options={technologyStackData}
+                                name="type"
+                                value={status }
+                                onChange={setStatus }
+                                options={typeData}
                             />
                         </FormGroup>
                     </div>
@@ -251,7 +282,7 @@ function ProjectInformation(props) {
                             <Label for='projectCode' className="mr-2 w-100" >
                                 Project Color <span className='text-danger'>*</span>
                             </Label>
-                            <Button style={colorButton} color="color-Button" onClick={toggle} className="button-color">KA</Button>
+                            <Button style={colorButton} color="color-Button" onClick={toggle} className="button-color">{signal}</Button>
                             <Collapse isOpen={isOpen} className="collapse-color">
                                 <Card>
                                     <div className="d-flex flex-wrap">
@@ -284,48 +315,51 @@ function ProjectInformation(props) {
                         </FormGroup>
 
                         <FormGroup>
-                            <Label for='technologyStack'>Technology Stack</Label>
-                            <Select
-                                isMulti
-                                id="pmLead"
-                                className="basic-single"
-                                classNamePrefix="select"
-                                isSearchable={true}
-                                maxMenuHeight={220}
-                                name="technologyStack"
-                                value={technologyStack}
-                                onChange={setTechnologyStack}
-                                options={technologyStackData}
-                            />
-                        </FormGroup>
-                        <FormGroup>
                             <Label for='technologyStack'>Technologies</Label>
                             <div className="d-flex align-items-center">
-                            <Select
-                                isMulti
-                                id="pmLead"
-                                style={{with:'100%', marginRight:'20px'}}
-                                className="basic-single"
-                                classNamePrefix="select"
-                                isSearchable={true}
-                                maxMenuHeight={220}
-                                name="technologyStack"
-                                value={technologyStack}
-                                onChange={setTechnologyStack}
-                                options={technologyStackData}
-                            />
-                            <FaPlusCircle size="25px" onClick={() => toggleAddFormTech()} /> 
+                                <Select
+                                    isMulti
+                                    id="pmLead"
+                                    style={{ with: '100%', marginRight: '20px' }}
+                                    className="basic-single w-100 mr-2"
+                                    classNamePrefix="select"
+                                    isSearchable={true}
+                                    name="technologyStack"
+                                    value={technologyStack}
+                                    onChange={setTechnologyStack}
+                                    options={technologyStackData}
+                                />
+                                <FaPlusCircle size="25px" onClick={() => toggleAddFormTech()} />
+                            </div>
+
+                        </FormGroup>
+                        <FormGroup>
+                            <Label for='technologyStack'>Industry</Label>
+                            <div className="d-flex align-items-center">
+                                <Select
+                                    isMulti
+                                    id="pmLead"
+                                    style={{ with: '100%', marginRight: '20px' }}
+                                    className="basic-single w-100 mr-2"
+                                    classNamePrefix="select"
+                                    isSearchable={true}
+                                    name="technologyStack"
+                                    value={technologyStack}
+                                    onChange={setTechnologyStack}
+                                    options={technologyStackData}
+                                />
+                                <FaPlusCircle size="25px" onClick={() => toggleAddFormTech()} />
                             </div>
 
                         </FormGroup>
                     </div>
                 </div>
-                 <ModalAddTechnologis modal={modal} toggle={toggleAddFormTech}/>                           
+                <ModalAddTechnologis modal={modal} toggle={toggleAddFormTech} />
                 <div style={{ float: 'right' }}>
                     <Button type='submit' className='mr-1' color='primary'>
                         Save
                     </Button>
-                    <Button type='reset' color='secondary' outline >
+                    <Button type='reset' color='secondary' outline  onClick={() => hideSidebar()}>
                         Cancel
                     </Button>
                 </div>
