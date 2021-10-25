@@ -1,7 +1,9 @@
 import React, { useState } from 'react'
-import { Button, Modal, ModalHeader, FormGroup, Label, ModalBody, ModalFooter } from 'reactstrap'
+import { Button, Modal, ModalHeader, FormGroup, Label, ModalBody, ModalFooter, Input } from 'reactstrap'
+import classnames from 'classnames'
+import { useForm } from 'react-hook-form'
 const ModalExample = ({ modal, toggle }) => {
-
+    const { register, errors, handleSubmit } = useForm()
     const handleToggleForm = () => {
         if (toggle) toggle()
     }
@@ -31,7 +33,7 @@ const ModalExample = ({ modal, toggle }) => {
 
             <Modal isOpen={modal} toggle={handleToggleForm} external={externalCloseBtn}>
                 <ModalHeader>ADD Technologies</ModalHeader>
-                <Form onSubmit={handleSubmit(onSubmit)}>
+                {/* <Form onSubmit={handleSubmit(onSubmit)}> */}
                 <ModalBody>
                     <div className="col-12">
                         <FormGroup>
@@ -51,7 +53,7 @@ const ModalExample = ({ modal, toggle }) => {
                     <Button color="primary" onClick={toggle}>Do Something</Button>{' '}
                     <Button color="secondary" onClick={toggle}>Cancel</Button>
                 </ModalFooter>
-                </Form>
+                {/* </Form> */}
             </Modal>
         </div>
     )
