@@ -25,6 +25,7 @@ import '@styles/react/libs/tables/react-dataTable-component.scss'
 
 // ** Table Header
 const CustomHeader = ({ toggleSidebar, handlePerPage, rowsPerPage, handleFilter, searchTerm }) => {
+  
   return (
     <div className='invoice-list-table-header w-100 mr-1 ml-50 mt-2 mb-75'>
       <Row>
@@ -66,7 +67,7 @@ const CustomHeader = ({ toggleSidebar, handlePerPage, rowsPerPage, handleFilter,
               onChange={e => handleFilter(e.target.value)}
             />
           </div>
-          <Button.Ripple color='primary' onClick={toggleSidebar}>
+          <Button.Ripple color='primary' onClick={() => toggleSidebar(0)}>
             Add New Project
           </Button.Ripple>
         </Col>
@@ -86,13 +87,19 @@ const ProjectsList = () => {
   const [rowsPerPage, setRowsPerPage] = useState(10)
   const [sidebarOpen, setSidebarOpen] = useState(false)
   const [currentStatus, setCurrentStatus] = useState({ value: '', label: 'Select Status', number: 0 })
+  const [isNewProject, setIsNewProject] = useState(0)
 
   const projectsTest = useSelector(state => state.projects)
 
-  console.log("storee", projectsTest)
-
+  const toggleSidebar = (id) => {
+    setSidebarOpen(!sidebarOpen)
+    setIsNewProject(id)
+  }
   // ** Function to toggle sidebar
-  const toggleSidebar = () => setSidebarOpen(!sidebarOpen)
+  // const toggleSidebar = () => {
+  //   setSidebarOpen(!sidebarOpen)
+
+  // }
 
   // ** Get data on mount
   useEffect(() => {
@@ -353,7 +360,7 @@ const ProjectsList = () => {
           subHeader
           responsive
           paginationServer
-          columns={columns}
+          columns={columns(showFormEdit => toggleSidebar(showFormEdit))}
           sortIcon={<ChevronDown />}
           className='react-dataTable'
           paginationComponent={CustomPagination}
@@ -370,7 +377,7 @@ const ProjectsList = () => {
         />
       </Card>
 
-      <Sidebar open={sidebarOpen} toggleSidebar={toggleSidebar} />
+      <Sidebar open={sidebarOpen} toggleSidebar={toggleSidebar} isNewProject={isNewProject}  />
     </Fragment>
   )
 }

@@ -36,6 +36,7 @@ export const columns = [
         right: true
     }
   ]
+  
   export const  projectColor = [
     {
       id:1,

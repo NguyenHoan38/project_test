@@ -6,10 +6,11 @@ import Select from 'react-select'
 import Flatpickr from 'react-flatpickr'
 import RangeSlider from 'react-bootstrap-range-slider'
 import DataTable from 'react-data-table-component'
-import { columns } from '../../constant'
+import { columns } from '../../constant/columns'
 import { FaTrash, FaPlusCircle, FaCheck } from 'react-icons/fa'
 import '../../../../../assets/scss/projects/styleResourceAllocation.scss'
 import { Button, FormGroup, Label, FormText, Form, Input, TabContent, TabPane, Nav, NavItem, NavLink, Card, CardTitle, CardText, Row, Col } from 'reactstrap'
+import { useSelector } from 'react-redux'
 const projectTypeData = [
     { value: 1, label: 'T&M' },
     { value: 2, label: 'Project Based' },
@@ -58,6 +59,9 @@ function ResourceAllocation(props) {
     const [pmLead, setPmLead] = useState(null)
     const [technologyStack, setTechnologyStack] = useState(null)
     const [value, setValue] = useState(0)
+    // get store
+    const projects = useSelector(state => state.projects)
+    console.log('store store ', projects)
     return (
         <div>
             <Form >
@@ -177,8 +181,8 @@ function ResourceAllocation(props) {
                             paginationServer={false}
                             header={false}
                             pagination={false}
-                            columns={columns}
-                            data={data}
+                            columns={columns(() => console.log('222222222222222'))}
+                            data={projects.dataProject}
                             // sortIcon={<ChevronDown />}
                             className='react-dataTable'
                             paginationComponent={false}
