@@ -1,32 +1,46 @@
 import React, { useState } from 'react'
-import { Button, Modal, ModalHeader, FormGroup, Label, ModalBody, ModalFooter, Input } from 'reactstrap'
+import { Button, Modal, ModalHeader, FormGroup, Label, ModalBody, ModalFooter, Input, Form } from 'reactstrap'
 import classnames from 'classnames'
 import { useForm } from 'react-hook-form'
-const ModalExample = ({ modal, toggle }) => {
+import {useDispatch} from 'react-redux'
+import { addProjectTechnology, addProjectDomain } from './../../store/action'
+import { isObjEmpty } from '@utils'
+const ModalExample = ({ modal, toggle, titleForm }) => {
+    const dispatch = useDispatch()
     const { register, errors, handleSubmit } = useForm()
     const handleToggleForm = () => {
         if (toggle) toggle()
     }
     const externalCloseBtn = <button className="close" style={{ position: 'absolute', top: '15px', right: '15px' }} onClick={toggle}>&times;</button>
     const onSubmit = values => {
-        const technologys = []
-        technologyStack.map(res => {
-            technologys.push(res.value)
-        })
         if (isObjEmpty(errors)) {
+            if (titleForm === 'Industry') {
+                dispatch(
+                    addProjectDomain({
+                        name: values['name']
+                    })
+                )
+
+            } else {
+                dispatch(
+                    addProjectTechnology({
+                        name: values['name']
+                    })
+                )
+            }
 
         }
     }
     return (
         <div>
             <Modal isOpen={modal} toggle={handleToggleForm} external={externalCloseBtn}>
-                <ModalHeader>ADD Technologies</ModalHeader>
-                {/* <Form onSubmit={handleSubmit(onSubmit)}> */}
+                <ModalHeader>ADD {titleForm}</ModalHeader>
+                <Form onSubmit={handleSubmit(onSubmit)}>
                 <ModalBody>
                     <div className="col-12">
                         <FormGroup>
                             <Label for='name'>
-                                Project Name <span className='text-danger'>*</span>
+                            {titleForm} Name <span className='text-danger'>*</span>
                             </Label>
                             <Input
                                 name='name'
@@ -38,10 +52,10 @@ const ModalExample = ({ modal, toggle }) => {
                     </div>
                 </ModalBody>
                 <ModalFooter>
-                    <Button color="primary" onClick={toggle}>Do Something</Button>{' '}
+                    <Button type='submit' color="primary" onClick={toggle}>Save</Button>{' '}
                     <Button color="secondary" onClick={toggle}>Cancel</Button>
                 </ModalFooter>
-                {/* </Form> */}
+                </Form>
             </Modal>
         </div>
     )

@@ -18,7 +18,7 @@ import { useForm } from 'react-hook-form'
 import { Button, FormGroup, Label, FormText, Form, Input, TabContent, TabPane, Nav, NavItem, NavLink, Card, CardTitle, CardText, Row, Col } from 'reactstrap'
 
 // ** Store & Actions
-import { addProject, getCustomer, getProject, getListProjectType,  getListEmployee } from '../store/action'
+import { addProject, getCustomer, getProject, getListProjectType,  getListEmployee, getListProjectTechnology, getListProjectDomain } from '../store/action'
 import { useDispatch, useSelector } from 'react-redux'
 import ColorPicker from '@components/pick-color'
 
@@ -116,6 +116,8 @@ const SidebarNewProjects = ({ open, toggleSidebar, isNewProject }) => {
   const projects = useSelector(state => state.projects)
   // ** Store Vars
   const dispatch = useDispatch()
+
+  // GOI API
   // get Customer
   useEffect(() => {
     dispatch(getCustomer())
@@ -129,6 +131,14 @@ const SidebarNewProjects = ({ open, toggleSidebar, isNewProject }) => {
   useEffect(() => {
     dispatch(getListEmployee())
   }, [dispatch, projects.dataListEmployee.length])
+  useEffect(() => {
+    dispatch(getListProjectTechnology())
+  }, [dispatch, projects.dataListProjectTechnology.length])
+  useEffect(() => {
+    dispatch(getListProjectDomain())
+  }, [dispatch, projects.dataListProjectDomain.length])
+  //GOI API
+
   const { register, errors, handleSubmit } = useForm()
 
   // add mileStone

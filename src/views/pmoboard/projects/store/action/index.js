@@ -13,7 +13,32 @@ export const getAllData = () => {
       .catch(err => console.log(err))
   }
 }
-
+export const getListProjectTechnology = () => {
+  return async dispatch => {
+    await axios
+      .get(`${DOMAIN}/resource/getListProjectTechnology`)
+      .then(response => {
+        dispatch({
+          type: 'GET_LIST_PROJECT_TECHNOLOGY',
+          data: response && response.data && response.data.data && response.data.data.length > 0 ? response.data.data : []
+        })
+      })
+      .catch(err => console.log(err))
+  }
+}
+export const getListProjectDomain = () => {
+  return async dispatch => {
+    await axios
+      .get(`${DOMAIN}/resource/getListProjectDomain`)
+      .then(response => {
+        dispatch({
+          type: 'GET_LIST_PROJECT_DOMAIN',
+          data: response && response.data && response.data.data && response.data.data.length > 0 ? response.data.data : []
+        })
+      })
+      .catch(err => console.log(err))
+  }
+}
 // ** Get data on page or row change
 export const getData = params => {
   console.log(params)
@@ -90,13 +115,49 @@ export const getCustomer = () => {
 // ** Add new project
 export const addProject = project => {
   return async dispatch => {
-    await axios
+    const res = await axios
       .post(`${DOMAIN}/resource/addProject`, project)
+      return res
+  }
+}
+export const addProjectTechnology = project => {
+  return async dispatch => {
+    await axios
+      .post(`${DOMAIN}/resource/addProjectTechnology`, project)
       .then(response => {
         // dispatch({
         //   type: 'GET_USER',
         //   selectedUser: response.data.user
         // })
+      })
+      .catch(err => console.log(err))
+  }
+}
+
+export const addResourceAllocation = params => {
+  console.log('param pram', params)
+  return async dispatch => {
+    await axios
+      .post(`${DOMAIN}/resource/addResourceAllocation`, params)
+      .then(response => {
+        // dispatch({
+        //   type: 'GET_USER',
+        //   selectedUser: response.data.user
+        // })
+      })
+      .catch(err => console.log(err))
+  }
+}
+export const addProjectDomain = project => {
+  return async dispatch => {
+  return  await axios
+      .post(`${DOMAIN}/resource/addProjectDomain`, project)
+      .then(response => {
+        // dispatch({
+        //   type: 'GET_USER',
+        //   selectedUser: response.data.user
+        // })
+        return response
       })
       .catch(err => console.log(err))
   }
