@@ -42,7 +42,7 @@ export const columns = (showFormEdit) => {
         minWidth: '150px',
         selector: 'mainHeadcount',
         sortable: true,
-        cell: row => <p className="text-center w-100 mr-5"> <Input className='ml-0' type="checkbox"   checked={ row.mainHeadcount === 1}  /> </p>  
+        cell: row => <p className="text-center w-100 mr-5"> <Input className='ml-0' type="checkbox"    /> </p>  
       },
       {
         name: 'Shadow for ',

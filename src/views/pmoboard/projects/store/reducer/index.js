@@ -7,7 +7,9 @@ const initialState = {
   dataProject: {},
   dataCustomer: [],
   dataListProjectType: [],
-  dataListEmployee: []
+  dataListEmployee: [],
+  dataListProjectTechnology: [],
+  dataListProjectDomain: []
 }
 
 const projects = (state = initialState, action) => {
@@ -31,10 +33,19 @@ const projects = (state = initialState, action) => {
       return {
         ...state, dataListProjectType: action.data.map(res => { return { ...res, value: res.id, label: res.name } })
       }
-      case 'GET_LIST_EMPLOYEE':
-        return {
-          ...state, dataListEmployee: action.data.map(res => { return { ...res, value: res.id, label: res.name } })
-        }  
+    case 'GET_LIST_EMPLOYEE':
+      return {
+        ...state, dataListEmployee: action.data.map(res => { return { ...res, value: res.id, label: res.name } })
+      }
+    case 'GET_LIST_PROJECT_TECHNOLOGY':
+      return {
+        ...state, dataListProjectTechnology: action.data.map(res => { return { ...res, value: res.id, label: res.name } })
+      }
+    case 'GET_LIST_PROJECT_DOMAIN':
+      return {
+        ...state, dataListProjectDomain: action.data.map(res => { return { ...res, value: res.id, label: res.name } })
+      }
+
     case 'ADD_USER':
     //   return { ...state }
     // case 'DELETE_USER':

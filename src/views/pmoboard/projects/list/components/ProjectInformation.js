@@ -7,6 +7,8 @@ import Flatpickr from 'react-flatpickr'
 import { Collapse, Button, CardBody, FormGroup, Label, FormText, Form, Input, TabContent, TabPane, Nav, NavItem, NavLink, Card, CardTitle, CardText, Row, Col } from 'reactstrap'
 import { FaTrash, FaPlusCircle, FaCheck } from 'react-icons/fa'
 import '../../../../../assets/scss/projects/styleProjectInformation.scss'
+import ToastContent from '@components/common/ToastContent'
+import { toast, Slide } from 'react-toastify'
 import { isObjEmpty } from '@utils'
 import { projectColor } from '../../constant'
 import ModalAddTechnologis from './ModalAddTechnologis'
@@ -69,6 +71,8 @@ function ProjectInformation(props) {
     const [isOpen, setIsOpen] = useState(false)
     const [checkColor, setcheckColor] = useState(null)
     const [colorButton, setColorButton] = useState(null)
+    const [titleForm, setDataForm] = useState(null)
+    const [industry, setIndustry] = useState(null)
     const toggle = () => setIsOpen(!isOpen)
     // ** Vars
     const { register, errors, handleSubmit } = useForm()
@@ -76,14 +80,19 @@ function ProjectInformation(props) {
     const projects = useSelector(state => state.projects)
     const [modal, setModal] = useState(false)
 
-    const toggleAddFormTech = () => {
+    const toggleAddFormTech = (title) => {
         setModal(!modal)
+        setDataForm(title)
     }
     // ** Function to handle form submit
     const onSubmit = values => {
         const technologys = []
         technologyStack.map(res => {
             technologys.push(res.value)
+        })
+        const dataIndustry = []
+        industry.map(res => {
+            dataIndustry.push(res.value)
         })
         if (isObjEmpty(errors)) {
             // toggleSidebar()
@@ -97,12 +106,20 @@ function ProjectInformation(props) {
                     endDate: endProject[0],
                     status: status.value,
                     pmId: pmLead.value,
-                    mileStone: ['2021-11-09'],
+                    mileStone: milestone,
                     customerId: customerId.value,
                     technologys,
-                    domains: [1, 2]
+                    domains: dataIndustry
                 })
-            )
+            ).then(res => {
+                if (res && res.data && res.data && res.data.success) {
+                    props.hideSidebar()
+                    toast.success(
+                        <ToastContent  />,
+                        { transition: Slide, hideProgressBar: true, autoClose: 2000 }
+                      )
+                }
+            })
         }
     }
     // add mileStone
@@ -126,9 +143,9 @@ function ProjectInformation(props) {
     const handleChangeSignal = (e) => {
         setSignal(e.target.value)
     }
-    const hideSidebar  = () => {
+    const hideSidebar = () => {
         props.hideSidebar()
-      }
+    }
     return (
         <div>
             <Form onSubmit={handleSubmit(onSubmit)}>
@@ -173,7 +190,7 @@ function ProjectInformation(props) {
                                 className='form-control invoice-edit-input date-picker'
                             />
                         </FormGroup>
-                        <FormGroup>
+                        {/* <FormGroup>
                             <Label for='type'>
                                 Project lead <span className='text-danger'>*</span>
                             </Label>
@@ -189,7 +206,7 @@ function ProjectInformation(props) {
                                 onChange={settype}
                                 options={typeData}
                             />
-                        </FormGroup>
+                        </FormGroup> */}
                         <FormGroup>
                             <span className='title'>Milestones:</span>
                             <div >
@@ -214,7 +231,7 @@ function ProjectInformation(props) {
                                     }
                                 </div>
                             </div>
-                            <Button color="success" size="lg" onClick={handleAddMilestone} active> <FaPlusCircle size="25px" /> </Button>
+                            <span color="success" size="lg" onClick={handleAddMilestone} active> <FaPlusCircle size="25px" color="success" /> </span>
                         </FormGroup>
                     </div>
                     <div className='col-4'>
@@ -271,8 +288,8 @@ function ProjectInformation(props) {
                                 isClearable={true}
                                 maxMenuHeight={220}
                                 name="type"
-                                value={status }
-                                onChange={setStatus }
+                                value={status}
+                                onChange={setStatus}
                                 options={typeData}
                             />
                         </FormGroup>
@@ -327,9 +344,9 @@ function ProjectInformation(props) {
                                     name="technologyStack"
                                     value={technologyStack}
                                     onChange={setTechnologyStack}
-                                    options={technologyStackData}
+                                    options={projects.dataListProjectTechnology}
                                 />
-                                <FaPlusCircle size="25px" onClick={() => toggleAddFormTech()} />
+                                <FaPlusCircle size="25px" onClick={() => toggleAddFormTech('Technologies')} />
                             </div>
 
                         </FormGroup>
@@ -344,22 +361,22 @@ function ProjectInformation(props) {
                                     classNamePrefix="select"
                                     isSearchable={true}
                                     name="technologyStack"
-                                    value={technologyStack}
-                                    onChange={setTechnologyStack}
-                                    options={technologyStackData}
+                                    value={industry}
+                                    onChange={setIndustry}
+                                    options={projects.dataListProjectDomain}
                                 />
-                                <FaPlusCircle size="25px" onClick={() => toggleAddFormTech()} />
+                                <FaPlusCircle size="25px" onClick={() => toggleAddFormTech('Industry')} />
                             </div>
 
                         </FormGroup>
                     </div>
                 </div>
-                <ModalAddTechnologis modal={modal} toggle={toggleAddFormTech} />
+                <ModalAddTechnologis modal={modal} toggle={toggleAddFormTech} titleForm={titleForm} />
                 <div style={{ float: 'right' }}>
                     <Button type='submit' className='mr-1' color='primary'>
                         Save
                     </Button>
-                    <Button type='reset' color='secondary' outline  onClick={() => hideSidebar()}>
+                    <Button type='reset' color='secondary' outline onClick={() => hideSidebar()}>
                         Cancel
                     </Button>
                 </div>
