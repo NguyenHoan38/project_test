@@ -1,9 +1,9 @@
 import axios from 'axios'
-
+import {DOMAIN} from './../../../../../constant'
 export const getAllData = () => {
   return async dispatch => {
     await axios
-      .get('http://[::1]:80/api/resource/getAllProjectInfo')
+      .get(`${DOMAIN}/resource/getAllProjectInfo`)
       .then(response => {
         dispatch({
           type: 'GET_ALL_DATA',
@@ -34,7 +34,7 @@ export const getData = params => {
 export const getProject = id => {
   return async dispatch => {
     await axios
-      .get(`http://[::1]:80/api/resource/getResourceAllocation/${id}`)
+      .get(`${DOMAIN}/resource/getResourceAllocation/${id}`)
       .then(response => {
         dispatch({
           type: 'GET_PROJECT',
@@ -48,7 +48,7 @@ export const getProject = id => {
 export const getListProjectType = () => {
   return async dispatch => {
     await axios
-      .get(`http://[::1]:80/api/resource/getListProjectType`)
+      .get(`${DOMAIN}/resource/getListProjectType`)
       .then(response => {
         dispatch({
           type: 'GET_LIST_PROJECT_TYPE',
@@ -61,7 +61,7 @@ export const getListProjectType = () => {
 export const getListEmployee = () => {
   return async dispatch => {
     await axios
-      .get(`http://[::1]:80/api/resource/getListEmployee`)
+      .get(`${DOMAIN}/resource/getListEmployee`)
       .then(response => {
         dispatch({
           type: 'GET_LIST_EMPLOYEE',
@@ -76,7 +76,7 @@ export const getListEmployee = () => {
 export const getCustomer = () => {
   return async dispatch => {
     await axios
-      .get(`http://[::1]:80/api/resource/getListCustomer`)
+      .get(`${DOMAIN}/resource/getListCustomer`)
       .then(response => {
         dispatch({
           type: 'GET_CUSTOMER',
@@ -91,7 +91,7 @@ export const getCustomer = () => {
 export const addProject = project => {
   return async dispatch => {
     await axios
-      .post('http://[::1]:80/api/resource/addProject', project)
+      .post(`${DOMAIN}/resource/addProject`, project)
       .then(response => {
         // dispatch({
         //   type: 'GET_USER',
