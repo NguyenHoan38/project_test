@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import PropTypes from 'prop-types'
 import { useForm } from 'react-hook-form'
 import classnames from 'classnames'
@@ -55,10 +55,10 @@ const industryData = [
 // ** Store Vars
 //   const dispatch = useDispatch()
 function ProjectInformation(props) {
-    console.log('toggleSidebar', props)
     // ** Store Vars
     const dispatch = useDispatch()
     const [milestone, setMilestone] = useState([new Date()])
+    const [name, setName] = useState('')
     const [startProject, setStartProject] = useState('')
     const [type, settype] = useState(null)
     const [customerId, setCustomer] = useState(null)
@@ -84,6 +84,21 @@ function ProjectInformation(props) {
         setModal(!modal)
         setDataForm(title)
     }
+    useEffect(() => {
+        const {name, signal, color, type, customerId, pmId, startDate, endDate, technologys, Milestones, status, domains  } = projects.dataProject
+        setName(name)
+        settype(type)
+        setSignal(signal)
+        setcheckColor(color)
+        setCustomer(customerId)
+        setPmLead(pmId)
+        setStatus(startDate)
+        setEndProject(endDate)
+        setTechnologyStack(technologys)
+        // setMilestone(Milestones)
+        setStatus(status)
+        setIndustry(domains)
+    }, [projects.dataProject])
     // ** Function to handle form submit
     const onSubmit = values => {
         const technologys = []
@@ -159,6 +174,7 @@ function ProjectInformation(props) {
                             <Input
                                 name='name'
                                 id='name'
+                                value={name}
                                 innerRef={register({ required: true })}
                                 className={classnames({ 'is-invalid': errors['name'] })}
                             />
@@ -212,7 +228,7 @@ function ProjectInformation(props) {
                             <div >
                                 <div >
                                     {
-                                        milestone.map((m, i) => {
+                                    milestone && milestone.length > 0 &&    milestone.map((m, i) => {
                                             return (
                                                 <div className='d-flex' key={i}>
                                                     <div style={{ width: '100%' }}>

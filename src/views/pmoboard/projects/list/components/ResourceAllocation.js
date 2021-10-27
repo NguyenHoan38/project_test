@@ -76,9 +76,7 @@ function ResourceAllocation(props) {
     const handleAddFormClick = () => {
         setCheckFomAdd(!checkFomAdd)
     }
-    console.log('2222222222222222 shadowId shadowId', employeeId)
     const onSubmit = values => {
-
         if (isObjEmpty(errors)) {
             dispatch(
                 addResourceAllocation({
