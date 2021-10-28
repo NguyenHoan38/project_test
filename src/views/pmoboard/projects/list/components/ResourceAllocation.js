@@ -78,6 +78,7 @@ function ResourceAllocation(props) {
     }
 
     const onSubmit = values => {
+
         if (isObjEmpty(errors)) {
             dispatch(
                 addResourceAllocation({
