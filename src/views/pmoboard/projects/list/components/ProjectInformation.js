@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import PropTypes from 'prop-types'
 import { useForm } from 'react-hook-form'
 import classnames from 'classnames'
@@ -90,6 +90,7 @@ function ProjectInformation(props) {
         setModal(!modal)
         setDataForm(title)
     }
+    
     useEffect(() => {
         if (projects.dataProject?.id) {
             const {id, name, signal, color, projectType, customer, projectManager, startDate, endDate, technology, Milestones, status, domain } = projects.dataProject
@@ -130,15 +131,15 @@ function ProjectInformation(props) {
                 dispatch(
                     addProject({
                         name: values['name'],
-                        type: type.value,
+                        type,
                         color: checkColor,
                         signal: values['signal'],
-                        startDate: startProject[0],
-                        endDate: endProject[0],
-                        status: status.value,
-                        pmId: pmLead.value,
+                        startDate: startProject,
+                        endDate: endProject,
+                        status:status && status.value ? status.value : 0,
+                        pmId: pmLead,
                         mileStone: milestone,
-                        customerId: customerId.value,
+                        customerId,
                         technologys,
                         domains: dataIndustry
                     })
@@ -305,7 +306,7 @@ function ProjectInformation(props) {
                     <div className='col-4'>
                         <FormGroup>
                             <Label for='signal'>
-                                Project Code <span className='text-danger'>*</span>
+                                Project Code 
                             </Label>
                             <Input
                                 name='signal'
@@ -320,7 +321,7 @@ function ProjectInformation(props) {
 
                         <FormGroup>
                             <Label for='customerId'>
-                                Customer <span className='text-danger'>*</span>
+                                Customer 
                             </Label>
                             <Select
                                 id="customerId"
@@ -350,7 +351,7 @@ function ProjectInformation(props) {
                         </FormGroup>
                         <FormGroup>
                             <Label for='type'>
-                                Status <span className='text-danger'>*</span>
+                                Status 
                             </Label>
                             <Select
                                 id="type"
