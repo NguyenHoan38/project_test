@@ -69,6 +69,19 @@ export const getProject = id => {
       .catch(err => console.log(err))
   }
 }
+export const getResourceAllocation = id => {
+  return async dispatch => {
+    await axios
+      .get(`${DOMAIN}/resource/getResourceAllocation/${id}`)
+      .then(response => {
+        dispatch({
+          type: 'GET_RESOURCE_ALLOCATION',
+          data: response.data.data
+        })
+      })
+      .catch(err => console.log(err))
+  }
+}
 // get Project Type
 export const getListProjectType = () => {
   return async dispatch => {
@@ -120,6 +133,14 @@ export const addProject = project => {
       return res
   }
 }
+export const updateProject = project => {
+  return async dispatch => {
+    const res = await axios
+      .post(`${DOMAIN}/resource/editProject`, project)
+      return res
+  }
+}
+
 export const addProjectTechnology = project => {
   return async dispatch => {
     await axios
@@ -138,7 +159,7 @@ export const addResourceAllocation = params => {
   console.log('param pram', params)
   return async dispatch => {
     await axios
-      .post(`${DOMAIN}/resource/addResourceAllocation`, params)
+      .post(`${DOMAIN}/resource/getResourceAllocation`, params)
       .then(response => {
         // dispatch({
         //   type: 'GET_USER',

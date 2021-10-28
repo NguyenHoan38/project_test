@@ -18,7 +18,7 @@ import { useForm } from 'react-hook-form'
 import { Button, FormGroup, Label, FormText, Form, Input, TabContent, TabPane, Nav, NavItem, NavLink, Card, CardTitle, CardText, Row, Col } from 'reactstrap'
 
 // ** Store & Actions
-import { addProject, getCustomer, getProject, getListProjectType,  getListEmployee, getListProjectTechnology, getListProjectDomain } from '../store/action'
+import { addProject, getCustomer, getResourceAllocation, getListProjectType,  getListEmployee, getListProjectTechnology, getListProjectDomain } from '../store/action'
 import { useDispatch, useSelector } from 'react-redux'
 import ColorPicker from '@components/pick-color'
 
@@ -172,7 +172,7 @@ const SidebarNewProjects = ({ open, toggleSidebar, isNewProject }) => {
   const toggle = tab => {
     if (activeTab !== tab) setActiveTab(tab)
     dispatch(
-      getProject(isNewProject)
+      getResourceAllocation(isNewProject)
     )
   }
   // ** Table data to render
