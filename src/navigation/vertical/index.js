@@ -10,5 +10,5 @@ import chartsAndMaps from './charts-maps'
 import pmoboards from './pmoboards'
 
 // ** Merge & Export
-// export default [...pmoboards, ...dashboards, ...apps, ...pages, ...uiElements, ...forms, ...tables, ...chartsAndMaps, ...others]
+// export default [...dashboards, ...apps, ...pages, ...uiElements, ...forms, ...tables, ...chartsAndMaps, ...others]
 export default [...pmoboards]
