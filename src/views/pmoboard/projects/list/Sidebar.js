@@ -198,14 +198,14 @@ const SidebarNewProjects = ({ open, toggleSidebar, isNewProject }) => {
   const myStyle = {
     color: "red"
   }
-  console.log(isNewProject)
+
   return (
 
     <Sidebar
       width='70'
       size='lg'
       open={open}
-      title={isNewProject > 0 ? 'Edit Project' : 'New Project'}
+      title={isNewProject > 0 ? `Edit ${projects.dataProject.name}` : 'New Project'}
       headerClassName='mb-1'
       contentClassName='pt-0'
       toggleSidebar={toggleSidebar}

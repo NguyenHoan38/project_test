@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom'
 import Avatar from '@components/avatar'
 
 // ** Store & Actions
-import { getProject, deleteUser } from '../store/action'
+import { getResourceAllocation, deleteUser } from '../store/action'
 import { store } from '@store/storeConfig/store'
 import moment from 'moment'
 import { useDispatch, useSelector } from 'react-redux'
@@ -21,13 +21,13 @@ const toggleSidebar = () => setSidebarOpen(!sidebarOpen)
 
 export const columns = (showFormEdit) => {
    // ** Store Vars
-//    const dispatch = useDispatch()
-//   function showFormProject(id) {
-//     dispatch(
-//       getProject(id)
-// //     )
-//     showFormEdit(id)
-//   }
+   const dispatch = useDispatch()
+  function showFormProject(id) {
+    dispatch(
+      getResourceAllocation(id)
+    )
+    showFormEdit(id)
+  }
   return (
     [
       {

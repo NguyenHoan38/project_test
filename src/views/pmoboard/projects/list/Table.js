@@ -8,7 +8,7 @@ import Sidebar from './Sidebar'
 import { columns } from './columns'
 
 // ** Store & Actions
-import { getAllData, getData } from '../store/action'
+import { getAllData, getData, setDataProject } from '../store/action'
 import { useDispatch, useSelector } from 'react-redux'
 
 // ** Third Party Components
@@ -94,6 +94,9 @@ const ProjectsList = () => {
   const toggleSidebar = (id) => {
     setSidebarOpen(!sidebarOpen)
     setIsNewProject(id)
+      dispatch(
+        setDataProject()
+    )
   }
   // ** Function to toggle sidebar
   // const toggleSidebar = () => {
@@ -207,7 +210,7 @@ const ProjectsList = () => {
 
   return (
     <Fragment>
-      <Card>
+      {/* <Card>
         <CardHeader>
           <CardTitle tag='h4'>Search Filter</CardTitle>
         </CardHeader>
@@ -351,7 +354,7 @@ const ProjectsList = () => {
             </Col>
           </Row>
         </CardBody>
-      </Card>
+      </Card> */}
 
       <Card>
         <DataTable

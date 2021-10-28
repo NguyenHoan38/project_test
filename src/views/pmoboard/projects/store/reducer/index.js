@@ -10,7 +10,7 @@ const initialState = {
   dataListEmployee: [],
   dataListProjectTechnology: [],
   dataListProjectDomain: [],
-  dataResourceAllocation: []
+  dataResourceAllocation: {}
 }
 
 const projects = (state = initialState, action) => {
@@ -26,7 +26,7 @@ const projects = (state = initialState, action) => {
       }
     case 'GET_PROJECT':
       return { ...state, dataProject: action.data }
-      case 'GET_RESOURCE_ALLOCATION':
+    case 'GET_RESOURCE_ALLOCATION':
         return { ...state, dataResourceAllocation: action.data }
        
     case 'GET_CUSTOMER':

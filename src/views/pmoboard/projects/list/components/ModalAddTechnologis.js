@@ -3,7 +3,9 @@ import { Button, Modal, ModalHeader, FormGroup, Label, ModalBody, ModalFooter, I
 import classnames from 'classnames'
 import { useForm } from 'react-hook-form'
 import {useDispatch} from 'react-redux'
-import { addProjectTechnology, addProjectDomain } from './../../store/action'
+import { addProjectTechnology, addProjectDomain, getListProjectTechnology, getListProjectDomain } from './../../store/action'
+import ToastContent from '@components/common/ToastContent'
+import { toast, Slide } from 'react-toastify'
 import { isObjEmpty } from '@utils'
 const ModalExample = ({ modal, toggle, titleForm }) => {
     const dispatch = useDispatch()
@@ -13,20 +15,39 @@ const ModalExample = ({ modal, toggle, titleForm }) => {
     }
     const externalCloseBtn = <button className="close" style={{ position: 'absolute', top: '15px', right: '15px' }} onClick={toggle}>&times;</button>
     const onSubmit = values => {
+        alert('2')
         if (isObjEmpty(errors)) {
             if (titleForm === 'Industry') {
                 dispatch(
                     addProjectDomain({
                         name: values['name']
                     })
-                )
+                ).then(res => {
+                    if (res && res.data && res.data && res.data.success) {
+                        toggle()
+                        dispatch(getListProjectDomain())
+                        toast.success(
+                            <ToastContent title={'Tạo mới thành công!'} />,
+                            { transition: Slide, hideProgressBar: true, autoClose: 2000 }
+                        )
+                    }
+                })
 
             } else {
                 dispatch(
                     addProjectTechnology({
                         name: values['name']
                     })
-                )
+                ).then(res => {
+                    if (res && res.data && res.data && res.data.success) {
+                        toggle()
+                        dispatch(getListProjectTechnology())
+                        toast.success(
+                            <ToastContent title={'Tạo mới thành công!'} />,
+                            { transition: Slide, hideProgressBar: true, autoClose: 2000 }
+                        )
+                    }
+                })
             }
 
         }
@@ -52,8 +73,8 @@ const ModalExample = ({ modal, toggle, titleForm }) => {
                     </div>
                 </ModalBody>
                 <ModalFooter>
-                    <Button type='submit' color="primary" onClick={toggle}>Save</Button>{' '}
-                    <Button color="secondary" onClick={toggle}>Cancel</Button>
+                    <Button type='submit' color="primary" >Save</Button>{' '}
+                    <Button color="secondary" onClick={handleToggleForm}>Cancel</Button>
                 </ModalFooter>
                 </Form>
             </Modal>

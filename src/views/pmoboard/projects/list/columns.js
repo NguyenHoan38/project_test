@@ -9,8 +9,8 @@ import { store } from '@store/storeConfig/store'
 import moment from 'moment'
 import { useDispatch, useSelector } from 'react-redux'
 // ** Third Party Components
-import { Badge, UncontrolledDropdown, DropdownToggle, DropdownMenu, DropdownItem } from 'reactstrap'
-import { Slack, User, Settings, Database, Edit2, MoreVertical, FileText, Trash2, Archive } from 'react-feather'
+import { Badge, UncontrolledDropdown, DropdownToggle, DropdownMenu, DropdownItem, UncontrolledTooltip, Button } from 'reactstrap'
+import { Slack, User, Settings, Database, Edit2, MoreVertical, FileText, Trash2, Archive, Edit } from 'react-feather'
 import { projectColor } from '../constant'
 const statusObj = {
   1: { color: 'light-success', name: 'active' },
@@ -21,7 +21,7 @@ const toggleSidebar = () => setSidebarOpen(!sidebarOpen)
 const renderProjectName = row => {
   return (
     <div className="d-flex">
-      <Badge className='text-capitalize' style={projectColor.find(element => element.id === row.color)}>
+      <Badge className='text-capitalize d-flex align-items-center' style={projectColor.find(element => element.id === row.color)}>
         {row.signal}
       </Badge>
       <span className='text-capitalize pl-1'>{row.name}</span>
@@ -80,8 +80,8 @@ const renderDuration = row => {
 }
 
 export const columns = (showFormEdit) => {
-   // ** Store Vars
-   const dispatch = useDispatch()
+  // ** Store Vars
+  const dispatch = useDispatch()
   function showFormProject(id) {
     dispatch(
       getProject(id)
@@ -90,6 +90,20 @@ export const columns = (showFormEdit) => {
   }
   return (
     [
+      {
+        name: 'Actions',
+        minWidth: '100px',
+        cell: row => <div>     
+      <Edit onClick={() => showFormProject(row.id)} size={14} className='mr-50 '   id='positionBottom'/>
+      <UncontrolledTooltip placement='bottom' target='positionBottom'>
+       Edit
+      </UncontrolledTooltip>
+      <Trash2 size={14} className='mr-50' id='delete'/>
+      <UncontrolledTooltip placement='bottom' target='delete'>
+       delete
+      </UncontrolledTooltip>
+         </div>
+      },
       {
         name: 'Project',
         minWidth: '150px',
@@ -116,7 +130,7 @@ export const columns = (showFormEdit) => {
         minWidth: '150px',
         selector: 'pmLead',
         sortable: true,
-        cell: row => <span className='text-capitalize'>{row.pmLead}</span>
+        cell: row => <span className='text-capitalize'>{row?.projectManager?.name}</span>
       },
       {
         name: 'Technology stack',
@@ -168,40 +182,7 @@ export const columns = (showFormEdit) => {
         selector: 'collaborator',
         sortable: true,
         cell: row => renderCollaborators(row)
-      },
-      {
-        name: 'Actions',
-        minWidth: '100px',
-        cell: row => (
-          <UncontrolledDropdown>
-            <DropdownToggle tag='div' className='btn btn-sm'>
-              <MoreVertical size={14} className='cursor-pointer' />
-            </DropdownToggle>
-            <DropdownMenu right>
-              <DropdownItem
-                tag={Link}
-                to={`/apps/user/view/${row.id}`}
-                className='w-100'
-                onClick={() => store.dispatch(getUser(row.id))}
-              >
-                <FileText size={14} className='mr-50' />
-                <span className='align-middle'>Details</span>
-              </DropdownItem>
-              <DropdownItem
-                to={`/apps/user/edit/${row.id}`}
-                className='w-100'
-                onClick={() => showFormProject(row.id)}
-              >
-                <Archive size={14} className='mr-50' />
-                <span className='align-middle'>Edit</span>
-              </DropdownItem>
-              <DropdownItem className='w-100' onClick={() => store.dispatch(deleteUser(row.id))}>
-                <Trash2 size={14} className='mr-50' />
-                <span className='align-middle'>Delete</span>
-              </DropdownItem>
-            </DropdownMenu>
-          </UncontrolledDropdown>
-        )
       }
+
     ])
 }

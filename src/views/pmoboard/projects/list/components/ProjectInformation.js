@@ -55,7 +55,6 @@ const industryData = [
 // ** Store Vars
 //   const dispatch = useDispatch()
 function ProjectInformation(props) {
-    console.log('props props', props)
     // ** Store Vars
     const dispatch = useDispatch()
     const [milestone, setMilestone] = useState([new Date()])
@@ -90,10 +89,10 @@ function ProjectInformation(props) {
         setModal(!modal)
         setDataForm(title)
     }
-    
+
     useEffect(() => {
         if (projects.dataProject?.id) {
-            const {id, name, signal, color, projectType, customer, projectManager, startDate, endDate, technology, Milestones, status, domain } = projects.dataProject
+            const { id, name, signal, color, projectType, customer, projectManager, startDate, endDate, technology, Milestones, status, domain } = projects.dataProject
             const technologyNew = technology.map(res => { return { ...res, value: res.id, label: res.name } })
             const domainsNew = domain.map(res => { return { ...res, value: res.id, label: res.name } })
             setName(name)
@@ -112,31 +111,34 @@ function ProjectInformation(props) {
             setStatus(typeData.find(item => item.value === status))
             setIndustry(domainsNew)
         }
-        
+
 
     }, [projects.dataProject])
     // ** Function to handle form submit
     const onSubmit = values => {
         const technologys = []
-        technologyStack.map(res => {
-            technologys.push(res.value)
-        })
+        if (technologyStack && technologyStack.length > 0) {
+            technologyStack.map(res => {
+                technologys.push(res.value)
+            })
+        }
         const dataIndustry = []
-        industry.map(res => {
-            dataIndustry.push(res.value)
-        })
+        if (industry && industry.length > 0) {
+            industry.map(res => {
+                dataIndustry.push(res.value)
+            })
+        }
         if (isObjEmpty(errors)) {
             if (projectID === 0) {
-               
                 dispatch(
                     addProject({
-                        name: values['name'],
-                        type,
+                        name,
                         color: checkColor,
-                        signal: values['signal'],
+                        signal,
+                        type: type?.value,
                         startDate: startProject,
                         endDate: endProject,
-                        status:status && status.value ? status.value : 0,
+                        status: status && status.value ? status.value : 0,
                         pmId: pmLead,
                         mileStone: milestone,
                         customerId,
@@ -148,19 +150,19 @@ function ProjectInformation(props) {
                         props.hideSidebar()
                         dispatch(getAllData())
                         toast.success(
-                            <ToastContent title={'Tạo mới thành công!'}/>,
+                            <ToastContent title={'Successful new creation!'} />,
                             { transition: Slide, hideProgressBar: true, autoClose: 2000 }
                         )
-                    }
+                    } 
                 })
             } else {
                 dispatch(
                     updateProject({
-                        id:projectID,
-                        name: values['name'],
+                        id: projectID,
+                        name,
                         type: type.value,
                         color: checkColor,
-                        signal: values['signal'],
+                        signal,
                         startDate: startProject,
                         endDate: endProject,
                         status: status.value,
@@ -175,7 +177,7 @@ function ProjectInformation(props) {
                         props.hideSidebar()
                         dispatch(getAllData())
                         toast.success(
-                            <ToastContent title={'Update thành công!'}/>,
+                            <ToastContent title={'Update thành công!'} />,
                             { transition: Slide, hideProgressBar: true, autoClose: 2000 }
                         )
                     }
@@ -216,21 +218,62 @@ function ProjectInformation(props) {
 
                         <FormGroup>
                             <Label for='name'>
-                                Project Name <span className='text-danger'>*</span>
+                                Project Name 
                             </Label>
                             <Input
                                 name='name'
                                 id='name'
                                 value={name}
                                 onChange={(e) => setName(e.target.value)}
-                                innerRef={register({ required: true })}
-                                className={classnames({ 'is-invalid': errors['name'] })}
+                            // innerRef={register({ required: true })}
+                            // className={classnames({ 'is-invalid': errors['name'] })}
                             />
                         </FormGroup>
+                    </div>
+                    <div className='col-4'>
+
+                        <FormGroup>
+                            <Label for='signal'>
+                                Project Code
+                            </Label>
+                            <Input
+                                name='signal'
+                                id='signal'
+                                // innerRef={register({ required: true })}
+                                value={signal}
+                                // onChange={setSignal}
+                                onChange={handleChangeSignal}
+                            // className={classnames({ 'is-invalid': errors['signal'] })}
+                            />
+                        </FormGroup>
+                    </div>
+                    <div className='col-4'>
+
+                        <FormGroup>
+                            <Label for='projectCode' className="mr-2 w-100" >
+                                Project Color
+                            </Label>
+                            <Button style={colorButton} color="color-Button" onClick={toggle} className="button-color">{signal}</Button>
+                            <Collapse isOpen={isOpen} className="collapse-color">
+                                <Card>
+                                    <div className="d-flex flex-wrap">
+                                        {
+                                            projectColor.map((m, i) => {
+                                                return (
+                                                    <div style={projectColor[i]} key={i} className="blook-color text-center text-justify" onClick={() => handleClickColor(m)}>{m.id === checkColor ? <FaCheck color="white" /> : ""} </div>
+                                                )
+                                            })
+                                        }
+                                    </div>
+                                </Card>
+                            </Collapse>
+                        </FormGroup>
+                    </div>
+                    <div className='col-4'>
 
                         <FormGroup>
                             <Label for='type'>
-                                Project Type <span className='text-danger'>*</span>
+                                Project Type 
                             </Label>
                             <Select
                                 id="type"
@@ -250,78 +293,12 @@ function ProjectInformation(props) {
                                 options={projects.dataListProjectType}
                             />
                         </FormGroup>
-
-                        <FormGroup>
-                            <span className='title'>Start:</span>
-                            <Flatpickr
-                                value={startProject}
-                                onChange={date => setStartProject(date[0])}
-                                className='form-control invoice-edit-input date-picker'
-                            />
-                        </FormGroup>
-                        {/* <FormGroup>
-                            <Label for='type'>
-                                Project lead <span className='text-danger'>*</span>
-                            </Label>
-                            <Select
-                                id="type"
-                                className="basic-single"
-                                classNamePrefix="select"
-                                isSearchable={true}
-                                isClearable={true}
-                                maxMenuHeight={220}
-                                name="type"
-                                value={type}
-                                onChange={settype}
-                                options={typeData}
-                            />
-                        </FormGroup> */}
-                        <FormGroup>
-                            <span className='title'>Milestones:</span>
-                            <div >
-                                <div >
-                                    {
-                                        milestone && milestone.length > 0 && milestone.map((m, i) => {
-                                            return (
-                                                <div className='d-flex' key={i}>
-                                                    <div style={{ width: '100%' }}>
-                                                        <Flatpickr
-                                                            key={i}
-                                                            value={m}
-                                                            onChange={date =>  editMilestones(date, i)}
-                                                            className='form-control invoice-edit-input date-picker mr-4 mb-2'
-                                                        />
-                                                    </div>
-
-                                                    <span className='ml-4' onClick={() => handleDeleteMilestone(i)}  > <FaTrash /></span>
-                                                </div>
-                                            )
-                                        })
-                                    }
-                                </div>
-                            </div>
-                            <span color="success" size="lg" onClick={handleAddMilestone} active> <FaPlusCircle size="25px" color="success" /> </span>
-                        </FormGroup>
                     </div>
                     <div className='col-4'>
-                        <FormGroup>
-                            <Label for='signal'>
-                                Project Code 
-                            </Label>
-                            <Input
-                                name='signal'
-                                id='signal'
-                                innerRef={register({ required: true })}
-                                value={signal}
-                                // onChange={setSignal}
-                                onChange={handleChangeSignal}
-                                className={classnames({ 'is-invalid': errors['signal'] })}
-                            />
-                        </FormGroup>
 
                         <FormGroup>
                             <Label for='customerId'>
-                                Customer 
+                                Customer
                             </Label>
                             <Select
                                 id="customerId"
@@ -340,53 +317,8 @@ function ProjectInformation(props) {
                                 options={projects.dataCustomer}
                             />
                         </FormGroup>
-
-                        <FormGroup>
-                            <span className='title'>End:</span>
-                            <Flatpickr
-                                value={endProject}
-                                onChange={date => setEndProject(date[0])}
-                                className='form-control invoice-edit-input date-picker'
-                            />
-                        </FormGroup>
-                        <FormGroup>
-                            <Label for='type'>
-                                Status 
-                            </Label>
-                            <Select
-                                id="type"
-                                className="basic-single"
-                                classNamePrefix="select"
-                                isSearchable={true}
-                                isClearable={true}
-                                maxMenuHeight={220}
-                                name="type"
-                                value={status}
-                                onChange={setStatus}
-                                options={typeData}
-                            />
-                        </FormGroup>
                     </div>
                     <div className='col-4'>
-                        <FormGroup>
-                            <Label for='projectCode' className="mr-2 w-100" >
-                                Project Color <span className='text-danger'>*</span>
-                            </Label>
-                            <Button style={colorButton} color="color-Button" onClick={toggle} className="button-color">{signal}</Button>
-                            <Collapse isOpen={isOpen} className="collapse-color">
-                                <Card>
-                                    <div className="d-flex flex-wrap">
-                                        {
-                                            projectColor.map((m, i) => {
-                                                return (
-                                                    <div style={projectColor[i]} key={i} className="blook-color text-center text-justify" onClick={() => handleClickColor(m)}>{m.id === checkColor ? <FaCheck color="white" /> : ""} </div>
-                                                )
-                                            })
-                                        }
-                                    </div>
-                                </Card>
-                            </Collapse>
-                        </FormGroup>
 
                         <FormGroup>
                             <Label for='pmLead'>PM/Lead</Label>
@@ -408,6 +340,85 @@ function ProjectInformation(props) {
                                 options={projects.dataListEmployee}
                             />
                         </FormGroup>
+                    </div>
+                    <div className='col-4'>
+
+                        <FormGroup>
+                            <span className='title'>Start:</span>
+                            <Flatpickr
+                                value={startProject}
+                                onChange={date => setStartProject(date[0])}
+                                className='form-control invoice-edit-input date-picker'
+                            />
+                        </FormGroup>
+
+                    </div>
+                    <div className='col-4'>
+
+                        <FormGroup>
+                            <span className='title'>End:</span>
+                            <Flatpickr
+                                value={endProject}
+                                onChange={date => setEndProject(date[0])}
+                                className='form-control invoice-edit-input date-picker'
+                            />
+                        </FormGroup>
+                    </div>
+                    <div className='col-4'>
+
+                        <FormGroup>
+                            <Label for='type'>
+                                Status
+                            </Label>
+                            <Select
+                                id="type"
+                                className="basic-single"
+                                classNamePrefix="select"
+                                isSearchable={true}
+                                isClearable={true}
+                                maxMenuHeight={220}
+                                name="type"
+                                value={status}
+                                onChange={setStatus}
+                                options={typeData}
+                            />
+                        </FormGroup>
+
+                    </div>
+                    <div className='col-4'>
+
+                        <FormGroup>
+                            <span className='title'>Milestones:</span>
+                            <div >
+                                <div >
+                                    {
+                                        milestone && milestone.length > 0 && milestone.map((m, i) => {
+                                            return (
+                                                <div className='d-flex' key={i}>
+                                                    <div style={{ width: '100%' }}>
+                                                        <Flatpickr
+                                                            key={i}
+                                                            value={m}
+                                                            onChange={date => editMilestones(date, i)}
+                                                            className='form-control invoice-edit-input date-picker mr-4 mb-2'
+                                                        />
+                                                    </div>
+                                                   {milestone.length === i + 1 && (<span className='ml-4' data-toggle="tooltip" data-placement="top" title="Add milestones" color="success" size="lg" onClick={handleAddMilestone} active> <FaPlusCircle size="25px" color="success" /> </span>)} 
+                                                    <span className='ml-4' onClick={() => handleDeleteMilestone(i)}  > <FaTrash /></span>
+                                                </div>
+                                            )
+                                        })
+                                    }
+                                    {milestone.length === 0 && (<span  data-toggle="tooltip" data-placement="top" title="Add milestones" color="success" size="lg" onClick={handleAddMilestone} active> <FaPlusCircle size="25px" color="success" /> </span>) }
+                                   
+                                </div>
+                            </div>
+                            
+
+                        </FormGroup>
+
+                    </div>
+                    <div className='col-4'>
 
                         <FormGroup>
                             <Label for='technologyStack'>Technologies </Label>
@@ -430,6 +441,9 @@ function ProjectInformation(props) {
                             </div>
 
                         </FormGroup>
+                    </div>
+                    <div className='col-4'>
+
                         <FormGroup>
                             <Label for='technologyStack'>Industry</Label>
                             <div className="d-flex align-items-center">
@@ -449,6 +463,7 @@ function ProjectInformation(props) {
                             </div>
 
                         </FormGroup>
+
                     </div>
                 </div>
                 <ModalAddTechnologis modal={modal} toggle={toggleAddFormTech} titleForm={titleForm} />
