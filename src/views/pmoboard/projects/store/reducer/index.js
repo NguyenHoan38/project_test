@@ -9,7 +9,8 @@ const initialState = {
   dataListProjectType: [],
   dataListEmployee: [],
   dataListProjectTechnology: [],
-  dataListProjectDomain: []
+  dataListProjectDomain: [],
+  dataResourceAllocation: []
 }
 
 const projects = (state = initialState, action) => {
@@ -25,6 +26,9 @@ const projects = (state = initialState, action) => {
       }
     case 'GET_PROJECT':
       return { ...state, dataProject: action.data }
+      case 'GET_RESOURCE_ALLOCATION':
+        return { ...state, dataResourceAllocation: action.data }
+       
     case 'GET_CUSTOMER':
       return {
         ...state, dataCustomer: action.data.map(res => { return { ...res, value: res.id, label: res.name } })

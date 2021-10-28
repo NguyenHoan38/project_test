@@ -78,7 +78,6 @@ function ResourceAllocation(props) {
     }
 
     const onSubmit = values => {
-
         if (isObjEmpty(errors)) {
             dispatch(
                 addResourceAllocation({
@@ -120,9 +119,9 @@ function ResourceAllocation(props) {
                                     }}
                                     // className={classnames({ 'is-invalid': errors['employeeId'] })}
                                     // innerRef={register({ required: true })}
-                                    options={projects.dataProject.map((project, index) => ({
+                                    options={projects.dataListEmployee.map((project, index) => ({
                                         ...project,
-                                        label: project.assign.name
+                                        label: project.name
                                     }))}
                                 />
                             </FormGroup>
@@ -187,10 +186,10 @@ function ResourceAllocation(props) {
                                     name="shadowId"
                                     value={shadowId}
                                     onChange={(e) => setShadowId(e)}
-                                    options={projects.dataProject.map((project, index) => ({
+                                    options={projects.dataListEmployee.map((project, index) => ({
                                         ...project,
                                         id: project.id,
-                                        label: project.assign.name
+                                        label: project.name
                                     }))}
                                 />
                             </FormGroup>
@@ -243,7 +242,7 @@ function ResourceAllocation(props) {
                         header={false}
                         pagination={false}
                         columns={columns(() => console.log('222222222222222'))}
-                        data={projects.dataProject}
+                        data={projects.dataResourceAllocation}
                         // sortIcon={<ChevronDown />}
                         className='react-dataTable'
                         paginationComponent={false}
@@ -260,14 +259,14 @@ function ResourceAllocation(props) {
                     />
                 </div>
             </div>
-            <div style={{ float: 'right' }}>
+            {/* <div style={{ float: 'right' }}>
                 <Button type='submit' className='mr-1' color='primary'>
                     Save
                 </Button>
                 <Button type='reset' color='secondary' outline >
                     Cancel
                 </Button>
-            </div>
+            </div> */}
 
         </div>
     )
