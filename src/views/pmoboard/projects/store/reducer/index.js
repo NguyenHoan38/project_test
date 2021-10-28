@@ -10,11 +10,14 @@ const initialState = {
   dataListEmployee: [],
   dataListProjectTechnology: [],
   dataListProjectDomain: [],
-  dataResourceAllocation: []
+  dataResourceAllocation: [],
+  loading:false
 }
 
 const projects = (state = initialState, action) => {
   switch (action.type) {
+    case 'SET_LOADING':
+      return {...state, loading: action}
     case 'GET_ALL_DATA':
       return { ...state, allData: action.data }
     case 'GET_DATA':

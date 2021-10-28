@@ -82,9 +82,9 @@ function ResourceAllocation(props) {
             dispatch(
                 addResourceAllocation({
                     projectId: 3,
-                    employeeId:employeeId.id,
+                    employeeId:employeeId?.id,
                     role,
-                    shadowId:shadowId.id,
+                    shadowId:shadowId?.id,
                     mainHeadcount,
                     effort:effortValue,
                     startDate,
@@ -170,7 +170,7 @@ function ResourceAllocation(props) {
                         <div className='col-6'>
                             <FormGroup >
                                 <label className='title mr-4 w-100'> Main Headcount:</label>
-                                <Input className='ml-0' type="checkbox" value={mainHeadcount} onChange={date => setMainHeadcount(date)} />
+                                <Input className='ml-0' type="checkbox" value={mainHeadcount} onChange={date => setMainHeadcount(date.target.checked)} />
                             </FormGroup>
                         </div>
                         <div className='col-6'>
@@ -221,7 +221,7 @@ function ResourceAllocation(props) {
                             <Button type='submit' className='mr-1' color='primary'>
                                 Save
                             </Button>
-                            <Button type='reset' color='secondary' outline >
+                            <Button type='reset' color='secondary' outline onClick={() => handleAddFormClick()} >
                                 Cancel
                             </Button>
                         </>

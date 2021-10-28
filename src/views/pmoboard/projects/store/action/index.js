@@ -159,7 +159,7 @@ export const addResourceAllocation = params => {
   console.log('param pram', params)
   return async dispatch => {
     await axios
-      .post(`${DOMAIN}/resource/getResourceAllocation`, params)
+      .post(`${DOMAIN}/resource/addResourceAllocation`, params)
       .then(response => {
         // dispatch({
         //   type: 'GET_USER',

@@ -55,7 +55,6 @@ const industryData = [
 // ** Store Vars
 //   const dispatch = useDispatch()
 function ProjectInformation(props) {
-    console.log('props props', props)
     // ** Store Vars
     const dispatch = useDispatch()
     const [milestone, setMilestone] = useState([new Date()])
