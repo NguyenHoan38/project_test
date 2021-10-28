@@ -1,5 +1,23 @@
 import axios from 'axios'
 import {DOMAIN} from './../../../../../constant'
+
+export const setDataResourceAllocation = () => {
+  return async dispatch => {
+    dispatch({
+      type: 'GET_RESOURCE_ALLOCATION',
+      data: {}
+    })
+  }
+}
+export const setDataProject = () => {
+  return async dispatch => {
+    dispatch({
+      type: 'GET_PROJECT',
+      data: {}
+    })
+  }
+}
+
 export const getAllData = () => {
   return async dispatch => {
     await axios
@@ -133,6 +151,14 @@ export const addProject = project => {
       return res
   }
 }
+export const editResourceAllocation = project => {
+  return async dispatch => {
+    const res = await axios
+      .post(`${DOMAIN}/resource/editResourceAllocation`, project)
+      return res
+  }
+}
+
 export const updateProject = project => {
   return async dispatch => {
     const res = await axios
@@ -143,15 +169,9 @@ export const updateProject = project => {
 
 export const addProjectTechnology = project => {
   return async dispatch => {
-    await axios
+    const res = await axios
       .post(`${DOMAIN}/resource/addProjectTechnology`, project)
-      .then(response => {
-        // dispatch({
-        //   type: 'GET_USER',
-        //   selectedUser: response.data.user
-        // })
-      })
-      .catch(err => console.log(err))
+      return res
   }
 }
 
@@ -171,16 +191,9 @@ export const addResourceAllocation = params => {
 }
 export const addProjectDomain = project => {
   return async dispatch => {
-  return  await axios
+    const res = await axios
       .post(`${DOMAIN}/resource/addProjectDomain`, project)
-      .then(response => {
-        // dispatch({
-        //   type: 'GET_USER',
-        //   selectedUser: response.data.user
-        // })
-        return response
-      })
-      .catch(err => console.log(err))
+      return res
   }
 }
 

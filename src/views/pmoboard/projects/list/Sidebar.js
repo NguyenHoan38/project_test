@@ -198,7 +198,7 @@ const SidebarNewProjects = ({ open, toggleSidebar, isNewProject }) => {
   const myStyle = {
     color: "red"
   }
-  console.log(isNewProject)
+
   return (
 
     <Sidebar
