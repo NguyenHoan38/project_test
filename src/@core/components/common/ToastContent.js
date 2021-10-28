@@ -8,7 +8,7 @@ function ToastContent(props) {
                 <div className='toastify-header'>
                     <div className='title-wrapper'>
                         {/* <Avatar size='sm' color='success' icon={<Coffee size={12} />} /> */}
-                        <h6 className='toast-title font-weight-bold'>Tạo mới thành công</h6>
+                        <h6 className='toast-title font-weight-bold'>{props.title}</h6>
                     </div>
                 </div>
                 {/* <div className='toastify-body'>

@@ -13,13 +13,13 @@ import { isObjEmpty } from '@utils'
 import { projectColor } from '../../constant'
 import ModalAddTechnologis from './ModalAddTechnologis'
 // ** Store & Actions
-import { addProject } from '../../store/action'
+import { addProject, updateProject, getAllData } from '../../store/action'
 import { useDispatch, useSelector } from 'react-redux'
 // fake data
 const typeData = [
-    { value: 1, label: 'T&M' },
-    { value: 2, label: 'Project Based' },
-    { value: 3, label: 'Body shoping' }
+    { value: 1, label: 'Close' },
+    { value: 2, label: 'To do' },
+    { value: 3, label: 'In Progress' }
 ]
 
 const customerData = [
@@ -55,25 +55,31 @@ const industryData = [
 // ** Store Vars
 //   const dispatch = useDispatch()
 function ProjectInformation(props) {
-    console.log('toggleSidebar', props)
+    console.log('props props', props)
     // ** Store Vars
     const dispatch = useDispatch()
     const [milestone, setMilestone] = useState([new Date()])
+    const [typeLable, setTypeLable] = useState(null)
+    const [name, setName] = useState('')
     const [startProject, setStartProject] = useState('')
     const [type, settype] = useState(null)
-    const [customerId, setCustomer] = useState(null)
+    const [customerId, setCustomerId] = useState(null)
+    const [lableCustomer, setLableCustomer] = useState(null)
     const [endProject, setEndProject] = useState(new Date())
     const [signal, setSignal] = useState('')
     const [color, setColor] = useState('#ffff')
     const [status, setStatus] = useState(null)
     const [pmLead, setPmLead] = useState(null)
+    const [lablePmLead, setLablePmLead] = useState(null)
     const [technologyStack, setTechnologyStack] = useState(null)
+    // const [lableTechnologyStack, setLableTechnologyStack] = useState(null)
     const [isOpen, setIsOpen] = useState(false)
     const [checkColor, setcheckColor] = useState(null)
     const [colorButton, setColorButton] = useState(null)
     const [titleForm, setDataForm] = useState(null)
     const [industry, setIndustry] = useState(null)
     const toggle = () => setIsOpen(!isOpen)
+    const [projectID, setprojectID] = useState(0)
     // ** Vars
     const { register, errors, handleSubmit } = useForm()
     // get state store
@@ -84,6 +90,30 @@ function ProjectInformation(props) {
         setModal(!modal)
         setDataForm(title)
     }
+    useEffect(() => {
+        if (projects.dataProject?.id) {
+            const {id, name, signal, color, projectType, customer, projectManager, startDate, endDate, technology, Milestones, status, domain } = projects.dataProject
+            const technologyNew = technology.map(res => { return { ...res, value: res.id, label: res.name } })
+            const domainsNew = domain.map(res => { return { ...res, value: res.id, label: res.name } })
+            setName(name)
+            setprojectID(id)
+            settype(projectType.id)
+            setTypeLable(projectType.name)
+            setSignal(signal)
+            setcheckColor(color)
+            setCustomerId(customer.id)
+            setLableCustomer(customer.name)
+            setPmLead(projectManager.id)
+            setLablePmLead(projectManager.name)
+            setStartProject(startDate)
+            setEndProject(endDate)
+            setTechnologyStack([...technologyNew])
+            setStatus(typeData.find(item => item.value === status))
+            setIndustry(domainsNew)
+        }
+        
+
+    }, [projects.dataProject])
     // ** Function to handle form submit
     const onSubmit = values => {
         const technologys = []
@@ -95,31 +125,62 @@ function ProjectInformation(props) {
             dataIndustry.push(res.value)
         })
         if (isObjEmpty(errors)) {
-            // toggleSidebar()
-            dispatch(
-                addProject({
-                    name: values['name'],
-                    type: type.value,
-                    color: checkColor,
-                    signal: values['signal'],
-                    startDate: startProject[0],
-                    endDate: endProject[0],
-                    status: status.value,
-                    pmId: pmLead.value,
-                    mileStone: milestone,
-                    customerId: customerId.value,
-                    technologys,
-                    domains: dataIndustry
+            if (projectID === 0) {
+               
+                dispatch(
+                    addProject({
+                        name: values['name'],
+                        type: type.value,
+                        color: checkColor,
+                        signal: values['signal'],
+                        startDate: startProject[0],
+                        endDate: endProject[0],
+                        status: status.value,
+                        pmId: pmLead.value,
+                        mileStone: milestone,
+                        customerId: customerId.value,
+                        technologys,
+                        domains: dataIndustry
+                    })
+                ).then(res => {
+                    if (res && res.data && res.data && res.data.success) {
+                        props.hideSidebar()
+                        dispatch(getAllData())
+                        toast.success(
+                            <ToastContent title={'Tạo mới thành công!'}/>,
+                            { transition: Slide, hideProgressBar: true, autoClose: 2000 }
+                        )
+                    }
                 })
-            ).then(res => {
-                if (res && res.data && res.data && res.data.success) {
-                    props.hideSidebar()
-                    toast.success(
-                        <ToastContent  />,
-                        { transition: Slide, hideProgressBar: true, autoClose: 2000 }
-                      )
-                }
-            })
+            } else {
+                dispatch(
+                    updateProject({
+                        id:projectID,
+                        name: values['name'],
+                        type: type.value,
+                        color: checkColor,
+                        signal: values['signal'],
+                        startDate: startProject,
+                        endDate: endProject,
+                        status: status.value,
+                        pmId: pmLead.value,
+                        mileStone: milestone,
+                        customerId: customerId.value,
+                        technologys,
+                        domains: dataIndustry
+                    })
+                ).then(res => {
+                    if (res && res.data && res.data && res.data.success) {
+                        props.hideSidebar()
+                        dispatch(getAllData())
+                        toast.success(
+                            <ToastContent title={'Update thành công!'}/>,
+                            { transition: Slide, hideProgressBar: true, autoClose: 2000 }
+                        )
+                    }
+                })
+            }
+
         }
     }
     // add mileStone
@@ -159,6 +220,8 @@ function ProjectInformation(props) {
                             <Input
                                 name='name'
                                 id='name'
+                                value={name}
+                                onChange={(e) => setName(e.target.value)}
                                 innerRef={register({ required: true })}
                                 className={classnames({ 'is-invalid': errors['name'] })}
                             />
@@ -178,6 +241,11 @@ function ProjectInformation(props) {
                                 name="type"
                                 value={type}
                                 onChange={settype}
+                                value={{ value: type, label: typeLable }}
+                                onChange={(e) => {
+                                    settype(e.id)
+                                    setTypeLable(e.label)
+                                }}
                                 options={projects.dataListProjectType}
                             />
                         </FormGroup>
@@ -186,7 +254,7 @@ function ProjectInformation(props) {
                             <span className='title'>Start:</span>
                             <Flatpickr
                                 value={startProject}
-                                onChange={date => setStartProject(date)}
+                                onChange={date => setStartProject(date[0])}
                                 className='form-control invoice-edit-input date-picker'
                             />
                         </FormGroup>
@@ -212,14 +280,14 @@ function ProjectInformation(props) {
                             <div >
                                 <div >
                                     {
-                                        milestone.map((m, i) => {
+                                        milestone && milestone.length > 0 && milestone.map((m, i) => {
                                             return (
                                                 <div className='d-flex' key={i}>
                                                     <div style={{ width: '100%' }}>
                                                         <Flatpickr
                                                             key={i}
                                                             value={m}
-                                                            onChange={date => editMilestones(date, i)}
+                                                            onChange={date =>  editMilestones(date, i)}
                                                             className='form-control invoice-edit-input date-picker mr-4 mb-2'
                                                         />
                                                     </div>
@@ -263,7 +331,11 @@ function ProjectInformation(props) {
                                 maxMenuHeight={220}
                                 name="name"
                                 value={customerId}
-                                onChange={setCustomer}
+                                value={{ value: customerId, label: lableCustomer }}
+                                onChange={(e) => {
+                                    setCustomerId(e.id)
+                                    setLableCustomer(e.label)
+                                }}
                                 options={projects.dataCustomer}
                             />
                         </FormGroup>
@@ -272,7 +344,7 @@ function ProjectInformation(props) {
                             <span className='title'>End:</span>
                             <Flatpickr
                                 value={endProject}
-                                onChange={date => setEndProject(date)}
+                                onChange={date => setEndProject(date[0])}
                                 className='form-control invoice-edit-input date-picker'
                             />
                         </FormGroup>
@@ -325,14 +397,19 @@ function ProjectInformation(props) {
                                 isClearable={true}
                                 maxMenuHeight={220}
                                 name="pmLead"
-                                value={pmLead}
                                 onChange={setPmLead}
-                                options={pmData}
+                                value={{ value: pmLead, label: lablePmLead }}
+
+                                onChange={(e) => {
+                                    setPmLead(e.id)
+                                    setLablePmLead(e.label)
+                                }}
+                                options={projects.dataListEmployee}
                             />
                         </FormGroup>
 
                         <FormGroup>
-                            <Label for='technologyStack'>Technologies</Label>
+                            <Label for='technologyStack'>Technologies </Label>
                             <div className="d-flex align-items-center">
                                 <Select
                                     isMulti
@@ -343,7 +420,9 @@ function ProjectInformation(props) {
                                     isSearchable={true}
                                     name="technologyStack"
                                     value={technologyStack}
-                                    onChange={setTechnologyStack}
+                                    onChange={(e) => {
+                                        setTechnologyStack(e)
+                                    }}
                                     options={projects.dataListProjectTechnology}
                                 />
                                 <FaPlusCircle size="25px" onClick={() => toggleAddFormTech('Technologies')} />
