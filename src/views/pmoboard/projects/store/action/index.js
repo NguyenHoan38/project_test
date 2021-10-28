@@ -59,7 +59,7 @@ export const getData = params => {
 export const getProject = id => {
   return async dispatch => {
     await axios
-      .get(`${DOMAIN}/resource/getResourceAllocation/${id}`)
+      .get(`${DOMAIN}/resource/getProjectInfo/${id}`)
       .then(response => {
         dispatch({
           type: 'GET_PROJECT',
