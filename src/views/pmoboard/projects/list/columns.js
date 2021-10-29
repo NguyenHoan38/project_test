@@ -169,8 +169,8 @@ export const columns = (showFormEdit) => {
         cell: row => {
           if (row) {
             return (
-              <Badge className='text-capitalize' color={statusObj[row.status].color} pill>
-                {statusObj[row.status].name}
+              <Badge className='text-capitalize' color={statusObj[row?.statusDetail?.id].color} pill>
+                {row?.statusDetail?.name}
               </Badge>
             )
           }

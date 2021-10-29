@@ -4,13 +4,15 @@ import { Link } from 'react-router-dom'
 import Avatar from '@components/avatar'
 
 // ** Store & Actions
-import { getResourceAllocation, deleteUser } from '../store/action'
+import { getResourceAllocation, deleteUser, deleteResourceAllocation } from '../store/action'
 import { store } from '@store/storeConfig/store'
 import moment from 'moment'
 import { useDispatch, useSelector } from 'react-redux'
 // ** Third Party Components
-import { Badge, UncontrolledDropdown, DropdownToggle, DropdownMenu, DropdownItem, Input } from 'reactstrap'
-import { Slack, User, Settings, Database, Edit2, MoreVertical, FileText, Trash2, Archive } from 'react-feather'
+import { Badge, UncontrolledDropdown, DropdownToggle, DropdownMenu, DropdownItem, Input, UncontrolledTooltip } from 'reactstrap'
+import { Slack, User, Settings, Database, Edit2, MoreVertical, FileText, Trash2, Archive, Edit } from 'react-feather'
+import ToastContent from '@components/common/ToastContent'
+import { toast, Slide } from 'react-toastify'
 import { projectColor } from '../constant'
 const statusObj = {
   1: { color: 'light-success', name: 'active' },
@@ -21,6 +23,7 @@ const toggleSidebar = () => setSidebarOpen(!sidebarOpen)
 
 export const columns = (showFormEdit) => {
    // ** Store Vars
+   const projects = useSelector(state => state.projects)
    const dispatch = useDispatch()
   function showFormProject(id) {
     dispatch(
@@ -28,8 +31,35 @@ export const columns = (showFormEdit) => {
     )
     showFormEdit(id)
   }
+  const deleteResource = (id) => {
+    dispatch(
+      deleteResourceAllocation({projectId:projects.dataProject?.id, employeeId:id})
+    ).then(res => {
+      if (res && res.data && res.data && res.data.success) {
+          dispatch(getResourceAllocation(projects.dataProject?.id))
+          toast.success(
+              <ToastContent title={'Successful delete!'} />,
+              { transition: Slide, hideProgressBar: true, autoClose: 2000 }
+          )
+      }
+  })
+  }
   return (
     [
+      {
+        name: 'Actions',
+        minWidth: '100px',
+        cell: row => <div>     
+        <Edit size={14}  onClick={() => showFormProject(row.id)} className='mr-50 '   id='positionBottom'/>
+        <UncontrolledTooltip placement='bottom' target='positionBottom'>
+         Edit
+        </UncontrolledTooltip>
+        <Trash2 size={14} onClick={() => deleteResource(row.id) } className='mr-50' id='delete'/>
+        <UncontrolledTooltip placement='bottom' target='delete'>
+         delete
+        </UncontrolledTooltip>
+           </div>
+      },
       {
         name: 'Employee',
         minWidth: '150px',
@@ -42,7 +72,7 @@ export const columns = (showFormEdit) => {
         minWidth: '150px',
         selector: 'mainHeadcount',
         sortable: true,
-        cell: row => <p className="text-center w-100 mr-5"> <Input className='ml-0' type="checkbox"    /> </p>  
+        cell: row => <p className="text-center w-100 mr-5"> <Input className='ml-0' type="checkbox"   checked={row.mainHeadcount === 1} /> </p>  
       },
       {
         name: 'Shadow for ',
@@ -63,7 +93,7 @@ export const columns = (showFormEdit) => {
         minWidth: '150px',
         selector: 'role',
         sortable: true,
-        cell: row => <span className='text-capitalize'>{row.role}</span>
+        cell: row => <span className='text-capitalize'>{row.roleDetail.name}</span>
       },
       {
         name: 'Duration',
@@ -78,40 +108,7 @@ export const columns = (showFormEdit) => {
               </div>
             )
           }
-      },
-      {
-        name: 'Actions',
-        minWidth: '100px',
-        cell: row => (
-          <UncontrolledDropdown>
-            <DropdownToggle tag='div' className='btn btn-sm'>
-              <MoreVertical size={14} className='cursor-pointer' />
-            </DropdownToggle>
-            <DropdownMenu right>
-              <DropdownItem
-                tag={Link}
-                to={`/apps/user/view/${row.id}`}
-                className='w-100'
-                onClick={() => store.dispatch(getUser(row.id))}
-              >
-                <FileText size={14} className='mr-50' />
-                <span className='align-middle'>Details</span>
-              </DropdownItem>
-              <DropdownItem
-                to={`/apps/user/edit/${row.id}`}
-                className='w-100'
-                onClick={() => showFormProject(row.id)}
-              >
-                <Archive size={14} className='mr-50' />
-                <span className='align-middle'>Edit</span>
-              </DropdownItem>
-              <DropdownItem className='w-100' onClick={() => store.dispatch(deleteUser(row.id))}>
-                <Trash2 size={14} className='mr-50' />
-                <span className='align-middle'>Delete</span>
-              </DropdownItem>
-            </DropdownMenu>
-          </UncontrolledDropdown>
-        )
       }
+
     ])
 }

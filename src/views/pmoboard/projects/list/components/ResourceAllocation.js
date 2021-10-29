@@ -11,7 +11,7 @@ import { FaTrash, FaPlusCircle, FaCheck } from 'react-icons/fa'
 import '../../../../../assets/scss/projects/styleResourceAllocation.scss'
 import { Button, FormGroup, Label, FormText, Form, Input, TabContent, TabPane, Nav, NavItem, NavLink, Card, CardTitle, CardText, Row, Col, CustomInput } from 'reactstrap'
 import { useSelector, useDispatch } from 'react-redux'
-import { addResourceAllocation, editResourceAllocation, setDataResourceAllocation } from '../../store/action'
+import { addResourceAllocation, editResourceAllocation, setDataResourceAllocation, getResourceAllocation  } from '../../store/action'
 import ToastContent from '@components/common/ToastContent'
 import { toast, Slide } from 'react-toastify'
 import { isObjEmpty } from '@utils'
@@ -80,13 +80,13 @@ function ResourceAllocation(props) {
     const setForm = () => {
         setEmployeeId(null)
         setEmployeeLabel(null)
-        setResourceAllocationID(null)
+        setResourceAllocationID(0)
         setRole(null)
         setStartDate(null)
         setEndDate(null)
         setMainHeadcount(null)
         setShadowId(null)
-        setEffortValue(null)
+        setEffortValue(0)
         setNote(null)
     }
     const handleAddFormClick = () => {
@@ -121,7 +121,7 @@ function ResourceAllocation(props) {
             if (resourceAllocationID === 0) {
                 dispatch(
                     addResourceAllocation({
-                        projectId: 3,
+                        projectId: projects.dataProject?.id,
                         employeeId,
                         role,
                         shadowId: shadowId?.id,
@@ -130,21 +130,22 @@ function ResourceAllocation(props) {
                         startDate,
                         endDate,
                         note
-                    }).then(res => {
-                        if (res && res.data && res.data && res.data.success) {
-                            props.hideSidebar()
-                            dispatch(getAllData())
-                            toast.success(
-                                <ToastContent title={'Successful new creation!'} />,
-                                { transition: Slide, hideProgressBar: true, autoClose: 2000 }
-                            )
-                        }
                     })
-                )
+                ).then(res => {
+                    if (res && res.data && res.data && res.data.success) {
+                        setCheckFomAdd(!checkFomAdd)
+                        dispatch(getResourceAllocation(projects.dataProject?.id))
+                        toast.success(
+                            <ToastContent title={'Successful new creation!'} />,
+                            { transition: Slide, hideProgressBar: true, autoClose: 2000 }
+                        )
+                    }
+                })
             } else {
                 dispatch(
                     editResourceAllocation({
-                        projectId: 3,
+                        id: resourceAllocationID,
+                        projectId: projects.dataProject?.id,
                         employeeId,
                         role,
                         shadowId: shadowId?.id,
@@ -154,7 +155,16 @@ function ResourceAllocation(props) {
                         endDate,
                         note
                     })
-                )
+                ).then(res => {
+                    if (res && res.data && res.data && res.data.success) {
+                        setCheckFomAdd(!checkFomAdd)
+                        dispatch(getResourceAllocation(projects.dataProject?.id))
+                        toast.success(
+                            <ToastContent title={'Successful new creation!'} />,
+                            { transition: Slide, hideProgressBar: true, autoClose: 2000 }
+                        )
+                    }
+                })
             }
 
         }
@@ -211,7 +221,7 @@ function ResourceAllocation(props) {
                                         setRole(e.id)
                                         setLabelRole(e.label)
                                     }}
-                                    options={employeeIdData}
+                                    options={projects.dataListRoleEmployee}
                                 />
                             </FormGroup>
                         </div>
@@ -220,7 +230,7 @@ function ResourceAllocation(props) {
                                 <span className='title'>Form:</span>
                                 <Flatpickr
                                     value={startDate}
-                                    onChange={date => setStartDate(date)}
+                                    onChange={date => setStartDate(date[0])}
                                     className='form-control invoice-edit-input date-picker'
                                 />
                             </FormGroup>
@@ -230,7 +240,7 @@ function ResourceAllocation(props) {
                                 <span className='title'>To:</span>
                                 <Flatpickr
                                     value={endDate}
-                                    onChange={date => setEndDate(date)}
+                                    onChange={date => setEndDate(date[0])}
                                     className='form-control invoice-edit-input date-picker'
                                 />
                             </FormGroup>
@@ -255,6 +265,7 @@ function ResourceAllocation(props) {
                                     name="shadowId"
                                     value={shadowId}
                                     onChange={(e) => setShadowId(e)}
+                                    disabled={true}
                                     options={projects.dataListEmployee.map((project, index) => ({
                                         ...project,
                                         id: project.id,
