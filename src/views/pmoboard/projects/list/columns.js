@@ -162,7 +162,9 @@ export const columns = (showFormEdit) => {
         name: 'Mile stone',
         minWidth: '150px',
         sortable: true,
-        cell: row => <span className='text-capitalize'>{moment(row.mileStone).format('MM-DD-YYYY')}</span>
+        cell: row => <span className='text-capitalize'>{row.mileStone.map((m, i) => {
+          return <span className="d-block">{moment(m).format('MM-DD-YYYY')}</span> 
+        })}</span>
       },
       {
         name: 'Duration',

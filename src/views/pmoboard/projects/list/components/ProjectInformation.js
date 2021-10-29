@@ -405,7 +405,7 @@ function ProjectInformation(props) {
                                                         <Flatpickr
                                                             key={i}
                                                             value={m}
-                                                            onChange={date => editMilestones(date, i)}
+                                                            onChange={date => editMilestones(date[0], i)}
                                                             className='form-control invoice-edit-input date-picker mr-4 mb-2'
                                                         />
                                                     </div>
