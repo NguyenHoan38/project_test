@@ -1,18 +1,19 @@
 // ** React Imports
 import Avatar from '@components/avatar'
 
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useState, useLayoutEffect } from 'react'
 import DataTable from 'react-data-table-component'
 import { Archive, ChevronDown, FileText, MoreVertical, Trash2 } from 'react-feather'
 import { useDispatch, useSelector } from 'react-redux'
-import { Link } from 'react-router-dom'
+import { Link, useLocation } from 'react-router-dom'
 import { Badge, Card, DropdownItem, DropdownMenu, DropdownToggle, UncontrolledDropdown } from 'reactstrap'
 // ** Store & Actions
-import { getAllData, getData, getEmployee, resetEmployee, getEmployees, getFilteredEmployees, getEmployeeSkills, getEmployeeRoles } from '../store/action'
+import { getEmployee, resetEmployee, getEmployees, getFilteredEmployees, getEmployeeSkills, getEmployeeRoles } from '../store/action'
 import ListEditEmployee from './ListEditEmployee'
 import ListHeader from './ListHeader'
 import FormatFns from '@src/utility/FormatFns'
 import join from 'lodash.join'
+
 
 // ** Styles
 import '@styles/react/libs/react-select/_react-select.scss'
@@ -21,6 +22,7 @@ import '@styles/react/libs/tables/react-dataTable-component.scss'
 const EmployeesList = () => {
   // ** Store Vars
   const dispatch = useDispatch()
+  const location = useLocation()
   const store = useSelector(state => state.employees)
 
   // ** States
@@ -34,31 +36,31 @@ const EmployeesList = () => {
   const [skills, setSkills] = useState([])
 
   const handleOnChangeRowsPerPage = async (perPage, page) => {
-    dispatch(
-      getData({
-        page: currentPage,
-        perPage,
-        role: currentRole.value,
-        currentPlan: currentPlan.value,
-        status: currentStatus.value,
-        q: searchTerm
-      })
-    )
-    setRowsPerPage(perPage)
+    // dispatch(
+    //   getData({
+    //     page: currentPage,
+    //     perPage,
+    //     role: currentRole.value,
+    //     currentPlan: currentPlan.value,
+    //     status: currentStatus.value,
+    //     q: searchTerm
+    //   })
+    // )
+    // setRowsPerPage(perPage)
   }
 
   const handleOnChangePage = (page) => {
-    dispatch(
-      getData({
-        page: page + 1,
-        perPage: rowsPerPage,
-        role: currentRole.value,
-        currentPlan: currentPlan.value,
-        status: currentStatus.value,
-        q: searchTerm
-      })
-    )
-    setCurrentPage(page + 1)
+    // dispatch(
+    //   getData({
+    //     page: page + 1,
+    //     perPage: rowsPerPage,
+    //     role: currentRole.value,
+    //     currentPlan: currentPlan.value,
+    //     status: currentStatus.value,
+    //     q: searchTerm
+    //   })
+    // )
+    // setCurrentPage(page + 1)
   }
 
   const handleOnSearch = (searchTerm) => {
@@ -79,7 +81,7 @@ const EmployeesList = () => {
     }))
     dispatch(getEmployeeSkills())
     dispatch(getEmployeeRoles())
-  }, [dispatch])
+  }, [dispatch, location.pathname])
 
   // ** Function in get data on rows per page
   const handlePerPage = e => {
