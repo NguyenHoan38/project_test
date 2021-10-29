@@ -16,7 +16,8 @@ import { toast, Slide } from 'react-toastify'
 import { projectColor } from '../constant'
 const statusObj = {
   1: { color: 'light-success', name: 'active' },
-  2: { color: 'light-secondary', name: 'closed' }
+  2: { color: 'light-secondary', name: 'Onhold' },
+  2: { color: 'light-secondary', name: 'Closed' }
 }
 // ** Function to toggle sidebar
 const toggleSidebar = () => setSidebarOpen(!sidebarOpen)
@@ -187,7 +188,7 @@ export const columns = (showFormEdit) => {
           if (row) {
             return (
               <Badge className='text-capitalize' color={statusObj[row?.statusDetail?.id].color} pill>
-                {row?.statusDetail?.name}
+                {statusObj[row?.statusDetail?.id].name}
               </Badge>
             )
           }
