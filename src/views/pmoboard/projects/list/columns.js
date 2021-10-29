@@ -169,7 +169,7 @@ export const columns = (showFormEdit) => {
         minWidth: '150px',
         selector: 'mileStone',
         sortable: true,
-        cell: row => <span className='text-capitalize'>{row.mileStone}</span>
+        cell: row => <span className='text-capitalize'>{moment(row.mileStone).format('MM-DD-YYYY')}</span>
       },
       {
         name: 'Duration',

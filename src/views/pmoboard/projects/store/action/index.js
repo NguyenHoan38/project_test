@@ -103,7 +103,7 @@ export const getResourceAllocation = id => {
 export const getResourceAllocationById = id => {
   return async dispatch => {
     await axios
-      .get(`${DOMAIN}/resource/getResourceAllocationById/${id}`)
+      .get(`${DOMAIN}/resource/getResourceAllocationById?id=${id}`)
       .then(response => {
         dispatch({
           type: 'GET_RESOURCE_ALLOCATIONBYID',

@@ -96,8 +96,8 @@ function ResourceAllocation(props) {
         setForm()
     }
     useEffect(() => {
-        if (projects.dataResourceAllocation[0]?.id) {
-            const { assign, effort, endDate, id, mainHeadcount, note, role, shadow, startDate } = projects.dataResourceAllocation[0]
+        if (projects.dataResourceAllocationByID[0]?.id) {
+            const { assign, effort, endDate, id, mainHeadcount, note, role, shadow, startDate } = projects.dataResourceAllocationByID[0]
             // const technologyNew = technology.map(res => { return { ...res, value: res.id, label: res.name } })
             // const domainsNew = domain.map(res => { return { ...res, value: res.id, label: res.name } })
             setEmployeeId(assign?.id)
@@ -111,7 +111,7 @@ function ResourceAllocation(props) {
             setEffortValue(effort)
             setNote(note)
         }
-    }, [projects.dataResourceAllocation])
+    }, [projects.dataResourceAllocationByID])
     const showFormEdit = (id) => {
         setCheckFomAdd(true)
     }
@@ -248,8 +248,11 @@ function ResourceAllocation(props) {
                         <div className='col-6'>
                             <FormGroup >
                                 <label className='title mr-4 w-100'> Main Headcount:</label>
-                                <Input className='ml-0' type="checkbox" di />
-                                <CustomInput type='checkbox' id='user-1' label='' value={mainHeadcount} onChange={date => setMainHeadcount(date.target.checked ? 1 : 0)} />
+                                <CustomInput  type='checkbox' id='user-1' label='' checked={mainHeadcount === 1} value={mainHeadcount} onChange={date => {
+                                    setMainHeadcount(date.target.checked ? 1 : 0)
+                                    setShadowId(null)
+                                    
+                                    } } />
                             </FormGroup>
                         </div>
                         <div className='col-6'>
@@ -264,8 +267,11 @@ function ResourceAllocation(props) {
                                     maxMenuHeight={220}
                                     name="shadowId"
                                     value={shadowId}
-                                    onChange={(e) => setShadowId(e)}
-                                    disabled={true}
+                                    onChange={(e) => {
+                                        setShadowId(e)
+                                        setMainHeadcount(0)
+                                    } }
+                                    isDisabled={ mainHeadcount === 1}
                                     options={projects.dataListEmployee.map((project, index) => ({
                                         ...project,
                                         id: project.id,
@@ -290,7 +296,7 @@ function ResourceAllocation(props) {
                         <div className='col-12'>
                             <FormGroup>
                                 <Label for="exampleText">Note</Label>
-                                <Input type="textarea" cols="50" rows="4" name="text" id="exampleText" value={note} onChange={(e) => setNote(e.target.value)} />
+                                <Input type="textarea"  rows="4" name="text" id="exampleText" value={note} onChange={(e) => setNote(e.target.value)} />
                             </FormGroup>
                         </div>
                     </div>
