@@ -18,10 +18,10 @@ import { useDispatch, useSelector } from 'react-redux'
 // fake data
 const typeData = [
     { value: 1, label: 'Active' },
-    { value: 2, label: 'In-active' },
-    { value: 3, label: 'Onboarding' },
-    { value: 4, label: 'Off Board' }
+    { value: 2, label: 'Onhold' },
+    { value: 3, label: 'Onhold' }
 ]
+
 const customerData = [
     { value: 1, label: 'Kern AG' },
     { value: 2, label: 'Baby Philson' },
