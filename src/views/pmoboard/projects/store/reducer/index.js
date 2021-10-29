@@ -9,13 +9,17 @@ const initialState = {
   dataListProjectType: [],
   dataListEmployee: [],
   dataListProjectTechnology: [],
-  dataListProjectDomain: []
+  dataListProjectDomain: [],
+  dataResourceAllocation: {},
+  dataListRoleEmployee: []
 }
 
 const projects = (state = initialState, action) => {
   switch (action.type) {
     case 'GET_ALL_DATA':
       return { ...state, allData: action.data }
+    case 'GET_LIST_ROLE_EMPLOYEE':
+      return { ...state, dataListRoleEmployee: action.data.map(res => { return { ...res, value: res.id, label: res.name } }) }  
     case 'GET_DATA':
       return {
         ...state,
@@ -25,6 +29,9 @@ const projects = (state = initialState, action) => {
       }
     case 'GET_PROJECT':
       return { ...state, dataProject: action.data }
+    case 'GET_RESOURCE_ALLOCATION':
+        return { ...state, dataResourceAllocation: action.data }
+       
     case 'GET_CUSTOMER':
       return {
         ...state, dataCustomer: action.data.map(res => { return { ...res, value: res.id, label: res.name } })

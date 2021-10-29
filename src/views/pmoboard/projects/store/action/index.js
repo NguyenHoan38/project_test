@@ -1,5 +1,23 @@
 import axios from 'axios'
 import {DOMAIN} from './../../../../../constant'
+
+export const setDataResourceAllocation = () => {
+  return async dispatch => {
+    dispatch({
+      type: 'GET_RESOURCE_ALLOCATION',
+      data: {}
+    })
+  }
+}
+export const setDataProject = () => {
+  return async dispatch => {
+    dispatch({
+      type: 'GET_PROJECT',
+      data: {}
+    })
+  }
+}
+
 export const getAllData = () => {
   return async dispatch => {
     await axios
@@ -59,7 +77,7 @@ export const getData = params => {
 export const getProject = id => {
   return async dispatch => {
     await axios
-      .get(`${DOMAIN}/resource/getResourceAllocation/${id}`)
+      .get(`${DOMAIN}/resource/getProjectInfo/${id}`)
       .then(response => {
         dispatch({
           type: 'GET_PROJECT',
@@ -125,6 +143,20 @@ export const getCustomer = () => {
   }
 }
 
+export const getListEmployeeRole = () => {
+  return async dispatch => {
+    await axios
+      .get(`${DOMAIN}/resource/getListEmployeeRole`)
+      .then(response => {
+        dispatch({
+          type: 'GET_LIST_ROLE_EMPLOYEE',
+          data: response.data
+        })
+      })
+      .catch(err => console.log(err))
+  }
+}
+
 // ** Add new project
 export const addProject = project => {
   return async dispatch => {
@@ -133,6 +165,15 @@ export const addProject = project => {
       return res
   }
 }
+
+export const editResourceAllocation = project => {
+  return async dispatch => {
+    const res = await axios
+      .post(`${DOMAIN}/resource/editResourceAllocation`, project)
+      return res
+  }
+}
+
 export const updateProject = project => {
   return async dispatch => {
     const res = await axios
@@ -143,44 +184,39 @@ export const updateProject = project => {
 
 export const addProjectTechnology = project => {
   return async dispatch => {
-    await axios
+    const res = await axios
       .post(`${DOMAIN}/resource/addProjectTechnology`, project)
-      .then(response => {
-        // dispatch({
-        //   type: 'GET_USER',
-        //   selectedUser: response.data.user
-        // })
-      })
-      .catch(err => console.log(err))
+      return res
   }
 }
 
 export const addResourceAllocation = params => {
-  console.log('param pram', params)
   return async dispatch => {
-    await axios
-      .post(`${DOMAIN}/resource/getResourceAllocation`, params)
-      .then(response => {
-        // dispatch({
-        //   type: 'GET_USER',
-        //   selectedUser: response.data.user
-        // })
-      })
-      .catch(err => console.log(err))
+    const res = await axios
+      .post(`${DOMAIN}/resource/addResourceAllocation`, params)
+      return res
   }
 }
+export const deleteResourceAllocation = params => {
+  return async dispatch => {
+    const res = await axios
+      .post(`${DOMAIN}/resource/deleteResourceAllocation`, params)
+      return res
+  }
+}
+export const deleteProject = params => {
+  return async dispatch => {
+    const res = await axios
+      .post(`${DOMAIN}/resource/deleteProject`, params)
+      return res
+  }
+}
+
 export const addProjectDomain = project => {
   return async dispatch => {
-  return  await axios
+    const res = await axios
       .post(`${DOMAIN}/resource/addProjectDomain`, project)
-      .then(response => {
-        // dispatch({
-        //   type: 'GET_USER',
-        //   selectedUser: response.data.user
-        // })
-        return response
-      })
-      .catch(err => console.log(err))
+      return res
   }
 }
 

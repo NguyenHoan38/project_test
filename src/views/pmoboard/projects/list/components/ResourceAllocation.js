@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import PropTypes from 'prop-types'
 import { useForm } from 'react-hook-form'
 import classnames from 'classnames'
@@ -9,9 +9,11 @@ import DataTable from 'react-data-table-component'
 import { columns } from '../../constant/columns'
 import { FaTrash, FaPlusCircle, FaCheck } from 'react-icons/fa'
 import '../../../../../assets/scss/projects/styleResourceAllocation.scss'
-import { Button, FormGroup, Label, FormText, Form, Input, TabContent, TabPane, Nav, NavItem, NavLink, Card, CardTitle, CardText, Row, Col } from 'reactstrap'
+import { Button, FormGroup, Label, FormText, Form, Input, TabContent, TabPane, Nav, NavItem, NavLink, Card, CardTitle, CardText, Row, Col, CustomInput } from 'reactstrap'
 import { useSelector, useDispatch } from 'react-redux'
-import { addResourceAllocation } from '../../store/action'
+import { addResourceAllocation, editResourceAllocation, setDataResourceAllocation, getResourceAllocation  } from '../../store/action'
+import ToastContent from '@components/common/ToastContent'
+import { toast, Slide } from 'react-toastify'
 import { isObjEmpty } from '@utils'
 const employeeIdData = [
     { value: 1, label: 'T&M' },
@@ -65,34 +67,106 @@ function ResourceAllocation(props) {
     const [technologyStack, setTechnologyStack] = useState(null)
     const [effortValue, setEffortValue] = useState(0)
     const [role, setRole] = useState(null)
+    const [labelRole, setLabelRole] = useState(null)
     const [startDate, setStartDate] = useState('')
     const [endDate, setEndDate] = useState('')
     const [mainHeadcount, setMainHeadcount] = useState(0)
     const [shadowId, setShadowId] = useState(null)
     const [note, setNote] = useState('')
+    const [resourceAllocationID, setResourceAllocationID] = useState(0)
     // get store
     const projects = useSelector(state => state.projects)
     const { register, errors, handleSubmit } = useForm()
+    const setForm = () => {
+        setEmployeeId(null)
+        setEmployeeLabel(null)
+        setResourceAllocationID(0)
+        setRole(null)
+        setStartDate(null)
+        setEndDate(null)
+        setMainHeadcount(null)
+        setShadowId(null)
+        setEffortValue(0)
+        setNote(null)
+    }
     const handleAddFormClick = () => {
         setCheckFomAdd(!checkFomAdd)
+        setResourceAllocationID(0)
+        dispatch(setDataResourceAllocation)
+        setForm()
+    }
+    useEffect(() => {
+        if (projects.dataResourceAllocation[0]?.id) {
+            const { assign, effort, endDate, id, mainHeadcount, note, role, shadow, startDate } = projects.dataResourceAllocation[0]
+            // const technologyNew = technology.map(res => { return { ...res, value: res.id, label: res.name } })
+            // const domainsNew = domain.map(res => { return { ...res, value: res.id, label: res.name } })
+            setEmployeeId(assign?.id)
+            setEmployeeLabel(assign?.name)
+            setResourceAllocationID(id)
+            setRole(role)
+            setStartDate(startDate)
+            setEndDate(endDate)
+            setMainHeadcount(mainHeadcount)
+            setShadowId(shadow)
+            setEffortValue(effort)
+            setNote(note)
+        }
+    }, [projects.dataResourceAllocation])
+    const showFormEdit = (id) => {
+        setCheckFomAdd(true)
     }
 
     const onSubmit = values => {
-
         if (isObjEmpty(errors)) {
-            dispatch(
-                addResourceAllocation({
-                    projectId: 3,
-                    employeeId:employeeId.id,
-                    role,
-                    shadowId:shadowId.id,
-                    mainHeadcount,
-                    effort:effortValue,
-                    startDate,
-                    endDate,
-                    note
+            if (resourceAllocationID === 0) {
+                dispatch(
+                    addResourceAllocation({
+                        projectId: projects.dataProject?.id,
+                        employeeId,
+                        role,
+                        shadowId: shadowId?.id,
+                        mainHeadcount,
+                        effort: effortValue,
+                        startDate,
+                        endDate,
+                        note
+                    })
+                ).then(res => {
+                    if (res && res.data && res.data && res.data.success) {
+                        setCheckFomAdd(!checkFomAdd)
+                        dispatch(getResourceAllocation(projects.dataProject?.id))
+                        toast.success(
+                            <ToastContent title={'Successful new creation!'} />,
+                            { transition: Slide, hideProgressBar: true, autoClose: 2000 }
+                        )
+                    }
                 })
-            )
+            } else {
+                dispatch(
+                    editResourceAllocation({
+                        id: resourceAllocationID,
+                        projectId: projects.dataProject?.id,
+                        employeeId,
+                        role,
+                        shadowId: shadowId?.id,
+                        mainHeadcount,
+                        effort: effortValue,
+                        startDate,
+                        endDate,
+                        note
+                    })
+                ).then(res => {
+                    if (res && res.data && res.data && res.data.success) {
+                        setCheckFomAdd(!checkFomAdd)
+                        dispatch(getResourceAllocation(projects.dataProject?.id))
+                        toast.success(
+                            <ToastContent title={'Successful new creation!'} />,
+                            { transition: Slide, hideProgressBar: true, autoClose: 2000 }
+                        )
+                    }
+                })
+            }
+
         }
     }
     return (
@@ -113,16 +187,16 @@ function ResourceAllocation(props) {
                                     isClearable={true}
                                     maxMenuHeight={220}
                                     name="employeeId"
-                                    value={{value: employeeId, label: labelEmployee}}
+                                    value={{ value: employeeId, label: labelEmployee }}
                                     onChange={(e) => {
                                         setEmployeeId(e.id)
                                         setEmployeeLabel(e.label)
                                     }}
                                     // className={classnames({ 'is-invalid': errors['employeeId'] })}
                                     // innerRef={register({ required: true })}
-                                    options={projects.dataProject.map((project, index) => ({
+                                    options={projects.dataListEmployee.map((project, index) => ({
                                         ...project,
-                                        label: project.assign.name
+                                        label: project.name
                                     }))}
                                 />
                             </FormGroup>
@@ -142,9 +216,12 @@ function ResourceAllocation(props) {
                                     isClearable={true}
                                     maxMenuHeight={220}
                                     name="role"
-                                    value={role}
-                                    onChange={setRole}
-                                    options={employeeIdData}
+                                    value={{ value: role, label: labelRole }}
+                                    onChange={(e) => {
+                                        setRole(e.id)
+                                        setLabelRole(e.label)
+                                    }}
+                                    options={projects.dataListRoleEmployee}
                                 />
                             </FormGroup>
                         </div>
@@ -153,7 +230,7 @@ function ResourceAllocation(props) {
                                 <span className='title'>Form:</span>
                                 <Flatpickr
                                     value={startDate}
-                                    onChange={date => setStartDate(date)}
+                                    onChange={date => setStartDate(date[0])}
                                     className='form-control invoice-edit-input date-picker'
                                 />
                             </FormGroup>
@@ -163,7 +240,7 @@ function ResourceAllocation(props) {
                                 <span className='title'>To:</span>
                                 <Flatpickr
                                     value={endDate}
-                                    onChange={date => setEndDate(date)}
+                                    onChange={date => setEndDate(date[0])}
                                     className='form-control invoice-edit-input date-picker'
                                 />
                             </FormGroup>
@@ -171,7 +248,8 @@ function ResourceAllocation(props) {
                         <div className='col-6'>
                             <FormGroup >
                                 <label className='title mr-4 w-100'> Main Headcount:</label>
-                                <Input className='ml-0' type="checkbox" value={mainHeadcount} onChange={date => setMainHeadcount(date)} />
+                                <Input className='ml-0' type="checkbox" di />
+                                <CustomInput type='checkbox' id='user-1' label='' value={mainHeadcount} onChange={date => setMainHeadcount(date.target.checked ? 1 : 0)} />
                             </FormGroup>
                         </div>
                         <div className='col-6'>
@@ -187,10 +265,11 @@ function ResourceAllocation(props) {
                                     name="shadowId"
                                     value={shadowId}
                                     onChange={(e) => setShadowId(e)}
-                                    options={projects.dataProject.map((project, index) => ({
+                                    disabled={true}
+                                    options={projects.dataListEmployee.map((project, index) => ({
                                         ...project,
                                         id: project.id,
-                                        label: project.assign.name
+                                        label: project.name
                                     }))}
                                 />
                             </FormGroup>
@@ -222,7 +301,7 @@ function ResourceAllocation(props) {
                             <Button type='submit' className='mr-1' color='primary'>
                                 Save
                             </Button>
-                            <Button type='reset' color='secondary' outline >
+                            <Button type='reset' color='secondary' outline onClick={() => handleAddFormClick()} >
                                 Cancel
                             </Button>
                         </>
@@ -242,8 +321,8 @@ function ResourceAllocation(props) {
                         paginationServer={false}
                         header={false}
                         pagination={false}
-                        columns={columns(() => console.log('222222222222222'))}
-                        data={projects.dataProject}
+                        columns={columns((id) => showFormEdit(id))}
+                        data={projects.dataResourceAllocation}
                         // sortIcon={<ChevronDown />}
                         className='react-dataTable'
                         paginationComponent={false}
@@ -260,14 +339,14 @@ function ResourceAllocation(props) {
                     />
                 </div>
             </div>
-            <div style={{ float: 'right' }}>
+            {/* <div style={{ float: 'right' }}>
                 <Button type='submit' className='mr-1' color='primary'>
                     Save
                 </Button>
                 <Button type='reset' color='secondary' outline >
                     Cancel
                 </Button>
-            </div>
+            </div> */}
 
         </div>
     )

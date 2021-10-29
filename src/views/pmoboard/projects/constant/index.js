@@ -40,7 +40,7 @@ export const columns = [
   export const  projectColor = [
     {
       id:1,
-      background:' Black'
+      background:' Teal'
     },
     {
       id:2,
@@ -53,8 +53,23 @@ export const columns = [
     {
       id:4,
       background:'Blue'
+    },
+    {
+      id:5,
+      background:'Maroon'
+    },
+    {
+      id:6,
+      background:'Olive'
+    },
+    {
+      id:7,
+      background:'Purple'
+    },
+    {
+      id:8,
+      background:'Navy'
     }
-    
   ]
   export default {
     columns,
