@@ -65,7 +65,7 @@ const renderCollaborators = row => {
       {
         row.collaborators.map((m, i) => {
           return (
-            <span className='text-capitalize pl-1' key={i}> {m.name} </span>
+            <span className='text-capitalize pl-1 d-block mt-1 mb-1' key={i}> {m.name} </span>
           )
         })
       }
@@ -196,7 +196,7 @@ export const columns = (showFormEdit) => {
       },
       {
         name: 'Collaborators',
-        minWidth: '150px',
+        minWidth: '250px',
         selector: 'collaborator',
         sortable: true,
         cell: row => renderCollaborators(row)
