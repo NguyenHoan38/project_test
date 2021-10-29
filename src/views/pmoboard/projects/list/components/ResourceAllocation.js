@@ -84,7 +84,7 @@ function ResourceAllocation(props) {
         setRole(null)
         setStartDate(null)
         setEndDate(null)
-        setMainHeadcount(null)
+        setMainHeadcount(0)
         setShadowId(null)
         setEffortValue(0)
         setNote(null)
@@ -125,7 +125,7 @@ function ResourceAllocation(props) {
                         employeeId,
                         role,
                         shadowId: shadowId?.id,
-                        mainHeadcount:mainHeadcount === null ? 0 : mainHeadcount,
+                        mainHeadcount,
                         effort: effortValue,
                         startDate,
                         endDate,
@@ -149,7 +149,7 @@ function ResourceAllocation(props) {
                         employeeId,
                         role,
                         shadowId: shadowId?.id,
-                        mainHeadcount:mainHeadcount === null ? 0 : mainHeadcount,
+                        mainHeadcount,
                         effort: effortValue,
                         startDate,
                         endDate,
@@ -290,7 +290,7 @@ function ResourceAllocation(props) {
                         <div className='col-12'>
                             <FormGroup>
                                 <Label for="exampleText">Note</Label>
-                                <Input type="textarea" name="text" id="exampleText" value={note} onChange={(e) => setNote(e.target.value)} />
+                                <Input type="textarea" cols="50" rows="4" name="text" id="exampleText" value={note} onChange={(e) => setNote(e.target.value)} />
                             </FormGroup>
                         </div>
                     </div>
