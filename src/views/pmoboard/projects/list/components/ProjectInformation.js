@@ -96,7 +96,6 @@ function ProjectInformation(props) {
             const { id, name, signal, color, projectType, customer, projectManager, startDate, endDate, technology, Milestones, statusDetail, domain } = projects.dataProject
             const technologyNew = technology.map(res => { return { ...res, value: res.id, label: res.name } })
             const domainsNew = domain.map(res => { return { ...res, value: res.id, label: res.name } })
-            console.log('statusDetail', statusDetail)
             setName(name)
             setprojectID(id)
             settype(projectType.id)
@@ -384,7 +383,7 @@ function ProjectInformation(props) {
                                 onChange={setStatus}
                                 value={{ value: status, label: lableStatus }}
                                 onChange={(e) => {
-                                    setStatus(e.id)
+                                    setStatus(e.value)
                                     setLableStatus(e.label)
                                 }}
                                 options={typeData}
