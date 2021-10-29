@@ -295,7 +295,7 @@ function ResourceAllocation(props) {
                         </div>
                     </div>
                 )}
-                <div className="d-flex justify-content-end mb-3 mt-3">
+                <div className="d-flex justify-content-end mb-2 mt-2">
                     {checkFomAdd ? (
                         <>
                             <Button type='submit' className='mr-1' color='primary'>
@@ -305,7 +305,7 @@ function ResourceAllocation(props) {
                                 Cancel
                             </Button>
                         </>
-                    ) : (<span className="rounded bg-primary text-white p-2" color="info" type='button' onClick={() => handleAddFormClick()} >Assign Employee <FaPlusCircle size="25px" /> </span>)}
+                    ) : (<span className="rounded bg-primary text-white p-assign" color="info" type='button' onClick={() => handleAddFormClick()} >Assign Employee <FaPlusCircle size="25px" /> </span>)}
 
                 </div>
             </Form>
