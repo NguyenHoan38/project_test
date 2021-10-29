@@ -157,7 +157,7 @@ const EmployeesList = () => {
     {
       name: 'Employee Name',
       minWidth: '297px',
-      selector: row => 'name',
+      selector: row => row.name,
       sortable: true,
       cell: row => {
         const { name } = row
@@ -176,21 +176,21 @@ const EmployeesList = () => {
     {
       name: 'Email',
       minWidth: '320px',
-      selector: row => 'email',
+      selector: row => row.email,
       sortable: true,
       cell: row => row.email
     },
     {
       name: 'Phone',
       minWidth: '172px',
-      selector: row => 'phone',
+      selector: row => row.phone,
       sortable: true,
       cell: row => row.phone
     },
     {
       name: 'Date',
       minWidth: '172px',
-      selector: row => 'dob',
+      selector: row => row.dob,
       sortable: true,
       cell: row => {
         const { dob } = row

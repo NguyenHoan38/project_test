@@ -168,7 +168,7 @@ const ListEditEmployee = (props) => {
         <Button color='primary'>
           Save
         </Button>
-        <Button color='primary' outline className="ml-1">
+        <Button color='primary' outline className="ml-1" onClick={onClose}>
           Cancel
         </Button>
       </SideBarFooter>
