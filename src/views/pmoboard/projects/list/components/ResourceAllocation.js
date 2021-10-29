@@ -11,7 +11,7 @@ import { FaTrash, FaPlusCircle, FaCheck } from 'react-icons/fa'
 import '../../../../../assets/scss/projects/styleResourceAllocation.scss'
 import { Button, FormGroup, Label, FormText, Form, Input, TabContent, TabPane, Nav, NavItem, NavLink, Card, CardTitle, CardText, Row, Col, CustomInput } from 'reactstrap'
 import { useSelector, useDispatch } from 'react-redux'
-import { addResourceAllocation, editResourceAllocation, setDataResourceAllocation, getResourceAllocation  } from '../../store/action'
+import { addResourceAllocation, editResourceAllocation, setDataResourceAllocation, getResourceAllocation, getAllData } from '../../store/action'
 import ToastContent from '@components/common/ToastContent'
 import { toast, Slide } from 'react-toastify'
 import { isObjEmpty } from '@utils'
@@ -135,6 +135,7 @@ function ResourceAllocation(props) {
                     if (res && res.data && res.data && res.data.success) {
                         setCheckFomAdd(!checkFomAdd)
                         dispatch(getResourceAllocation(projects.dataProject?.id))
+                        dispatch(getAllData())
                         toast.success(
                             <ToastContent title={'Successful new creation!'} />,
                             { transition: Slide, hideProgressBar: true, autoClose: 2000 }
@@ -158,6 +159,7 @@ function ResourceAllocation(props) {
                 ).then(res => {
                     if (res && res.data && res.data && res.data.success) {
                         setCheckFomAdd(!checkFomAdd)
+                        dispatch(getAllData())
                         dispatch(getResourceAllocation(projects.dataProject?.id))
                         toast.success(
                             <ToastContent title={'Successful new creation!'} />,

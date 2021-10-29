@@ -98,7 +98,7 @@ export const columns = (showFormEdit) => {
       deleteProject({id})
     ).then(res => {
       if (res && res.data && res.data && res.data.success) {
-          dispatch(getAllData(projects.dataProject?.id))
+          dispatch(getAllData())
           toast.success(
               <ToastContent title={'Successful delete!'} />,
               { transition: Slide, hideProgressBar: true, autoClose: 2000 }

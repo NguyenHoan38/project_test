@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom'
 import Avatar from '@components/avatar'
 
 // ** Store & Actions
-import { getResourceAllocation, deleteUser, deleteResourceAllocation, getResourceAllocationById } from '../store/action'
+import { getResourceAllocation, deleteUser, deleteResourceAllocation, getResourceAllocationById, getAllData } from '../store/action'
 import { store } from '@store/storeConfig/store'
 import moment from 'moment'
 import { useDispatch, useSelector } from 'react-redux'
@@ -37,6 +37,7 @@ export const columns = (showFormEdit) => {
     ).then(res => {
       if (res && res.data && res.data && res.data.success) {
           dispatch(getResourceAllocation(projects.dataProject?.id))
+          dispatch(getAllData())
           toast.success(
               <ToastContent title={'Successful delete!'} />,
               { transition: Slide, hideProgressBar: true, autoClose: 2000 }
