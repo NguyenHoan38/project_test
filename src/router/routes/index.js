@@ -14,7 +14,7 @@ import PmoBoardRoutes from './PmoBoards'
 const TemplateTitle = 'Pmo Board Sphinx'
 
 // ** Default Route
-const DefaultRoute = '/dashboard/ecommerce'
+const DefaultRoute = '/pmoboard/projects/list'
 
 // ** Merge Routes
 const Routes = [
