@@ -47,7 +47,7 @@ const ListHeader = (props) => {
               type='text'
               value={searchTerm}
               onChange={handleOnSearchChange}
-              placeHolder="Name or email"
+              placeholder="Name or email"
             />
           </div>
         </SearchWrapper>
@@ -56,7 +56,6 @@ const ListHeader = (props) => {
             <Label className='mb-0' for='select-skills'>Skills:</Label>
             <Select
               theme={selectThemeColors}
-              // defaultValue={[colorOptions[2], colorOptions[3]]}
               onChange={handleOnChangeSelect}
               value={skills}
               isMulti
