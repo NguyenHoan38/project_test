@@ -40,7 +40,7 @@ export const columns = [
   export const  projectColor = [
     {
       id:1,
-      background:' Yellow'
+      background:' Teal'
     },
     {
       id:2,

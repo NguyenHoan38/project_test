@@ -15,7 +15,6 @@ const ModalExample = ({ modal, toggle, titleForm }) => {
     }
     const externalCloseBtn = <button className="close" style={{ position: 'absolute', top: '15px', right: '15px' }} onClick={toggle}>&times;</button>
     const onSubmit = values => {
-        alert('2')
         if (isObjEmpty(errors)) {
             if (titleForm === 'Industry') {
                 dispatch(
