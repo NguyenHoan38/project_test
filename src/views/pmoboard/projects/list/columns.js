@@ -17,7 +17,7 @@ import { projectColor } from '../constant'
 const statusObj = {
   1: { color: 'light-success', name: 'active' },
   2: { color: 'light-secondary', name: 'Onhold' },
-  2: { color: 'light-secondary', name: 'Closed' }
+  3: { color: 'light-secondary', name: 'Closed' }
 }
 // ** Function to toggle sidebar
 const toggleSidebar = () => setSidebarOpen(!sidebarOpen)

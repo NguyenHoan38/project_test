@@ -19,7 +19,7 @@ import { useDispatch, useSelector } from 'react-redux'
 const typeData = [
     { value: 1, label: 'Active' },
     { value: 2, label: 'Onhold' },
-    { value: 3, label: 'Onhold' }
+    { value: 3, label: 'Closed' }
 ]
 
 const customerData = [
