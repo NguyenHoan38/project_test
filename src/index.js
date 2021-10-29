@@ -41,7 +41,7 @@ import './assets/scss/style.scss'
 // ** Service Worker
 import * as serviceWorker from './serviceWorker'
 //React Bootstrap Range Slider
-import 'bootstrap/dist/css/bootstrap.css' // or include from a CDN
+// import 'bootstrap/dist/css/bootstrap.css' // or include from a CDN
 import 'react-bootstrap-range-slider/dist/react-bootstrap-range-slider.css'
 // ** Lazy load app
 const LazyApp = lazy(() => import('./App'))

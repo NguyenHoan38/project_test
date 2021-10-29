@@ -1,15 +1,4 @@
-import {
-  Mail,
-  MessageSquare,
-  CheckSquare,
-  Calendar,
-  FileText,
-  Circle,
-  ShoppingCart,
-  User,
-  Sunset,
-  Users
-} from "react-feather"
+import { Circle, Sunset, User, Users } from "react-feather"
 
 export default [
   {
@@ -69,13 +58,6 @@ export default [
     id: "employees",
     title: "Employees",
     icon: <Users size={20} />,
-    children: [
-      {
-        id: "list",
-        title: "List",
-        icon: <Circle size={12} />,
-        navLink: "/pmoboard/employees/list"
-      }
-    ]
+    navLink: "/pmoboard/employees/list"
   }
 ]

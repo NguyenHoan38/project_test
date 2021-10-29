@@ -678,7 +678,7 @@ mock.onPost('/apps/users/add-user').reply(config => {
 
 // GET Updated DATA
 mock.onGet('/api/users/list/data').reply(config => {
-  const { q = '', perPage = 10, page = 1, role = null, currentPlan = null, status = null } = config
+  const { q = '', perPage = 10, page = 1, role = null, roles = [], currentPlan = null, status = null } = config
 
   /* eslint-disable  */
   const queryLowered = q.toLowerCase()
@@ -687,7 +687,8 @@ mock.onGet('/api/users/list/data').reply(config => {
       (user.username.toLowerCase().includes(queryLowered) || user.fullName.toLowerCase().includes(queryLowered)) &&
       user.role === (role || user.role) &&
       user.currentPlan === (currentPlan || user.currentPlan) &&
-      user.status === (status || user.status)
+      user.status === (status || user.status) &&
+      (roles.length ? roles.includes(user.role) : true)
   )
   /* eslint-enable  */
 
