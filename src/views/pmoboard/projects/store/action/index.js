@@ -204,6 +204,13 @@ export const deleteResourceAllocation = params => {
       return res
   }
 }
+export const deleteProject = params => {
+  return async dispatch => {
+    const res = await axios
+      .post(`${DOMAIN}/resource/deleteProject`, params)
+      return res
+  }
+}
 
 export const addProjectDomain = project => {
   return async dispatch => {

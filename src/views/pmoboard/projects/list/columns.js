@@ -4,13 +4,15 @@ import { Link } from 'react-router-dom'
 import Avatar from '@components/avatar'
 
 // ** Store & Actions
-import { getProject, deleteUser } from '../store/action'
+import { getProject, deleteUser, deleteProject, getAllData } from '../store/action'
 import { store } from '@store/storeConfig/store'
 import moment from 'moment'
 import { useDispatch, useSelector } from 'react-redux'
 // ** Third Party Components
 import { Badge, UncontrolledDropdown, DropdownToggle, DropdownMenu, DropdownItem, UncontrolledTooltip, Button } from 'reactstrap'
 import { Slack, User, Settings, Database, Edit2, MoreVertical, FileText, Trash2, Archive, Edit } from 'react-feather'
+import ToastContent from '@components/common/ToastContent'
+import { toast, Slide } from 'react-toastify'
 import { projectColor } from '../constant'
 const statusObj = {
   1: { color: 'light-success', name: 'active' },
@@ -82,11 +84,26 @@ const renderDuration = row => {
 export const columns = (showFormEdit) => {
   // ** Store Vars
   const dispatch = useDispatch()
+  const projects = useSelector(state => state.projects)
+  
   function showFormProject(id) {
     dispatch(
       getProject(id)
     )
     showFormEdit(id)
+  }
+  const delteProject = (id) => {
+    dispatch(
+      deleteProject({id})
+    ).then(res => {
+      if (res && res.data && res.data && res.data.success) {
+          dispatch(getAllData(projects.dataProject?.id))
+          toast.success(
+              <ToastContent title={'Successful delete!'} />,
+              { transition: Slide, hideProgressBar: true, autoClose: 2000 }
+          )
+      }
+  })
   }
   return (
     [
@@ -94,12 +111,12 @@ export const columns = (showFormEdit) => {
         name: 'Actions',
         minWidth: '100px',
         cell: row => <div>     
-      <Edit onClick={() => showFormProject(row.id)} size={14} className='mr-50 '   id='positionBottom'/>
+      <Edit onClick={() => showFormProject(row.id)} size={14} className='mr-50 '  id='positionBottom'/>
       <UncontrolledTooltip placement='bottom' target='positionBottom'>
        Edit
       </UncontrolledTooltip>
-      <Trash2 size={14} className='mr-50' id='delete'/>
-      <UncontrolledTooltip placement='bottom' target='delete'>
+      <Trash2 onClick={() => delteProject(row.id)} size={14} className='mr-50' id='delete'/>
+      <UncontrolledTooltip  placement='bottom' target='delete'>
        delete
       </UncontrolledTooltip>
          </div>

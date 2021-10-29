@@ -68,6 +68,7 @@ function ProjectInformation(props) {
     const [signal, setSignal] = useState('')
     const [color, setColor] = useState('#ffff')
     const [status, setStatus] = useState(null)
+    const [lableStatus, setLableStatus] = useState(null)
     const [pmLead, setPmLead] = useState(null)
     const [lablePmLead, setLablePmLead] = useState(null)
     const [technologyStack, setTechnologyStack] = useState(null)
@@ -92,9 +93,10 @@ function ProjectInformation(props) {
 
     useEffect(() => {
         if (projects.dataProject?.id) {
-            const { id, name, signal, color, projectType, customer, projectManager, startDate, endDate, technology, Milestones, status, domain } = projects.dataProject
+            const { id, name, signal, color, projectType, customer, projectManager, startDate, endDate, technology, Milestones, statusDetail, domain } = projects.dataProject
             const technologyNew = technology.map(res => { return { ...res, value: res.id, label: res.name } })
             const domainsNew = domain.map(res => { return { ...res, value: res.id, label: res.name } })
+            console.log('statusDetail', statusDetail)
             setName(name)
             setprojectID(id)
             settype(projectType.id)
@@ -108,7 +110,8 @@ function ProjectInformation(props) {
             setStartProject(startDate)
             setEndProject(endDate)
             setTechnologyStack([...technologyNew])
-            setStatus(typeData.find(item => item.value === status))
+            setStatus(typeData.find(item => item.value === statusDetail.id).value)
+            setLableStatus(typeData.find(item => item.value === statusDetail.id).label)
             setIndustry(domainsNew)
         }
 
@@ -138,7 +141,7 @@ function ProjectInformation(props) {
                         type,
                         startDate: startProject,
                         endDate: endProject,
-                        status: status && status.value ? status.value : 0,
+                        status,
                         pmId: pmLead,
                         mileStone: milestone,
                         customerId,
@@ -165,7 +168,7 @@ function ProjectInformation(props) {
                         signal,
                         startDate: startProject,
                         endDate: endProject,
-                        status: status.value,
+                        status,
                         pmId: pmLead.value,
                         mileStone: milestone,
                         customerId: customerId.value,
@@ -177,7 +180,7 @@ function ProjectInformation(props) {
                         props.hideSidebar()
                         dispatch(getAllData())
                         toast.success(
-                            <ToastContent title={'Update thành công!'} />,
+                            <ToastContent title={'Update Successful!'} />,
                             { transition: Slide, hideProgressBar: true, autoClose: 2000 }
                         )
                     }
@@ -330,9 +333,7 @@ function ProjectInformation(props) {
                                 isClearable={true}
                                 maxMenuHeight={220}
                                 name="pmLead"
-                                onChange={setPmLead}
                                 value={{ value: pmLead, label: lablePmLead }}
-
                                 onChange={(e) => {
                                     setPmLead(e.id)
                                     setLablePmLead(e.label)
@@ -367,9 +368,10 @@ function ProjectInformation(props) {
                     <div className='col-4'>
 
                         <FormGroup>
-                            <Label for='type'>
+                            {/* <Label for='type'>
                                 Status
-                            </Label>
+                            </Label> */}
+                             <span className='title'>Status:</span>
                             <Select
                                 id="type"
                                 className="basic-single"
@@ -380,6 +382,11 @@ function ProjectInformation(props) {
                                 name="type"
                                 value={status}
                                 onChange={setStatus}
+                                value={{ value: status, label: lableStatus }}
+                                onChange={(e) => {
+                                    setStatus(e.id)
+                                    setLableStatus(e.label)
+                                }}
                                 options={typeData}
                             />
                         </FormGroup>
