@@ -100,6 +100,20 @@ export const getResourceAllocation = id => {
       .catch(err => console.log(err))
   }
 }
+export const getResourceAllocationById = id => {
+  return async dispatch => {
+    await axios
+      .get(`${DOMAIN}/resource/getResourceAllocationById/${id}`)
+      .then(response => {
+        dispatch({
+          type: 'GET_RESOURCE_ALLOCATIONBYID',
+          data: response.data.data
+        })
+      })
+      .catch(err => console.log(err))
+  }
+}
+
 // get Project Type
 export const getListProjectType = () => {
   return async dispatch => {
