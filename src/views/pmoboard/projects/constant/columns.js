@@ -33,7 +33,7 @@ export const columns = (showFormEdit) => {
   }
   const deleteResource = (id) => {
     dispatch(
-      deleteResourceAllocation({projectId:projects.dataProject?.id, employeeId:id})
+      deleteResourceAllocation({id})
     ).then(res => {
       if (res && res.data && res.data && res.data.success) {
           dispatch(getResourceAllocation(projects.dataProject?.id))
