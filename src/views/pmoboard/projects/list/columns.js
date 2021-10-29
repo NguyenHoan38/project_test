@@ -125,56 +125,48 @@ export const columns = (showFormEdit) => {
       {
         name: 'Project',
         minWidth: '150px',
-        selector: 'projectName',
         sortable: true,
         cell: row => renderProjectName(row)
       },
       {
         name: 'Project Type',
         minWidth: '150px',
-        selector: 'projectType',
         sortable: true,
         cell: row => <span className='text-capitalize'>{row.projectType.name}</span>
       },
       {
         name: 'Customer',
         minWidth: '150px',
-        selector: 'customer',
         sortable: true,
         cell: row => <span className='text-capitalize'>{row.customer.name}</span>
       },
       {
         name: 'PM/Lead',
         minWidth: '150px',
-        selector: 'pmLead',
         sortable: true,
         cell: row => <span className='text-capitalize'>{row?.projectManager?.name}</span>
       },
       {
         name: 'Technology stack',
         minWidth: '150px',
-        selector: 'technologyStack',
         sortable: true,
         cell: row => renderTechnologyStack(row)
       },
       {
         name: 'Domain/Industry',
         minWidth: '150px',
-        selector: 'domainIndustry',
         sortable: true,
         cell: row => renderDomainIndustry(row)
       },
       {
         name: 'Mile stone',
         minWidth: '150px',
-        selector: 'mileStone',
         sortable: true,
         cell: row => <span className='text-capitalize'>{moment(row.mileStone).format('MM-DD-YYYY')}</span>
       },
       {
         name: 'Duration',
         minWidth: '150px',
-        selector: 'duration',
         sortable: true,
         cell: row => renderDuration(row)
         // <span className='text-capitalize'>{row.duration}</span>
@@ -182,7 +174,6 @@ export const columns = (showFormEdit) => {
       {
         name: 'Status',
         minWidth: '138px',
-        selector: 'status',
         sortable: true,
         cell: row => {
           if (row) {
@@ -197,7 +188,6 @@ export const columns = (showFormEdit) => {
       {
         name: 'Collaborators',
         minWidth: '250px',
-        selector: 'collaborator',
         sortable: true,
         cell: row => renderCollaborators(row)
       }
