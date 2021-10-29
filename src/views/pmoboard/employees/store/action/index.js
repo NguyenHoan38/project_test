@@ -1,10 +1,9 @@
-import axiosN from '@src/utility/axios'
-import axios from 'axios'
+import axios from '@src/utility/axios'
 
 // Get all employees
 export const getEmployees = (params) => {
   return async dispatch => {
-    await axiosN.get('/resource/getListEmployee', params).then(response => {
+    await axios.get('/resource/getListEmployee', params).then(response => {
       dispatch({
         type: 'GET_EMPLOYEES',
         allData: response.data,
@@ -20,7 +19,7 @@ export const getEmployees = (params) => {
 // Get employees skills
 export const getEmployeeSkills = () => {
   return async dispatch => {
-    await axiosN.get('/resource/getListEmployeeSkill').then(response => {
+    await axios.get('/resource/getListEmployeeSkill').then(response => {
       dispatch({
         type: 'GET_EMPLOYEE_SKILLS',
         skills: response
@@ -34,7 +33,7 @@ export const getEmployeeSkills = () => {
 // Get employees roles
 export const getEmployeeRoles = () => {
   return async dispatch => {
-    await axiosN.get('/resource/getListEmployeeRole').then(response => {
+    await axios.get('/resource/getListEmployeeRole').then(response => {
       dispatch({
         type: 'GET_EMPLOYEE_ROLES',
         roles: response
@@ -47,7 +46,7 @@ export const getEmployeeRoles = () => {
 
 // ** Get Employee
 export const getEmployee = employeeId => {
-  return async (dispatch, getState) => {
+  return (dispatch, getState) => {
     const employees = getState().employees.allData
     const employee = employees.find(({ id }) => employeeId === id)
     dispatch({

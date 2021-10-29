@@ -132,9 +132,7 @@ const EmployeesList = () => {
               <MoreVertical size={14} className='cursor-pointer' />
             </DropdownToggle>
             <DropdownMenu right>
-              <DropdownItem
-                disabled
-              >
+              <DropdownItem disabled>
                 <FileText size={14} className='mr-50' />
                 <span className='align-middle'>Details</span>
               </DropdownItem>
@@ -181,23 +179,6 @@ const EmployeesList = () => {
       cell: row => row.email
     },
     {
-      name: 'Phone',
-      minWidth: '172px',
-      selector: row => row.phone,
-      sortable: true,
-      cell: row => row.phone
-    },
-    {
-      name: 'Date',
-      minWidth: '172px',
-      selector: row => row.dob,
-      sortable: true,
-      cell: row => {
-        const { dob } = row
-        return FormatFns.formatDateTime(new Date(dob), 'P')
-      }
-    },
-    {
       name: 'Skills',
       minWidth: '320px',
       selector: row => 'skills',
@@ -234,6 +215,23 @@ const EmployeesList = () => {
           return roles[0].empRoleName
         }
         return 'N/A'
+      }
+    },
+    {
+      name: 'Phone',
+      minWidth: '172px',
+      selector: row => row.phone,
+      sortable: true,
+      cell: row => row.phone
+    },
+    {
+      name: 'Date',
+      minWidth: '172px',
+      selector: row => row.dob,
+      sortable: true,
+      cell: row => {
+        const { dob } = row
+        return FormatFns.formatDateTime(new Date(dob), 'P')
       }
     },
     {
