@@ -18,7 +18,6 @@ const ListEditEmployee = (props) => {
   const [email, setEmail] = useState('')
   const [phone, setPhone] = useState('')
   const [roles, setRoles] = useState([])
-  console.log(roles)
 
   useEffect(() => {
     if (selectedEmployee) {

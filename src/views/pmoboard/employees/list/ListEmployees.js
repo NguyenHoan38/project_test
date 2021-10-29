@@ -202,7 +202,10 @@ const EmployeesList = () => {
       sortable: true,
       cell: row => {
         const { skills } = row
-        return join(skills.map(({ skillName }) => skillName), ', ')
+        if (skills.length) {
+          return join(skills.map(({ skillName }) => skillName), ', ')
+        }
+        return 'N/A'
       }
     },
     {
@@ -212,7 +215,10 @@ const EmployeesList = () => {
       sortable: true,
       cell: row => {
         const { projects } = row
-        return join(projects.map(({ projectName }) => projectName), ', ')
+        if (projects.length) {
+          return join(projects.map(({ projectName }) => projectName), ', ')
+        }
+        return 'N/A'
       }
     },
     {
@@ -220,7 +226,13 @@ const EmployeesList = () => {
       minWidth: '138px',
       selector: row => 'role',
       sortable: true,
-      cell: row => row.roles[0].empRoleName
+      cell: row => {
+        const { roles } = row
+        if (roles.length) {
+          return roles[0].empRoleName
+        }
+        return 'N/A'
+      }
     },
     {
       name: 'Status',
@@ -231,7 +243,7 @@ const EmployeesList = () => {
         const { statusDetail: { name } } = row
         return (
           <Badge className='text-capitalize' color='light-success' pill>
-            {name}
+            {name ?? 'N/A'}
           </Badge>
         )
       }
