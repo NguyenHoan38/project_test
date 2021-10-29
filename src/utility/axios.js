@@ -1,7 +1,7 @@
 import axios from 'axios'
 
 const instance = axios.create({
-  baseURL: 'http://210.245.85.229:9994/api',
+  baseURL: 'https://dlinh.online:9994/api',
   headers: {
     'Content-Type': 'application/json'
   }

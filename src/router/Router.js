@@ -153,20 +153,20 @@ const Router = () => {
                             /*eslint-disable */
                             {...(route.appLayout
                               ? {
-                                  appLayout: route.appLayout
-                                }
+                                appLayout: route.appLayout
+                              }
                               : {})}
                             {...(route.meta
                               ? {
-                                  routeMeta: route.meta
-                                }
+                                routeMeta: route.meta
+                              }
                               : {})}
                             {...(route.className
                               ? {
-                                  wrapperClass: route.className
-                                }
+                                wrapperClass: route.className
+                              }
                               : {})}
-                            /*eslint-enable */
+                          /*eslint-enable */
                           >
                             <FinalRoute route={route} {...props} />
                           </LayoutWrapper>
@@ -182,6 +182,8 @@ const Router = () => {
       )
     })
   }
+
+  // basename={process.env.REACT_APP_BASENAME}
 
   return (
     <AppRouter >

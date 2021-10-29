@@ -1,15 +1,41 @@
+import Sidebar from '@components/sidebar'
 import { yupResolver } from '@hookform/resolvers/yup'
-import { useForm, Controller } from 'react-hook-form'
-import Select from 'react-select'
+import { selectThemeColors } from '@utils'
+import { useEffect, useState } from 'react'
+import Flatpickr from 'react-flatpickr'
+import { Controller, useForm } from 'react-hook-form'
 import { useSelector } from 'react-redux'
-import { Button, Form, FormFeedback, FormGroup, Input, Label, Modal, ModalBody, ModalFooter, ModalHeader, CustomInput } from 'reactstrap'
+import Select from 'react-select'
+import { Button, CustomInput, Form, FormFeedback, FormGroup, Input, Label } from 'reactstrap'
 import styled from 'styled-components'
 import * as yup from 'yup'
-import { selectThemeColors } from '@utils'
 
 const ListEditEmployee = (props) => {
   const { open, onClose } = props
   const selectedEmployee = useSelector(state => state.employees.selectedEmployee)
+  const employeeRoles = useSelector(state => state.employees.roles)
+  const [dob, setDob] = useState(new Date())
+  const [email, setEmail] = useState('')
+  const [phone, setPhone] = useState('')
+  const [roles, setRoles] = useState([])
+
+  useEffect(() => {
+    if (selectedEmployee) {
+      const { dob, email, phone } = selectedEmployee
+      setDob(new Date(dob))
+      setEmail(email)
+      setPhone(phone)
+
+    }
+  }, [selectedEmployee])
+
+  useEffect(() => {
+    setRoles(employeeRoles)
+  }, [employeeRoles])
+
+  const handleOnChangeDob = (date) => {
+    setDob(date)
+  }
 
   const SignupSchema = yup.object().shape({
     email: yup.string().email().required(),
@@ -28,105 +54,94 @@ const ListEditEmployee = (props) => {
     return null
   }
 
-  const { fullName, email } = selectedEmployee
+  const { name, id: employeeCode } = selectedEmployee
 
-  const roleOptions = [
-    { value: 'spm', label: 'SPM' },
-    { value: 'devops', label: 'DevOps' },
-    { value: 'developer', label: 'Developer' },
-    { value: 'qalead', label: 'QA Lead' },
-    { value: 'tester', label: 'Tester' },
-    { value: 'ba', label: 'BA' },
-    { value: 'intern', label: 'Intern' }
-  ]
+  const roleOptions = roles.map(({ id, name }) => ({ value: id, label: name }))
 
   const locationOptions = [
-    { value: 'inhouse', label: 'In House' },
-    { value: 'onsite', label: 'On site' }
-  ]
-
-  const levelOptions = [
-    { value: 'level1', label: 'Level 1' },
-    { value: 'level2', label: 'Level 2' },
-    { value: 'level3', label: 'Level 3' }
+    { value: 1, label: 'In House' },
+    { value: 2, label: 'On site' }
   ]
 
   return (
-    <Modal
-      scrollable
-      isOpen={open && selectedEmployee}
-      toggle={onClose}
+    <Sidebar
+      size='lg'
+      open={open && selectedEmployee}
+      title='Employee Infomation'
+      headerClassName='mb-1'
+      contentClassName='pt-0'
+      toggleSidebar={onClose}
+      width={50}
     >
-      <ModalHeader toggle={onClose}>
-        Employee Infomation
-      </ModalHeader>
-      <ModalBody>
-        <FormWrapper onSubmit={handleSubmit(onSubmit)}>
+      <Form onSubmit={handleSubmit(onSubmit)}>
+        <FormContainer>
           <FormGroup>
-            <Label for='firstName'>Employees</Label>
+            <Label for='name'>Employees</Label>
             <Input
-              id='firstName'
-              name='firstName'
+              id='name'
+              name='name'
               innerRef={register({ required: true })}
-              invalid={errors.firstName && true}
-              placeholder='Bruce'
+              invalid={errors.name && true}
+              value={name}
             />
-            {errors && errors.firstName && <FormFeedback>{errors.firstName.message}</FormFeedback>}
+            {errors && errors.name && <FormFeedback>{errors.name.message}</FormFeedback>}
           </FormGroup>
           <FormGroup>
-            <Label for='lastName'>Code</Label>
+            <Label for='employeeCode'>Code</Label>
             <Input
-              id='lastName'
-              name='lastName'
+              id='employeeCode'
+              name='employeeCode'
               innerRef={register({ required: true })}
-              invalid={errors.lastName && true}
-              placeholder='Wayne'
+              invalid={errors.employeeCode && true}
+              value={employeeCode}
+              disabled
             />
-            {errors && errors.lastName && <FormFeedback>{errors.lastName.message}</FormFeedback>}
+            {errors && errors.employeeCode && <FormFeedback>{errors.employeeCode.message}</FormFeedback>}
           </FormGroup>
           <FormGroup>
-            <Label for='email'>Date</Label>
+            <Label for='dob'>Date</Label>
+            <Flatpickr
+              className='form-control'
+              innerRef={register({ required: true })}
+              value={dob}
+              id='dob'
+              name="dob"
+              onChange={handleOnChangeDob}
+            />
+            {errors && errors.dob && <FormFeedback>{errors.dob.message}</FormFeedback>}
+          </FormGroup>
+          <FormGroup>
+            <Label for='email'>Email</Label>
             <Input
-              type='email'
-              name='email'
               id='email'
+              name='email'
               innerRef={register({ required: true })}
               invalid={errors.email && true}
-              placeholder='bruce.wayne@email.com'
+              value={email}
             />
             {errors && errors.email && <FormFeedback>{errors.email.message}</FormFeedback>}
           </FormGroup>
           <FormGroup>
-            <Label for='password'>Email</Label>
+            <Label for='phone'>Phone</Label>
             <Input
-              type='password'
-              id='password'
-              name='password'
+              id='phone'
+              name='phone'
               innerRef={register({ required: true })}
-              invalid={errors.password && true}
-              placeholder='password'
+              invalid={errors.phone && true}
+              value={phone}
             />
-            {errors && errors.password && <FormFeedback>{errors.password.message}</FormFeedback>}
+            {errors && errors.phone && <FormFeedback>{errors.phone.message}</FormFeedback>}
           </FormGroup>
+        </FormContainer>
+        <FormContainer>
           <FormGroup>
-            <Label for='firstName'>Phone</Label>
-            <Input
-              id='firstName'
-              name='firstName'
-              innerRef={register({ required: true })}
-              invalid={errors.firstName && true}
-              placeholder='Bruce'
-            />
-            {errors && errors.firstName && <FormFeedback>{errors.firstName.message}</FormFeedback>}
-          </FormGroup>
-          <FormGroup>
-            <Label for='react-select'>Role</Label>
+            <Label for='role'>Role</Label>
             <Controller
               isClearable
               as={Select}
-              id='react-select'
+              id='role'
               control={control}
-              name='ReactSelect'
+              name='role'
               options={roleOptions}
               className='react-select'
               classNamePrefix='select'
@@ -134,95 +149,42 @@ const ListEditEmployee = (props) => {
             />
           </FormGroup>
           <FormGroup>
-            <Label for='react-select'>Location</Label>
+            <Label for='location'>Location</Label>
             <Controller
               isClearable
               as={Select}
-              id='react-select'
+              id='location'
               control={control}
-              name='ReactSelect'
+              name='location'
               options={locationOptions}
               className='react-select'
               classNamePrefix='select'
               theme={selectThemeColors}
             />
           </FormGroup>
-        </FormWrapper>
-        <div className="p-1 border-primary rounded">
-          <SkillItemWrapper>
-            <CustomInput inline type='checkbox' id='exampleCustomCheckbox' defaultChecked label=".NET" />
-            <Controller
-              isClearable
-              as={Select}
-              id='react-select'
-              control={control}
-              name='ReactSelect'
-              options={levelOptions}
-              className='react-select'
-              classNamePrefix='select'
-              theme={selectThemeColors}
-            />
-          </SkillItemWrapper>
-          <SkillItemWrapper>
-            <CustomInput inline type='checkbox' id='exampleCustomCheckbox' defaultChecked label="Java" />
-            <Controller
-              isClearable
-              as={Select}
-              id='react-select'
-              control={control}
-              name='ReactSelect'
-              options={levelOptions}
-              className='react-select'
-              classNamePrefix='select'
-              theme={selectThemeColors}
-            />
-          </SkillItemWrapper>
-          <SkillItemWrapper>
-            <CustomInput inline type='checkbox' id='exampleCustomCheckbox' defaultChecked label="Project Management" />
-            <Controller
-              isClearable
-              as={Select}
-              id='react-select'
-              control={control}
-              name='ReactSelect'
-              options={levelOptions}
-              className='react-select'
-              classNamePrefix='select'
-              theme={selectThemeColors}
-            />
-          </SkillItemWrapper>
-        </div>
-        <div style={{ height: 300 }} />
-      </ModalBody>
-      <ModalFooter>
+        </FormContainer>
+      </Form>
+      <SideBarFooter>
         <Button color='primary'>
           Save
         </Button>
-        <Button color='primary' outline>
+        <Button color='primary' outline className="ml-1">
           Cancel
         </Button>
-      </ModalFooter>
-    </Modal>
+      </SideBarFooter>
+    </Sidebar>
   )
 }
 
-const FormWrapper = styled(Form)({
+const FormContainer = styled('div')({
   display: 'grid',
   gridTemplateColumns: 'repeat(2, 1fr)',
   columnGap: '1rem'
 })
 
-const SkillWrapper = styled('div')({
-
-})
-
-const SkillItemWrapper = styled('div')({
-  display: 'grid',
-  gridTemplateColumns: '1fr 1fr',
-  alignItems: 'center',
-  '& > * + *': {
-    marginTop: '1rem'
-  }
+const SideBarFooter = styled('div')({
+  display: 'flex',
+  justifyContent: 'flex-end'
 })
 
 export default ListEditEmployee

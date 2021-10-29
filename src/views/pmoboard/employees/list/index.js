@@ -1,5 +1,5 @@
 // ** User List Component
-import Table from './Table'
+import ListEmployees from './ListEmployees'
 
 // ** Styles
 import '@styles/react/apps/app-users.scss'
@@ -7,7 +7,7 @@ import '@styles/react/apps/app-users.scss'
 const List = () => {
   return (
     <div className='app-user-list'>
-      <Table />
+      <ListEmployees />
     </div>
   )
 }
