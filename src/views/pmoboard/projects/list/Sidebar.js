@@ -18,7 +18,7 @@ import { useForm } from 'react-hook-form'
 import { Button, FormGroup, Label, FormText, Form, Input, TabContent, TabPane, Nav, NavItem, NavLink, Card, CardTitle, CardText, Row, Col } from 'reactstrap'
 
 // ** Store & Actions
-import { addProject, getCustomer, getResourceAllocation, getListProjectType,  getListEmployee, getListProjectTechnology, getListProjectDomain } from '../store/action'
+import { addProject, getCustomer, getResourceAllocation, getListProjectType,  getListEmployee, getListProjectTechnology, getListProjectDomain, getListEmployeeRole } from '../store/action'
 import { useDispatch, useSelector } from 'react-redux'
 import ColorPicker from '@components/pick-color'
 
@@ -116,7 +116,7 @@ const SidebarNewProjects = ({ open, toggleSidebar, isNewProject }) => {
   const projects = useSelector(state => state.projects)
   // ** Store Vars
   const dispatch = useDispatch()
-
+console.log('2222222222222222222222222222222', projects)
   // GOI API
   // get Customer
   useEffect(() => {
@@ -137,6 +137,9 @@ const SidebarNewProjects = ({ open, toggleSidebar, isNewProject }) => {
   useEffect(() => {
     dispatch(getListProjectDomain())
   }, [dispatch, projects.dataListProjectDomain.length])
+  useEffect(() => {
+    dispatch(getListEmployeeRole())
+  }, [dispatch, projects.dataListRoleEmployee.length])
   //GOI API
 
   const { register, errors, handleSubmit } = useForm()

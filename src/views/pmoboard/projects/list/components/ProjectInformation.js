@@ -17,11 +17,11 @@ import { addProject, updateProject, getAllData } from '../../store/action'
 import { useDispatch, useSelector } from 'react-redux'
 // fake data
 const typeData = [
-    { value: 1, label: 'Close' },
-    { value: 2, label: 'To do' },
-    { value: 3, label: 'In Progress' }
+    { value: 1, label: 'Active' },
+    { value: 2, label: 'In-active' },
+    { value: 3, label: 'Onboarding' },
+    { value: 4, label: 'Off Board' }
 ]
-
 const customerData = [
     { value: 1, label: 'Kern AG' },
     { value: 2, label: 'Baby Philson' },
@@ -135,7 +135,7 @@ function ProjectInformation(props) {
                         name,
                         color: checkColor,
                         signal,
-                        type: type?.value,
+                        type,
                         startDate: startProject,
                         endDate: endProject,
                         status: status && status.value ? status.value : 0,
@@ -160,7 +160,7 @@ function ProjectInformation(props) {
                     updateProject({
                         id: projectID,
                         name,
-                        type: type.value,
+                        type,
                         color: checkColor,
                         signal,
                         startDate: startProject,

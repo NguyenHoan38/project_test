@@ -143,6 +143,20 @@ export const getCustomer = () => {
   }
 }
 
+export const getListEmployeeRole = () => {
+  return async dispatch => {
+    await axios
+      .get(`${DOMAIN}/resource/getListEmployeeRole`)
+      .then(response => {
+        dispatch({
+          type: 'GET_LIST_ROLE_EMPLOYEE',
+          data: response.data
+        })
+      })
+      .catch(err => console.log(err))
+  }
+}
+
 // ** Add new project
 export const addProject = project => {
   return async dispatch => {
@@ -151,6 +165,7 @@ export const addProject = project => {
       return res
   }
 }
+
 export const editResourceAllocation = project => {
   return async dispatch => {
     const res = await axios
@@ -176,19 +191,20 @@ export const addProjectTechnology = project => {
 }
 
 export const addResourceAllocation = params => {
-  console.log('param pram', params)
   return async dispatch => {
-    await axios
+    const res = await axios
       .post(`${DOMAIN}/resource/addResourceAllocation`, params)
-      .then(response => {
-        // dispatch({
-        //   type: 'GET_USER',
-        //   selectedUser: response.data.user
-        // })
-      })
-      .catch(err => console.log(err))
+      return res
   }
 }
+export const deleteResourceAllocation = params => {
+  return async dispatch => {
+    const res = await axios
+      .post(`${DOMAIN}/resource/deleteResourceAllocation`, params)
+      return res
+  }
+}
+
 export const addProjectDomain = project => {
   return async dispatch => {
     const res = await axios
