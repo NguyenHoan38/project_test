@@ -1,82 +1,61 @@
-import axios from '@src/utility/axios'
+import axios from '@src/utility/axios';
+import keyBy from 'lodash.keyby';
 
-// Get all employees
-export const getEmployees = (params) => {
-  return async dispatch => {
-    await axios.get('/resource/getListEmployee', params).then(response => {
-      dispatch({
-        type: 'GET_EMPLOYEES',
-        allData: response.data,
-        total: response.data.length
-      })
-    }).catch((error) => {
-      console.log(error)
-    })
-  }
-}
+// Get employee details
+export const getEmployeeDetails = (params) => async (dispatch) => {
+  try {
+    const [employees, skills, roles] = await Promise.all([
+      axios.get('/resource/getListEmployee', params),
+      axios.get('/resource/getListEmployeeSkill'),
+      axios.get('/resource/getListEmployeeRole'),
+    ]);
 
-
-// Get employees skills
-export const getEmployeeSkills = () => {
-  return async dispatch => {
-    await axios.get('/resource/getListEmployeeSkill').then(response => {
-      dispatch({
-        type: 'GET_EMPLOYEE_SKILLS',
-        skills: response
-      })
-    }).catch((error) => {
-      console.log(error)
-    })
-  }
-}
-
-// Get employees roles
-export const getEmployeeRoles = () => {
-  return async dispatch => {
-    await axios.get('/resource/getListEmployeeRole').then(response => {
-      dispatch({
-        type: 'GET_EMPLOYEE_ROLES',
-        roles: response
-      })
-    }).catch((error) => {
-      console.log(error)
-    })
-  }
-}
-
-// ** Get Employee
-export const getEmployee = employeeId => {
-  return (dispatch, getState) => {
-    const employees = getState().employees.allData
-    const employee = employees.find(({ id }) => employeeId === id)
     dispatch({
-      type: 'GET_EMPLOYEE',
-      selectedEmployee: employee
-    })
+      type: 'GET_EMPLOYEE_DETAILS',
+      payload: {
+        byId: keyBy(employees.data, 'id'),
+        allIds: Object.keys(employees.data),
+        total: employees.data.length,
+        skills: keyBy(skills, 'id'),
+        roles,
+      },
+    });
+  } catch (error) {
+    console.log(error);
   }
-}
+};
 
-// ** Get data with filter
-export const getFilteredEmployees = params => {
-  const { searchTerm = '', perPage = 10, page = 1, skills = [] } = params
+// ** Get employees with filter
+export const getFilteredEmployees = (params) => {
+  const { searchTerm = '', perPage = 10, page = 1, skills = [] } = params;
   return async (dispatch, getState) => {
-    const employees = getState().employees.allData
+    const employees = Object.values(getState().employees.byId);
+
     const filteredEmployees = employees.filter((user) => {
-      const { name, skills: userSkills, email } = user
-      const nameMatched = name.toLowerCase().includes(searchTerm.toLowerCase())
-      const skillsMatched = skills.length ? userSkills.some(({ skillId }) => skills.includes(skillId)) : true
-      const emailMatched = email.toLowerCase().includes(searchTerm.toLowerCase())
-      return (nameMatched || emailMatched) && skillsMatched
-    })
+      const { name, skills: userSkills, email } = user;
+      const searchTermFormatted = searchTerm.toLowerCase();
+
+      // Search for name
+      const nameMatched = name.toLowerCase().includes(searchTermFormatted);
+
+      // Search for email
+      const emailMatched = email.toLowerCase().includes(searchTermFormatted);
+
+      // Search for skills
+      const skillsMatched = skills.length
+        ? userSkills.some((skill) => {
+            const { skillId } = skill;
+            return skills.includes(String(skillId)); // Tạm thời
+          })
+        : true;
+
+      return (nameMatched || emailMatched) && skillsMatched;
+    });
+
     dispatch({
       type: 'GET_FILTERED_EMPLOYEES',
       data: filteredEmployees,
-      total: filteredEmployees.length
-    })
-  }
-}
-
-export const resetEmployee = () => ({
-  type: 'GET_EMPLOYEE',
-  selectedEmployee: null
-})
+      total: filteredEmployees.length,
+    });
+  };
+};

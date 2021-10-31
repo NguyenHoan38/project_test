@@ -4,7 +4,7 @@
 const themeConfig = {
   app: {
     appName: 'Sphinx Insight',
-    appLogoImage: require('@src/assets/images/logo/logo.svg').default
+    appLogoImage: require('@src/assets/images/logo/logo.svg').default,
   },
   layout: {
     isRTL: false,
@@ -14,19 +14,19 @@ const themeConfig = {
     contentWidth: 'full', // full, boxed
     menu: {
       isHidden: false,
-      isCollapsed: false
+      isCollapsed: false,
     },
     navbar: {
       // ? For horizontal menu, navbar type will work for navMenu type
-      type: 'floating', // static , sticky , floating, hidden
-      backgroundColor: 'white' // BS color options [primary, success, etc]
+      type: 'sticky', // static , sticky , floating, hidden
+      backgroundColor: 'white', // BS color options [primary, success, etc]
     },
     footer: {
-      type: 'static' // static, sticky, hidden
+      type: 'static', // static, sticky, hidden
     },
     customizer: true,
-    scrollTop: true // Enable scroll to top button
-  }
-}
+    scrollTop: true, // Enable scroll to top button
+  },
+};
 
-export default themeConfig
+export default themeConfig;
