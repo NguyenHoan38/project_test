@@ -43,7 +43,7 @@ module.exports = {
     'implicit-arrow-linebreak': ['error', 'beside'],
     // indent: ['error', 4],
     'keyword-spacing': 'error',
-    'multiline-ternary': ['error', 'never'],
+    // 'multiline-ternary': ['error', 'never'],
     // 'no-lonely-if': 'error',
     'no-mixed-operators': 'error',
     'no-multiple-empty-lines': ['error', { max: 2, maxEOF: 1 }],
