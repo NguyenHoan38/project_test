@@ -1,8 +1,8 @@
-import { X } from 'react-feather';
-import { Modal, ModalBody, ModalHeader } from 'reactstrap';
+import { X } from 'react-feather'
+import { Modal, ModalBody, ModalHeader } from 'reactstrap'
 
 const Sidebar = (props) => {
-  const { open, toggleSidebar, title, children } = props;
+  const { open, toggleSidebar, title, children } = props
 
   return (
     <Modal
@@ -27,7 +27,7 @@ const Sidebar = (props) => {
       </ModalHeader>
       <ModalBody className="flex-grow-1">{children}</ModalBody>
     </Modal>
-  );
-};
+  )
+}
 
-export default Sidebar;
+export default Sidebar

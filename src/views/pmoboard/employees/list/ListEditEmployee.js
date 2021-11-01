@@ -1,26 +1,19 @@
-import Avatar from '@components/avatar';
-import Sidebar from './ListSidebar';
-import { yupResolver } from '@hookform/resolvers/yup';
-import '@styles/react/libs/flatpickr/flatpickr.scss';
-import '@styles/react/libs/react-select/_react-select.scss';
-import { selectThemeColors } from '@utils';
-import classnames from 'classnames';
-import { memo, useEffect, useState } from 'react';
-import Flatpickr from 'react-flatpickr';
-import { Controller, useForm } from 'react-hook-form';
-import { useSelector } from 'react-redux';
-import Select from 'react-select';
-import {
-  Button,
-  Form,
-  FormFeedback,
-  FormGroup,
-  Input,
-  Label,
-} from 'reactstrap';
-import styled from 'styled-components';
-import * as yup from 'yup';
-import ListSkills from './ListSkills';
+import Avatar from '@components/avatar'
+import Sidebar from './ListSidebar'
+import { yupResolver } from '@hookform/resolvers/yup'
+import '@styles/react/libs/flatpickr/flatpickr.scss'
+import '@styles/react/libs/react-select/_react-select.scss'
+import { selectThemeColors } from '@utils'
+import classnames from 'classnames'
+import { memo, useEffect, useState } from 'react'
+import Flatpickr from 'react-flatpickr'
+import { Controller, useForm } from 'react-hook-form'
+import { useSelector } from 'react-redux'
+import Select from 'react-select'
+import { Button, Form, FormFeedback, FormGroup, Input, Label } from 'reactstrap'
+import styled from 'styled-components'
+import * as yup from 'yup'
+import ListSkills from './ListSkills'
 
 const EmployeeSchema = yup.object().shape({
   name: yup.string().required('Employee name is a required field'),
@@ -43,62 +36,62 @@ const EmployeeSchema = yup.object().shape({
   roles: yup
     .array()
     .min(1, 'Roles must have at least one item')
-    .required('Roles is a required field'),
-});
+    .required('Roles is a required field')
+})
 
 const ListEditEmployee = (props) => {
-  const { employeeId, onClose } = props;
+  const { employeeId, onClose } = props
 
   const selectedEmployee = useSelector((state) => {
     if (employeeId) {
-      return state.employees.byId[employeeId];
+      return state.employees.byId[employeeId]
     }
-    return null;
-  });
+    return null
+  })
 
-  const employeeRoles = useSelector((state) => state.employees.roles);
+  const employeeRoles = useSelector((state) => state.employees.roles)
 
-  const [name, setName] = useState('');
-  const [dob, setDob] = useState(new Date());
-  const [email, setEmail] = useState('');
-  const [phone, setPhone] = useState('');
-  const [roles, setRoles] = useState([]);
-  const [data, setData] = useState(null);
-  const [status, setStatus] = useState({});
-  const [projects, setProjects] = useState([]);
-  const [skills, setSkills] = useState([]);
+  const [name, setName] = useState('')
+  const [dob, setDob] = useState(new Date())
+  const [email, setEmail] = useState('')
+  const [phone, setPhone] = useState('')
+  const [roles, setRoles] = useState([])
+  const [data, setData] = useState(null)
+  const [status, setStatus] = useState({})
+  const [projects, setProjects] = useState([])
+  const [skills, setSkills] = useState([])
 
   // Map unnormalized data to state
   useEffect(() => {
     if (selectedEmployee) {
       const { dob, email, phone, name, roles, statusDetail, projects, skills } =
-        selectedEmployee;
+        selectedEmployee
 
       const employeeRoles = roles.map((role) => {
-        const { empRoleId, empRoleName } = role;
-        return { value: empRoleId, label: empRoleName };
-      });
+        const { empRoleId, empRoleName } = role
+        return { value: empRoleId, label: empRoleName }
+      })
 
       const employeeStatus = {
         value: statusDetail.id,
-        label: statusDetail.name || 'N/A',
-      };
+        label: statusDetail.name || 'N/A'
+      }
 
-      setDob(new Date(dob));
-      setEmail(email);
-      setPhone(phone);
-      setName(name);
-      setRoles(employeeRoles);
-      setStatus(employeeStatus);
-      setProjects(projects);
-      setSkills(skills);
+      setDob(new Date(dob))
+      setEmail(email)
+      setPhone(phone)
+      setName(name)
+      setRoles(employeeRoles)
+      setStatus(employeeStatus)
+      setProjects(projects)
+      setSkills(skills)
     }
-  }, [selectedEmployee]);
+  }, [selectedEmployee])
 
   const { errors, handleSubmit, control, reset } = useForm({
     mode: 'onChange',
-    resolver: yupResolver(EmployeeSchema),
-  });
+    resolver: yupResolver(EmployeeSchema)
+  })
 
   // Update inital input value
   useEffect(() => {
@@ -107,34 +100,34 @@ const ListEditEmployee = (props) => {
       name,
       email,
       phone,
-      roles,
-    });
-  }, [dob, name, email, phone, roles]);
+      roles
+    })
+  }, [dob, name, email, phone, roles])
 
   const onSubmit = async (data) => {
-    setData(data);
-  };
+    setData(data)
+  }
 
   const roleOptions = employeeRoles.map((role) => {
-    const { id, name } = role;
-    return { value: id, label: name };
-  });
+    const { id, name } = role
+    return { value: id, label: name }
+  })
 
   const locationOptions = [
     { value: 1, label: 'In House' },
-    { value: 2, label: 'On site' },
-  ];
+    { value: 2, label: 'On site' }
+  ]
 
   const statusOptions = [
     { value: 1, label: 'Active' },
     { value: 2, label: 'Inactive' },
     { value: 3, label: 'Onboarding' },
-    { value: 4, label: 'Off Board' },
-  ];
+    { value: 4, label: 'Off Board' }
+  ]
 
   useEffect(() => {
-    console.log(errors);
-  }, [errors]);
+    console.log(errors)
+  }, [errors])
 
   return (
     <Sidebar
@@ -152,7 +145,7 @@ const ListEditEmployee = (props) => {
               name="name"
               as={Input}
               className={classnames({
-                'is-invalid': Boolean(errors?.name?.message),
+                'is-invalid': Boolean(errors?.name?.message)
               })}
             />
             {errors?.name?.message && (
@@ -167,7 +160,7 @@ const ListEditEmployee = (props) => {
               name="phone"
               as={Input}
               className={classnames({
-                'is-invalid': Boolean(errors?.phone?.message),
+                'is-invalid': Boolean(errors?.phone?.message)
               })}
             />
             {errors?.phone?.message && (
@@ -195,7 +188,7 @@ const ListEditEmployee = (props) => {
               name="email"
               as={Input}
               className={classnames({
-                'is-invalid': Boolean(errors?.email?.message),
+                'is-invalid': Boolean(errors?.email?.message)
               })}
             />
             {errors?.email?.message && (
@@ -216,7 +209,7 @@ const ListEditEmployee = (props) => {
               theme={selectThemeColors}
               defaultValue={status}
               className={classnames({
-                'is-invalid': Boolean(errors?.status?.message),
+                'is-invalid': Boolean(errors?.status?.message)
               })}
             />
             {errors?.status?.message && (
@@ -237,7 +230,7 @@ const ListEditEmployee = (props) => {
               theme={selectThemeColors}
               defaultValue={locationOptions[0]}
               className={classnames({
-                'is-invalid': Boolean(errors?.location?.message),
+                'is-invalid': Boolean(errors?.location?.message)
               })}
             />
             {errors?.location?.message && (
@@ -261,7 +254,7 @@ const ListEditEmployee = (props) => {
               id="roles"
               defaultValue={roles}
               className={classnames({
-                'is-invalid': Boolean(errors?.roles?.message),
+                'is-invalid': Boolean(errors?.roles?.message)
               })}
             />
             {errors?.roles?.message && (
@@ -304,40 +297,40 @@ const ListEditEmployee = (props) => {
         </Result>
       </Form>
     </Sidebar>
-  );
-};
+  )
+}
 
 const FormContainer = styled('div')({
   display: 'grid',
   gridTemplateColumns: 'repeat(2, 1fr)',
-  columnGap: '1rem',
-});
+  columnGap: '1rem'
+})
 
 const SideBarFooter = styled('div')({
   display: 'flex',
-  justifyContent: 'flex-end',
-});
+  justifyContent: 'flex-end'
+})
 
 const ProjectWrapper = styled('div')({
   display: 'grid',
   gridTemplateColumns: '1fr',
   marginLeft: '0.5rem',
-  marginTop: '0.5rem',
-});
+  marginTop: '0.5rem'
+})
 
 const ProjectContainer = styled('div')({
   display: 'flex',
   flexDirection: 'column',
   '& > * + *': {
-    marginTop: '0.75rem',
-  },
-});
+    marginTop: '0.75rem'
+  }
+})
 
 const Result = styled('div')({
   margin: '1rem 0',
   '& > pre': {
-    padding: '1rem',
-  },
-});
+    padding: '1rem'
+  }
+})
 
-export default memo(ListEditEmployee);
+export default memo(ListEditEmployee)

@@ -1,47 +1,32 @@
 // ** React Imports
-import Avatar from '@components/avatar';
-import FormatFns from '@src/utility/FormatFns';
+import Avatar from '@components/avatar'
+import FormatFns from '@src/utility/FormatFns'
 // ** Styles
-import '@styles/react/libs/react-select/_react-select.scss';
-import '@styles/react/libs/tables/react-dataTable-component.scss';
-import join from 'lodash.join';
-import { useCallback, useEffect, useMemo, useState } from 'react';
-import DataTable from 'react-data-table-component';
-import {
-  Archive,
-  ChevronDown,
-  FileText,
-  MoreVertical,
-  Trash2,
-  Edit,
-} from 'react-feather';
-import { useDispatch, useSelector } from 'react-redux';
-import { Link } from 'react-router-dom';
-import {
-  Badge,
-  Card,
-  DropdownItem,
-  DropdownMenu,
-  DropdownToggle,
-  UncontrolledDropdown,
-  Button,
-} from 'reactstrap';
+import '@styles/react/libs/react-select/_react-select.scss'
+import '@styles/react/libs/tables/react-dataTable-component.scss'
+import join from 'lodash.join'
+import { useCallback, useEffect, useMemo, useState } from 'react'
+import DataTable from 'react-data-table-component'
+import { ChevronDown, Edit } from 'react-feather'
+import { useDispatch, useSelector } from 'react-redux'
+import { Link } from 'react-router-dom'
+import { Badge, Button, Card } from 'reactstrap'
 // ** Store & Actions
-import { getEmployeeDetails, getFilteredEmployees } from '../store/action';
-import ListEditEmployee from './ListEditEmployee';
-import ListHeader from './ListHeader';
+import { getEmployeeDetails, getFilteredEmployees } from '../store/action'
+import ListEditEmployee from './ListEditEmployee'
+import ListHeader from './ListHeader'
 
 const EmployeesList = () => {
   // ** Store Vars
-  const dispatch = useDispatch();
-  const store = useSelector((state) => state.employees);
+  const dispatch = useDispatch()
+  const store = useSelector((state) => state.employees)
 
   // ** States
-  const [searchTerm, setSearchTerm] = useState('');
-  const [currentPage, setCurrentPage] = useState(1);
-  const [rowsPerPage, setRowsPerPage] = useState(10);
-  const [skills, setSkills] = useState([]);
-  const [employeeId, setEmployeeId] = useState(null);
+  const [searchTerm, setSearchTerm] = useState('')
+  const [currentPage, setCurrentPage] = useState(1)
+  const [rowsPerPage, setRowsPerPage] = useState(10)
+  const [skills, setSkills] = useState([])
+  const [employeeId, setEmployeeId] = useState(null)
 
   const handleOnChangeRowsPerPage = async (perPage, page) => {
     // dispatch(
@@ -55,7 +40,7 @@ const EmployeesList = () => {
     //   })
     // )
     // setRowsPerPage(perPage)
-  };
+  }
 
   const handleOnChangePage = (page) => {
     // dispatch(
@@ -69,15 +54,15 @@ const EmployeesList = () => {
     //   })
     // )
     // setCurrentPage(page + 1)
-  };
+  }
 
   const handleOnSearch = (searchTerm) => {
-    setSearchTerm(searchTerm);
-  };
+    setSearchTerm(searchTerm)
+  }
 
   const handleSelectSkills = (skills) => {
-    setSkills(skills);
-  };
+    setSkills(skills)
+  }
 
   // ** Get data on mount
   useEffect(() => {
@@ -86,14 +71,14 @@ const EmployeesList = () => {
         page: currentPage,
         perPage: rowsPerPage,
         skills,
-        searchTerm,
+        searchTerm
       })
-    );
-  }, [dispatch]);
+    )
+  }, [dispatch])
 
   // ** Function in get data on rows per page
   const handlePerPage = (e) => {
-    const value = parseInt(e.currentTarget.value);
+    const value = parseInt(e.currentTarget.value)
     // dispatch(
     //   getData({
     //     page: currentPage,
@@ -104,8 +89,8 @@ const EmployeesList = () => {
     //     q: searchTerm
     //   })
     // )
-    setRowsPerPage(value);
-  };
+    setRowsPerPage(value)
+  }
 
   useEffect(() => {
     dispatch(
@@ -113,18 +98,18 @@ const EmployeesList = () => {
         page: currentPage,
         perPage: rowsPerPage,
         searchTerm,
-        skills: skills.map((skill) => skill.value),
+        skills: skills.map((skill) => skill.value)
       })
-    );
-  }, [searchTerm, skills]);
+    )
+  }, [searchTerm, skills])
 
   const handleOpenEditEmployee = (employeeId) => () => {
-    setEmployeeId(employeeId);
-  };
+    setEmployeeId(employeeId)
+  }
 
   const handleCloseEditEmployee = useCallback(() => {
-    setEmployeeId(null);
-  }, []);
+    setEmployeeId(null)
+  }, [])
 
   const columns = useMemo(
     () => [
@@ -133,7 +118,7 @@ const EmployeesList = () => {
         minWidth: '70px',
         center: true,
         cell: (row) => {
-          const { id } = row;
+          const { id } = row
           return (
             <Button.Ripple
               className="btn-icon rounded-circle"
@@ -142,8 +127,8 @@ const EmployeesList = () => {
             >
               <Edit size={14} />
             </Button.Ripple>
-          );
-        },
+          )
+        }
       },
       {
         name: 'Employee Name',
@@ -151,7 +136,7 @@ const EmployeesList = () => {
         selector: (row) => row.name,
         sortable: true,
         cell: (row) => {
-          const { name } = row;
+          const { name } = row
           return (
             <div className="d-flex justify-content-left align-items-center">
               <Avatar color="primary" className="mr-1" content="N/A" />
@@ -161,15 +146,15 @@ const EmployeesList = () => {
                 </Link>
               </div>
             </div>
-          );
-        },
+          )
+        }
       },
       {
         name: 'Email',
         minWidth: '320px',
         selector: (row) => row.email,
         sortable: true,
-        cell: (row) => row.email,
+        cell: (row) => row.email
       },
       {
         name: 'Skills',
@@ -177,15 +162,15 @@ const EmployeesList = () => {
         selector: (row) => 'skills',
         sortable: true,
         cell: (row) => {
-          const { skills } = row;
+          const { skills } = row
           if (skills.length) {
             return join(
               skills.map(({ skillName }) => skillName),
               ', '
-            );
+            )
           }
-          return 'N/A';
-        },
+          return 'N/A'
+        }
       },
       {
         name: 'Project',
@@ -193,15 +178,15 @@ const EmployeesList = () => {
         selector: (row) => 'projects',
         sortable: true,
         cell: (row) => {
-          const { projects } = row;
+          const { projects } = row
           if (projects.length) {
             return join(
               projects.map(({ projectName }) => projectName),
               ', '
-            );
+            )
           }
-          return 'N/A';
-        },
+          return 'N/A'
+        }
       },
       {
         name: 'Role',
@@ -209,19 +194,19 @@ const EmployeesList = () => {
         selector: (row) => 'role',
         sortable: true,
         cell: (row) => {
-          const { roles } = row;
+          const { roles } = row
           if (roles.length) {
-            return roles[0].empRoleName;
+            return roles[0].empRoleName
           }
-          return 'N/A';
-        },
+          return 'N/A'
+        }
       },
       {
         name: 'Phone',
         minWidth: '172px',
         selector: (row) => row.phone,
         sortable: true,
-        cell: (row) => row.phone,
+        cell: (row) => row.phone
       },
       {
         name: 'Date',
@@ -229,9 +214,9 @@ const EmployeesList = () => {
         selector: (row) => row.dob,
         sortable: true,
         cell: (row) => {
-          const { dob } = row;
-          return FormatFns.formatDateTime(new Date(dob), 'P');
-        },
+          const { dob } = row
+          return FormatFns.formatDateTime(new Date(dob), 'P')
+        }
       },
       {
         name: 'Status',
@@ -240,40 +225,40 @@ const EmployeesList = () => {
         sortable: true,
         cell: (row) => {
           const {
-            statusDetail: { name },
-          } = row;
+            statusDetail: { name }
+          } = row
           return (
             <Badge className="text-capitalize" color="light-success" pill>
               {name ?? 'N/A'}
             </Badge>
-          );
-        },
-      },
+          )
+        }
+      }
     ],
     []
-  );
+  )
 
   const dataToRender = () => {
-    const { byId, data } = store;
+    const { byId, data } = store
     const filters = {
       page: currentPage,
       perPage: rowsPerPage,
       searchTerm,
-      skills: skills.map((skill) => skill.value),
-    };
+      skills: skills.map((skill) => skill.value)
+    }
 
     const isFiltered = Object.keys(filters).some((filter) => {
-      return filters[filter].length;
-    });
+      return filters[filter].length
+    })
 
     if (data.length > 0) {
-      return data;
+      return data
     } else if (data.length === 0 && isFiltered) {
-      return [];
+      return []
     } else {
-      return Object.values(byId).slice(0, rowsPerPage);
+      return Object.values(byId).slice(0, rowsPerPage)
     }
-  };
+  }
 
   return (
     <Card>
@@ -308,7 +293,7 @@ const EmployeesList = () => {
         onClose={handleCloseEditEmployee}
       />
     </Card>
-  );
-};
+  )
+}
 
-export default EmployeesList;
+export default EmployeesList

@@ -1,38 +1,38 @@
-import { selectThemeColors } from '@utils';
-import { useState } from 'react';
-import { useSelector } from 'react-redux';
-import Select from 'react-select';
-import { useDebounce } from 'react-use';
-import { Button, Input, Label, Row } from 'reactstrap';
-import styled from 'styled-components';
+import { selectThemeColors } from '@utils'
+import { useState } from 'react'
+import { useSelector } from 'react-redux'
+import Select from 'react-select'
+import { useDebounce } from 'react-use'
+import { Button, Input, Label, Row } from 'reactstrap'
+import styled from 'styled-components'
 
 const ListHeader = (props) => {
-  const employeeSkills = useSelector((state) => state.employees.skills);
-  const { onSelectSkills, skills, onSearch } = props;
-  const [searchTerm, setSearchTerm] = useState('');
+  const employeeSkills = useSelector((state) => state.employees.skills)
+  const { onSelectSkills, skills, onSearch } = props
+  const [searchTerm, setSearchTerm] = useState('')
 
   const handleOnSearchChange = (event) => {
-    setSearchTerm(event.target.value);
-  };
+    setSearchTerm(event.target.value)
+  }
 
   useDebounce(
     () => {
-      onSearch(searchTerm);
+      onSearch(searchTerm)
     },
     300,
     [searchTerm]
-  );
+  )
 
   const handleOnChangeSelect = (skills) => {
-    onSelectSkills(skills);
-  };
+    onSelectSkills(skills)
+  }
 
-  const overflowSkills = skills.length >= 3;
+  const overflowSkills = skills.length >= 3
 
   // map skills to options
   const skillOptions = Object.entries(employeeSkills).map(([id, { name }]) => {
-    return { value: id, label: name };
-  });
+    return { value: id, label: name }
+  })
 
   return (
     <div className="invoice-list-table-header w-100 mr-1 ml-50 mt-2 mb-75">
@@ -81,29 +81,29 @@ const ListHeader = (props) => {
         </SkillsWrapper>
       </StyledRow>
     </div>
-  );
-};
+  )
+}
 
 const StyledRow = styled(Row)({
   flexWrap: 'wrap',
   '& > *': {
-    flex: 1,
-  },
-});
+    flex: 1
+  }
+})
 
 const SearchWrapper = styled('div')(({ shink }) => ({
   transition: 'flex-grow 0.3s',
   ...(shink && {
     flexGrow: 1,
-    marginRight: '1rem',
-  }),
-}));
+    marginRight: '1rem'
+  })
+}))
 
 const SkillsWrapper = styled('div')(({ grow }) => ({
   transition: 'flex-grow 0.3s',
   ...(grow && {
-    flexGrow: 3,
-  }),
-}));
+    flexGrow: 3
+  })
+}))
 
-export default ListHeader;
+export default ListHeader
