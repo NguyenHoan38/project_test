@@ -15,56 +15,12 @@ import { addResourceAllocation, editResourceAllocation, setDataResourceAllocatio
 import ToastContent from '@components/common/ToastContent'
 import { toast, Slide } from 'react-toastify'
 import { isObjEmpty } from '@utils'
-const employeeIdData = [
-    { value: 1, label: 'T&M' },
-    { value: 2, label: 'Project Based' },
-    { value: 3, label: 'Body shoping' }
-]
-
-const customerData = [
-    { value: 1, label: 'Kern AG' },
-    { value: 2, label: 'Baby Philson' },
-    { value: 3, label: 'David Beckham' }
-
-]
-
-const pmData = [
-    { value: 1, label: 'Nguyen Hoang Tung' },
-    { value: 2, label: 'Tran Van An' },
-    { value: 3, label: 'Nguyen Hoang Tung' },
-    { value: 4, label: 'Tran Van An' },
-    { value: 5, label: 'Nguyen Hoang Tung' },
-    { value: 6, label: 'Tran Van An' },
-    { value: 7, label: 'Nguyen Hoang Tung' },
-    { value: 8, label: 'Tran Van An' }
-]
-
-const technologyStackData = [
-    { value: 1, label: 'Azure' },
-    { value: 2, label: 'Devops' },
-    { value: 3, label: 'Intune' }
-
-]
-
-const industryData = [
-    { value: 1, label: 'Azure' },
-    { value: 2, label: 'Devops' },
-    { value: 3, label: 'Intune' }
-]
-const data = [{ id: 1, title: 'Conan the Barbarian', year: '1982' }]
 
 function ResourceAllocation(props) {
     const dispatch = useDispatch()
-    const [milestone, setMilestone] = useState([new Date(), new Date()])
-    const [startProject, setStartProject] = useState(new Date())
     const [checkFomAdd, setCheckFomAdd] = useState(false)
     const [employeeId, setEmployeeId] = useState(0)
     const [labelEmployee, setEmployeeLabel] = useState('')
-    const [customer, setCustomer] = useState(null)
-    const [endProject, setEndProject] = useState(new Date())
-    const [color, setColor] = useState('#ffff')
-    const [pmLead, setPmLead] = useState(null)
-    const [technologyStack, setTechnologyStack] = useState(null)
     const [effortValue, setEffortValue] = useState(0)
     const [role, setRole] = useState(null)
     const [labelRole, setLabelRole] = useState(null)
@@ -98,8 +54,6 @@ function ResourceAllocation(props) {
     useEffect(() => {
         if (projects.dataResourceAllocationByID[0]?.id) {
             const { assign, effort, endDate, id, mainHeadcount, note, role, shadow, startDate } = projects.dataResourceAllocationByID[0]
-            // const technologyNew = technology.map(res => { return { ...res, value: res.id, label: res.name } })
-            // const domainsNew = domain.map(res => { return { ...res, value: res.id, label: res.name } })
             setEmployeeId(assign?.id)
             setEmployeeLabel(assign?.name)
             setResourceAllocationID(id)
@@ -319,8 +273,6 @@ function ResourceAllocation(props) {
             </Form>
             <div className='row mt-2'>
                 <div className='col-12'>
-
-
                     <DataTable
                         noHeader={true}
                         pagination
@@ -331,31 +283,11 @@ function ResourceAllocation(props) {
                         pagination={false}
                         columns={columns((id) => showFormEdit(id))}
                         data={projects.dataResourceAllocation}
-                        // sortIcon={<ChevronDown />}
                         className='react-dataTable'
                         paginationComponent={false}
-                    // data={dataToRender()}
-                    // subHeaderComponent={
-                    //   <CustomHeader
-                    //     toggleSidebar={toggleSidebar}
-                    //     handlePerPage={handlePerPage}
-                    //     rowsPerPage={rowsPerPage}
-                    //     searchTerm={searchTerm}
-                    //     handleFilter={handleFilter}
-                    //   />
-                    // }
                     />
                 </div>
             </div>
-            {/* <div style={{ float: 'right' }}>
-                <Button type='submit' className='mr-1' color='primary'>
-                    Save
-                </Button>
-                <Button type='reset' color='secondary' outline >
-                    Cancel
-                </Button>
-            </div> */}
-
         </div>
     )
 }

@@ -26,180 +26,51 @@ import { columns } from '../constant'
 
 import ResourceAllocation from './components/ResourceAllocation'
 import ProjectInformation from './components/ProjectInformation'
-const projectTypeData = [
-  { value: 1, label: 'T&M' },
-  { value: 2, label: 'Project Based' },
-  { value: 3, label: 'Body shoping' }
-]
 
-const customerData = [
-  { value: 1, label: 'Kern AG' },
-  { value: 2, label: 'Baby Philson' },
-  { value: 3, label: 'David Beckham' }
-
-]
-
-const pmData = [
-  { value: 1, label: 'Nguyen Hoang Tung' },
-  { value: 2, label: 'Tran Van An' },
-  { value: 3, label: 'Nguyen Hoang Tung' },
-  { value: 4, label: 'Tran Van An' },
-  { value: 5, label: 'Nguyen Hoang Tung' },
-  { value: 6, label: 'Tran Van An' },
-  { value: 7, label: 'Nguyen Hoang Tung' },
-  { value: 8, label: 'Tran Van An' }
-]
-
-const technologyStackData = [
-  { value: 1, label: 'Azure' },
-  { value: 2, label: 'Devops' },
-  { value: 3, label: 'Intune' }
-
-]
-
-const industryData = [
-  { value: 1, label: 'Azure' },
-  { value: 2, label: 'Devops' },
-  { value: 3, label: 'Intune' }
-]
 const SidebarNewProjects = ({ open, toggleSidebar, isNewProject }) => {
   // ** States
-  const [projectType, setProjectType] = useState(null)
-  const [customer, setCustomer] = useState(null)
-  const [pmLead, setPmLead] = useState(null)
-  const [industry, setIndustry] = useState(null)
-  const [technologyStack, setTechnologyStack] = useState(null)
-  const [startProject, setStartProject] = useState(new Date())
-  // const [startProject, setStartProject] = useState(new Date())
   const [milestone, setMilestone] = useState([new Date(), new Date()])
-  const [endProject, setEndProject] = useState(new Date())
-  const [color, setColor] = useState('#ffff')
 
-
-  // fake data
-  const projectTypeData = [
-    { value: 1, label: 'T&M' },
-    { value: 2, label: 'Project Based' },
-    { value: 3, label: 'Body shoping' }
-  ]
-
-  const customerData = [
-    { value: 1, label: 'Kern AG' },
-    { value: 2, label: 'Baby Philson' },
-    { value: 3, label: 'David Beckham' }
-
-  ]
-
-  const pmData = [
-    { value: 1, label: 'Nguyen Hoang Tung' },
-    { value: 2, label: 'Tran Van An' },
-    { value: 3, label: 'Nguyen Hoang Tung' },
-    { value: 4, label: 'Tran Van An' },
-    { value: 5, label: 'Nguyen Hoang Tung' },
-    { value: 6, label: 'Tran Van An' },
-    { value: 7, label: 'Nguyen Hoang Tung' },
-    { value: 8, label: 'Tran Van An' }
-  ]
-
-  const technologyStackData = [
-    { value: 1, label: 'Azure' },
-    { value: 2, label: 'Devops' },
-    { value: 3, label: 'Intune' }
-
-  ]
-
-  const industryData = [
-    { value: 1, label: 'Azure' },
-    { value: 2, label: 'Devops' },
-    { value: 3, label: 'Intune' }
-  ]
   const projects = useSelector(state => state.projects)
   // ** Store Vars
   const dispatch = useDispatch()
-console.log('2222222222222222222222222222222', projects)
   // GOI API
   // get Customer
   useEffect(() => {
     dispatch(getCustomer())
-
   }, [dispatch, projects.dataCustomer.length])
+
   // get Project Type
   useEffect(() => {
     dispatch(getListProjectType())
   }, [dispatch, projects.dataListProjectType.length])
+
   // get getListEmployee
   useEffect(() => {
     dispatch(getListEmployee())
   }, [dispatch, projects.dataListEmployee.length])
+
   useEffect(() => {
     dispatch(getListProjectTechnology())
   }, [dispatch, projects.dataListProjectTechnology.length])
+
   useEffect(() => {
     dispatch(getListProjectDomain())
   }, [dispatch, projects.dataListProjectDomain.length])
+
   useEffect(() => {
     dispatch(getListEmployeeRole())
   }, [dispatch, projects.dataListRoleEmployee.length])
-  //GOI API
 
-  const { register, errors, handleSubmit } = useForm()
-
-  // add mileStone
-  const addMilestone = (newMilestone) => {
-    milestone.push(newMilestone)
-    setMilestone(milestone)
-  }
-
-  const editMilestones = (date, i) => {
-    milestone[i] = date
-  }
-
-  // ** Function to handle form submit
-  const onSubmit = values => {
-    if (isObjEmpty(errors)) {
-      toggleSidebar()
-      dispatch(
-        addProject({
-          projectName: values['projectName'],
-          projectType
-
-        })
-      )
-    }
-  }
   const  hideSidebar = () => {
     toggleSidebar()
   }
   const [activeTab, setActiveTab] = useState('1')
-  const [value, setValue] = useState(0)
   const toggle = tab => {
     if (activeTab !== tab) setActiveTab(tab)
     dispatch(
       getResourceAllocation(isNewProject)
     )
-  }
-  // ** Table data to render
-  const dataToRender = () => {
-    const filters = {
-      // status: currentStatus.value,
-      q: searchTerm
-    }
-
-    const isFiltered = Object.keys(filters).some(function (k) {
-      return filters[k].length > 0
-    })
-
-    if (store.data.length > 0) {
-      return store.data
-    } else if (store.data.length === 0 && isFiltered) {
-      return []
-    } else {
-      return store.allData.slice(0, rowsPerPage)
-    }
-  }
-
-  const myStyle = {
-    color: "red"
   }
 
   return (
@@ -213,12 +84,7 @@ console.log('2222222222222222222222222222222', projects)
       contentClassName='pt-0'
       toggleSidebar={toggleSidebar}
     >
-      {/* <div>
-        <Button className='btn btn-primary btn-lg'></Button>
-        <Button className='btn btn-info btn-lg ml-5'>Resource Allocation</Button>
-      </div> */}
       <div>
-
         <Nav tabs>
           <NavItem>
             <NavLink

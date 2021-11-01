@@ -1,10 +1,8 @@
 import { useEffect, useState } from 'react'
-import PropTypes from 'prop-types'
 import { useForm } from 'react-hook-form'
-import classnames from 'classnames'
 import Select from 'react-select'
 import Flatpickr from 'react-flatpickr'
-import { Collapse, Button, CardBody, FormGroup, Label, FormText, Form, Input, TabContent, TabPane, Nav, NavItem, NavLink, Card, CardTitle, CardText, Row, Col } from 'reactstrap'
+import { Collapse, Button, FormGroup, Label, Form, Input, Card } from 'reactstrap'
 import { FaTrash, FaPlusCircle, FaCheck } from 'react-icons/fa'
 import '../../../../../assets/scss/projects/styleProjectInformation.scss'
 import ToastContent from '@components/common/ToastContent'
@@ -22,36 +20,6 @@ const typeData = [
     { value: 3, label: 'Closed' }
 ]
 
-const customerData = [
-    { value: 1, label: 'Kern AG' },
-    { value: 2, label: 'Baby Philson' },
-    { value: 3, label: 'David Beckham' }
-
-]
-
-const pmData = [
-    { value: 1, label: 'Nguyen Hoang Tung' },
-    { value: 2, label: 'Tran Van An' },
-    { value: 3, label: 'Nguyen Hoang Tung' },
-    { value: 4, label: 'Tran Van An' },
-    { value: 5, label: 'Nguyen Hoang Tung' },
-    { value: 6, label: 'Tran Van An' },
-    { value: 7, label: 'Nguyen Hoang Tung' },
-    { value: 8, label: 'Tran Van An' }
-]
-
-const technologyStackData = [
-    { value: 1, label: 'Azure' },
-    { value: 2, label: 'Devops' },
-    { value: 3, label: 'Intune' }
-
-]
-
-const industryData = [
-    { value: 1, label: 'Azure' },
-    { value: 2, label: 'Devops' },
-    { value: 3, label: 'Intune' }
-]
 // ** Store Vars
 //   const dispatch = useDispatch()
 function ProjectInformation(props) {
@@ -72,7 +40,6 @@ function ProjectInformation(props) {
     const [pmLead, setPmLead] = useState(null)
     const [lablePmLead, setLablePmLead] = useState(null)
     const [technologyStack, setTechnologyStack] = useState(null)
-    // const [lableTechnologyStack, setLableTechnologyStack] = useState(null)
     const [isOpen, setIsOpen] = useState(false)
     const [checkColor, setcheckColor] = useState(null)
     const [colorButton, setColorButton] = useState(null)
@@ -168,7 +135,7 @@ function ProjectInformation(props) {
                         startDate: startProject,
                         endDate: endProject,
                         status,
-                        pmId: pmLead.value,
+                        pmId: pmLead,
                         mileStone: milestone,
                         customerId: customerId.value,
                         technologys,
@@ -217,7 +184,6 @@ function ProjectInformation(props) {
             <Form onSubmit={handleSubmit(onSubmit)}>
                 <div className='row mt-2'>
                     <div className='col-4'>
-
                         <FormGroup>
                             <Label for='name'>
                                 Project Name 
@@ -233,7 +199,6 @@ function ProjectInformation(props) {
                         </FormGroup>
                     </div>
                     <div className='col-4'>
-
                         <FormGroup>
                             <Label for='signal'>
                                 Project Code
@@ -250,7 +215,6 @@ function ProjectInformation(props) {
                         </FormGroup>
                     </div>
                     <div className='col-4'>
-
                         <FormGroup>
                             <Label for='projectCode' className="mr-2 w-100" >
                                 Project Color
@@ -272,7 +236,6 @@ function ProjectInformation(props) {
                         </FormGroup>
                     </div>
                     <div className='col-4'>
-
                         <FormGroup>
                             <Label for='type'>
                                 Project Type 
@@ -297,7 +260,6 @@ function ProjectInformation(props) {
                         </FormGroup>
                     </div>
                     <div className='col-4'>
-
                         <FormGroup>
                             <Label for='customerId'>
                                 Customer
@@ -321,20 +283,18 @@ function ProjectInformation(props) {
                         </FormGroup>
                     </div>
                     <div className='col-4'>
-
                         <FormGroup>
                             <Label for='pmLead'>PM/Lead</Label>
                             <Select
-                                id="pmLead"
                                 className="basic-single"
                                 classNamePrefix="select"
                                 isSearchable={true}
                                 isClearable={true}
                                 maxMenuHeight={220}
-                                name="pmLead"
                                 value={{ value: pmLead, label: lablePmLead }}
                                 onChange={(e) => {
                                     setPmLead(e.id)
+                                    console.log(pmLead)
                                     setLablePmLead(e.label)
                                 }}
                                 options={projects.dataListEmployee}
@@ -351,10 +311,8 @@ function ProjectInformation(props) {
                                 className='form-control invoice-edit-input date-picker'
                             />
                         </FormGroup>
-
                     </div>
                     <div className='col-4'>
-
                         <FormGroup>
                             <span className='title'>End:</span>
                             <Flatpickr
@@ -365,11 +323,7 @@ function ProjectInformation(props) {
                         </FormGroup>
                     </div>
                     <div className='col-4'>
-
                         <FormGroup>
-                            {/* <Label for='type'>
-                                Status
-                            </Label> */}
                              <span className='title'>Status:</span>
                             <Select
                                 id="type"
@@ -392,7 +346,6 @@ function ProjectInformation(props) {
 
                     </div>
                     <div className='col-4'>
-
                         <FormGroup>
                             <span className='title'>Milestones:</span>
                             <div >
@@ -425,18 +378,15 @@ function ProjectInformation(props) {
 
                     </div>
                     <div className='col-4'>
-
                         <FormGroup>
                             <Label for='technologyStack'>Technologies </Label>
                             <div className="d-flex align-items-center">
                                 <Select
                                     isMulti
-                                    id="pmLead"
                                     style={{ with: '100%', marginRight: '20px' }}
                                     className="basic-single w-100 mr-2"
                                     classNamePrefix="select"
                                     isSearchable={true}
-                                    name="technologyStack"
                                     value={technologyStack}
                                     onChange={(e) => {
                                         setTechnologyStack(e)
@@ -455,12 +405,10 @@ function ProjectInformation(props) {
                             <div className="d-flex align-items-center">
                                 <Select
                                     isMulti
-                                    id="pmLead"
                                     style={{ with: '100%', marginRight: '20px' }}
                                     className="basic-single w-100 mr-2"
                                     classNamePrefix="select"
                                     isSearchable={true}
-                                    name="technologyStack"
                                     value={industry}
                                     onChange={setIndustry}
                                     options={projects.dataListProjectDomain}

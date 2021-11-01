@@ -80,7 +80,6 @@ const ProjectsList = () => {
   // ** Store Vars
   const dispatch = useDispatch()
   const store = useSelector(state => state.projects)
-  console.log(store)
   // ** States
   const [searchTerm, setSearchTerm] = useState('')
   const [currentPage, setCurrentPage] = useState(1)
@@ -194,7 +193,6 @@ const ProjectsList = () => {
       status: currentStatus.value,
       q: searchTerm
     }
-    console.log('store.allData', store.allData)
     const isFiltered = Object.keys(filters).some(function (k) {
       return filters[k].length > 0
     })
@@ -210,152 +208,6 @@ const ProjectsList = () => {
 
   return (
     <Fragment>
-      {/* <Card>
-        <CardHeader>
-          <CardTitle tag='h4'>Search Filter</CardTitle>
-        </CardHeader>
-        <CardBody>
-          <Row>
-            <Col md='4'>
-              <Select
-                isClearable={false}
-                theme={selectThemeColors}
-                className='react-select'
-                classNamePrefix='select'
-                options={{}}
-                value={[]}
-                onChange={data => {
-                  setCurrentRole(data)
-                  dispatch(
-                    getData({
-                      page: currentPage,
-                      perPage: rowsPerPage,
-                      role: data.value,
-                      currentPlan: currentPlan.value,
-                      status: currentStatus.value,
-                      q: searchTerm
-                    })
-                  )
-                }}
-              />
-            </Col>
-            <Col className='my-md-0 my-1' md='4'>
-              <Select
-                theme={selectThemeColors}
-                isClearable={false}
-                className='react-select'
-                classNamePrefix='select'
-                options={[]}
-                value={[]}
-                onChange={data => {
-                  setCurrentPlan(data)
-                  dispatch(
-                    getData({
-                      page: currentPage,
-                      perPage: rowsPerPage,
-                      role: currentRole.value,
-                      currentPlan: data.value,
-                      status: currentStatus.value,
-                      q: searchTerm
-                    })
-                  )
-                }}
-              />
-            </Col>
-            <Col md='4'>
-              <Select
-                theme={selectThemeColors}
-                isClearable={false}
-                className='react-select'
-                classNamePrefix='select'
-                options={statusOptions}
-                value={currentStatus}
-                onChange={data => {
-                  setCurrentStatus(data)
-                  dispatch(
-                    getData({
-                      page: currentPage,
-                      perPage: rowsPerPage,
-                      status: data.value,
-                      q: searchTerm
-                    })
-                  )
-                }}
-              />
-            </Col>
-          </Row>
-          <Row className="mt-2">
-            <Col md='4'>
-              <Select
-                isClearable={false}
-                theme={selectThemeColors}
-                className='react-select'
-                classNamePrefix='select'
-                options={{}}
-                value={[]}
-                onChange={data => {
-                  setCurrentRole(data)
-                  dispatch(
-                    getData({
-                      page: currentPage,
-                      perPage: rowsPerPage,
-                      role: data.value,
-                      currentPlan: currentPlan.value,
-                      status: currentStatus.value,
-                      q: searchTerm
-                    })
-                  )
-                }}
-              />
-            </Col>
-            <Col className='my-md-0 my-1' md='4'>
-              <Select
-                theme={selectThemeColors}
-                isClearable={false}
-                className='react-select'
-                classNamePrefix='select'
-                options={[]}
-                value={[]}
-                onChange={data => {
-                  setCurrentPlan(data)
-                  dispatch(
-                    getData({
-                      page: currentPage,
-                      perPage: rowsPerPage,
-                      role: currentRole.value,
-                      currentPlan: data.value,
-                      status: currentStatus.value,
-                      q: searchTerm
-                    })
-                  )
-                }}
-              />
-            </Col>
-            <Col md='4'>
-              <Select
-                theme={selectThemeColors}
-                isClearable={false}
-                className='react-select'
-                classNamePrefix='select'
-                options={statusOptions}
-                value={currentStatus}
-                onChange={data => {
-                  setCurrentStatus(data)
-                  dispatch(
-                    getData({
-                      page: currentPage,
-                      perPage: rowsPerPage,
-                      status: data.value,
-                      q: searchTerm
-                    })
-                  )
-                }}
-              />
-            </Col>
-          </Row>
-        </CardBody>
-      </Card> */}
-
       <Card>
         <DataTable
           noHeader
@@ -379,7 +231,6 @@ const ProjectsList = () => {
           }
         />
       </Card>
-
       <Sidebar open={sidebarOpen} toggleSidebar={toggleSidebar} isNewProject={isNewProject}  />
     </Fragment>
   )
