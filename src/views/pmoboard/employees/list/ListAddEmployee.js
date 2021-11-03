@@ -4,23 +4,14 @@ import '@styles/react/libs/flatpickr/flatpickr.scss'
 import '@styles/react/libs/react-select/_react-select.scss'
 import { selectThemeColors } from '@utils'
 import classnames from 'classnames'
-import { memo, useEffect, useState } from 'react'
+import { memo, useState } from 'react'
 import Flatpickr from 'react-flatpickr'
 import { Controller, useForm } from 'react-hook-form'
-import { useDispatch, useSelector } from 'react-redux'
+import { useSelector } from 'react-redux'
 import Select from 'react-select'
-import {
-  Button,
-  Form,
-  FormFeedback,
-  FormGroup,
-  Input,
-  Label,
-  Spinner
-} from 'reactstrap'
+import { Button, Form, FormFeedback, FormGroup, Input, Label } from 'reactstrap'
 import styled from 'styled-components'
 import * as yup from 'yup'
-import { updateEmployee } from '../store/action'
 import Sidebar from './ListSidebar'
 import ListSkills from './ListSkills'
 
@@ -48,17 +39,8 @@ const EmployeeSchema = yup.object().shape({
     .required('Roles is a required field')
 })
 
-const ListEditEmployee = (props) => {
-  const { employeeId, onClose } = props
-  const dispatch = useDispatch()
-  const [loading, setLoading] = useState(false)
-
-  const selectedEmployee = useSelector((state) => {
-    if (employeeId) {
-      return state.employees.byId[employeeId]
-    }
-    return null
-  })
+const ListAddEmployee = (props) => {
+  const { open, onClose } = props
 
   const employeeRoles = useSelector((state) => state.employees.roles)
 
@@ -67,87 +49,37 @@ const ListEditEmployee = (props) => {
   const [email, setEmail] = useState('')
   const [phone, setPhone] = useState('')
   const [roles, setRoles] = useState([])
+  const [data, setData] = useState(null)
   const [status, setStatus] = useState(null)
   const [projects, setProjects] = useState([])
-  const [employeeSkills, setEmployeeSkills] = useState([])
-  const [location, setLocation] = useState(null)
   const [skills, setSkills] = useState([])
 
-  // Map unnormalized data to state
-  useEffect(() => {
-    if (selectedEmployee) {
-      const {
-        dob,
-        email,
-        phone,
-        name,
-        roles,
-        statusDetail,
-        projects,
-        skills,
-        locationDetail
-      } = selectedEmployee
-
-      const employeeRoles = roles.map((role) => {
-        const { empRoleId, empRoleName } = role
-        return { value: empRoleId, label: empRoleName }
-      })
-
-      const employeeStatus = {
-        value: statusDetail.id,
-        label: statusDetail.name
-      }
-
-      const employeeLocation = {
-        value: locationDetail.id,
-        label: locationDetail.name
-      }
-
-      setDob(new Date(dob))
-      setEmail(email)
-      setPhone(phone)
-      setName(name)
-      setRoles(employeeRoles)
-      setStatus(employeeStatus)
-      setProjects(projects)
-      setEmployeeSkills(skills)
-      setLocation(employeeLocation)
-    }
-  }, [selectedEmployee])
-
-  const { errors, handleSubmit, control, reset } = useForm({
+  const { errors, handleSubmit, control } = useForm({
     mode: 'onChange',
-    resolver: yupResolver(EmployeeSchema)
-  })
-
-  // Update inital input value
-  useEffect(() => {
-    reset({
-      dob,
+    resolver: yupResolver(EmployeeSchema),
+    defaultValues: {
       name,
+      dob,
       email,
       phone,
       roles,
-      status,
-      location
-    })
-  }, [dob, name, email, phone, roles, status, location])
-
-  const handleSetSkills = (skills) => {
-    setSkills(skills)
-  }
+      status
+    }
+  })
 
   const onSubmit = async (data) => {
-    const { id } = selectedEmployee
-    setLoading(true)
-    await dispatch(updateEmployee({ ...data, id, skills }))
-    setLoading(false)
+    setData(data)
   }
 
   const roleOptions = employeeRoles.map((role) => {
     const { id, name } = role
     return { value: id, label: name }
   })
+
+  const locationOptions = [
+    { value: 1, label: 'In House' },
+    { value: 2, label: 'On site' }
+  ]
 
   const statusOptions = [
     { value: 1, label: 'Active' },
@@ -156,17 +88,8 @@ const ListEditEmployee = (props) => {
     { value: 4, label: 'Off Board' }
   ]
 
-  const locationOptions = [
-    { value: 1, label: 'In House' },
-    { value: 2, label: 'Onsite' }
-  ]
-
   return (
-    <Sidebar
-      open={Boolean(employeeId && selectedEmployee)}
-      title="Employee Infomation"
-      onClose={onClose}
-    >
+    <Sidebar open={open} title="Add Employee" onClose={onClose}>
       <Form onSubmit={handleSubmit(onSubmit)}>
         <FormContainer>
           <FormGroup>
@@ -190,7 +113,6 @@ const ListEditEmployee = (props) => {
               control={control}
               id="phone"
               name="phone"
-              type="number"
               as={Input}
               className={classnames({
                 'is-invalid': Boolean(errors?.phone?.message)
@@ -228,14 +150,14 @@ const ListEditEmployee = (props) => {
               <FormFeedback>{errors.email.message}</FormFeedback>
             )}
           </FormGroup>
-          <StatusFormGroup>
+          <FormGroup>
             <Label for="status">Status *</Label>
             <Controller
               isClearable
               as={Select}
               id="status"
-              control={control}
               name="status"
+              control={control}
               options={statusOptions}
               className="react-select"
               classNamePrefix="select"
@@ -248,7 +170,7 @@ const ListEditEmployee = (props) => {
             {errors?.status?.message && (
               <FormFeedback>{errors.status.message}</FormFeedback>
             )}
-          </StatusFormGroup>
+          </FormGroup>
           <FormGroup>
             <Label for="location">Location *</Label>
             <Controller
@@ -261,7 +183,7 @@ const ListEditEmployee = (props) => {
               className="react-select"
               classNamePrefix="select"
               theme={selectThemeColors}
-              defaultValue={location}
+              defaultValue={null}
               className={classnames({
                 'is-invalid': Boolean(errors?.location?.message)
               })}
@@ -272,7 +194,7 @@ const ListEditEmployee = (props) => {
           </FormGroup>
         </FormContainer>
         <FormContainer>
-          <RoleFormGroup>
+          <FormGroup>
             <Label for="roles">Roles *</Label>
             <Controller
               isClearable
@@ -293,45 +215,24 @@ const ListEditEmployee = (props) => {
             {errors?.roles?.message && (
               <FormFeedback>{errors.roles.message}</FormFeedback>
             )}
-          </RoleFormGroup>
+          </FormGroup>
         </FormContainer>
-        <ListSkills skills={employeeSkills} onSetSkills={handleSetSkills} />
-        <FormGroup>
-          <Label for="projects">Projects</Label>
-          <ProjectWrapper>
-            <ProjectContainer>
-              {projects.map(({ projectId, projectName }) => (
-                <div className="d-flex align-items-center" key={projectId}>
-                  <Avatar
-                    color="light-primary"
-                    content="N/A"
-                    className="rounded"
-                  />
-                  <span className="font-weight-bold ml-1">{projectName}</span>
-                </div>
-              ))}
-            </ProjectContainer>
-          </ProjectWrapper>
-        </FormGroup>
+        <ListSkills skills={skills} />
         <SideBarFooter className="mt-2">
           <Button
             color="primary"
             type="submit"
             disabled={Object.keys(errors).length > 0}
           >
-            {loading ? (
-              <>
-                <Spinner color="white" size="sm" />
-                <span className="ml-50">Save</span>
-              </>
-            ) : (
-              'Save'
-            )}
+            Save
           </Button>
-          <Button color="primary" outline className="ml-50" onClick={onClose}>
+          <Button color="primary" outline className="ml-1" onClick={onClose}>
             Cancel
           </Button>
         </SideBarFooter>
+        <Result>
+          <pre>{JSON.stringify(data, null, 4)}</pre>
+        </Result>
       </Form>
     </Sidebar>
   )
@@ -344,16 +245,6 @@ const FormContainer = styled('div')({
   '@media (max-width: 576px)': {
     gridTemplateColumns: '1fr'
   }
-})
-
-const StatusFormGroup = styled(FormGroup)({
-  position: 'relative',
-  zIndex: 4
-})
-
-const RoleFormGroup = styled(FormGroup)({
-  position: 'relative',
-  zIndex: 3
 })
 
 const SideBarFooter = styled('div')({
@@ -376,11 +267,11 @@ const ProjectContainer = styled('div')({
   }
 })
 
-/**
- <div className="d-flex align-items-center ml-auto">
-  <Avatar color="light-primary" content="N/A" />
-  <span className="ml-1">{name}</span>
-</div>
-*/
+const Result = styled('div')({
+  margin: '1rem 0',
+  '& > pre': {
+    padding: '1rem'
+  }
+})
 
-export default memo(ListEditEmployee)
+export default memo(ListAddEmployee)

@@ -8,7 +8,7 @@ import styled from 'styled-components'
 
 const ListHeader = (props) => {
   const employeeSkills = useSelector((state) => state.employees.skills)
-  const { onSelectSkills, skills, onSearch } = props
+  const { onSelectSkills, skills, onSearch, onAddEmployee } = props
   const [searchTerm, setSearchTerm] = useState('')
 
   const handleOnSearchChange = (event) => {
@@ -72,11 +72,8 @@ const ListHeader = (props) => {
               classNamePrefix="select"
             />
           </div>
-          <Button.Ripple
-            color="primary"
-            className="flex-shrink-0 align-self-start"
-          >
-            Fillter
+          <Button.Ripple color="primary" onClick={onAddEmployee} disabled>
+            Add Employee
           </Button.Ripple>
         </SkillsWrapper>
       </StyledRow>

@@ -38,6 +38,7 @@
     "jquery": "3.5.1",
     "jsonwebtoken": "8.5.1",
     "leaflet": "1.6.0",
+    "lodash.isequal": "^4.5.0",
     "lodash.join": "^4.0.1",
     "lodash.keyby": "^4.6.0",
     "moment": "2.29.1",

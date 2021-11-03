@@ -14,7 +14,14 @@ import { Badge, Button, Card } from 'reactstrap'
 // ** Store & Actions
 import { getEmployeeDetails, getFilteredEmployees } from '../store/action'
 import ListEditEmployee from './ListEditEmployee'
+import ListAddEmployee from './ListAddEmployee'
 import ListHeader from './ListHeader'
+
+const statusSchema = {
+  1: 'light-success',
+  2: 'light-warning',
+  3: 'light-secondary'
+}
 
 const EmployeesList = () => {
   // ** Store Vars
@@ -27,6 +34,7 @@ const EmployeesList = () => {
   const [rowsPerPage, setRowsPerPage] = useState(10)
   const [skills, setSkills] = useState([])
   const [employeeId, setEmployeeId] = useState(null)
+  const [openAddEmployee, setOpenAddEmployee] = useState(false)
 
   const handleOnChangeRowsPerPage = async (perPage, page) => {
     // dispatch(
@@ -66,14 +74,7 @@ const EmployeesList = () => {
 
   // ** Get data on mount
   useEffect(() => {
-    dispatch(
-      getEmployeeDetails({
-        page: currentPage,
-        perPage: rowsPerPage,
-        skills,
-        searchTerm
-      })
-    )
+    dispatch(getEmployeeDetails(null))
   }, [dispatch])
 
   // ** Function in get data on rows per page
@@ -111,6 +112,14 @@ const EmployeesList = () => {
     setEmployeeId(null)
   }, [])
 
+  const handleOpenAddEmployee = () => {
+    setOpenAddEmployee(true)
+  }
+
+  const handleCloseAddEmployee = () => {
+    setOpenAddEmployee(false)
+  }
+
   const columns = useMemo(
     () => [
       {
@@ -139,7 +148,7 @@ const EmployeesList = () => {
           const { name } = row
           return (
             <div className="d-flex justify-content-left align-items-center">
-              <Avatar color="primary" className="mr-1" content="N/A" />
+              <Avatar color="light-primary" className="mr-1" content="N/A" />
               <div className="d-flex flex-column">
                 <Link to="#" className="user-name text-truncate mb-0">
                   <span className="font-weight-bold">{name}</span>
@@ -159,8 +168,6 @@ const EmployeesList = () => {
       {
         name: 'Skills',
         minWidth: '320px',
-        selector: (row) => 'skills',
-        sortable: true,
         cell: (row) => {
           const { skills } = row
           if (skills.length) {
@@ -175,8 +182,6 @@ const EmployeesList = () => {
       {
         name: 'Project',
         minWidth: '320px',
-        selector: (row) => 'projects',
-        sortable: true,
         cell: (row) => {
           const { projects } = row
           if (projects.length) {
@@ -191,12 +196,13 @@ const EmployeesList = () => {
       {
         name: 'Role',
         minWidth: '138px',
-        selector: (row) => 'role',
-        sortable: true,
         cell: (row) => {
           const { roles } = row
           if (roles.length) {
-            return roles[0].empRoleName
+            return join(
+              roles.map(({ empRoleName }) => empRoleName),
+              ', '
+            )
           }
           return 'N/A'
         }
@@ -221,15 +227,14 @@ const EmployeesList = () => {
       {
         name: 'Status',
         minWidth: '138px',
-        selector: (row) => 'status',
-        sortable: true,
         cell: (row) => {
           const {
-            statusDetail: { name }
+            statusDetail: { id, name }
           } = row
+          const color = statusSchema[id] || 'light-success'
           return (
-            <Badge className="text-capitalize" color="light-success" pill>
-              {name ?? 'N/A'}
+            <Badge className="text-capitalize" color={color} pill>
+              {name}
             </Badge>
           )
         }
@@ -283,6 +288,7 @@ const EmployeesList = () => {
             searchTerm={searchTerm}
             onSelectSkills={handleSelectSkills}
             onSearch={handleOnSearch}
+            onAddEmployee={handleOpenAddEmployee}
             skills={skills}
           />
         }
@@ -292,6 +298,10 @@ const EmployeesList = () => {
         employeeId={employeeId}
         onClose={handleCloseEditEmployee}
       />
+      {/* <ListAddEmployee
+        open={openAddEmployee}
+        onClose={handleCloseAddEmployee}
+      /> */}
     </Card>
   )
 }

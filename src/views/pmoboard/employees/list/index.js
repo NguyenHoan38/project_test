@@ -1,6 +1,5 @@
 // ** User List Component
 import ListEmployees from './ListEmployees'
-
 // ** Styles
 import '@styles/react/apps/app-users.scss'
 

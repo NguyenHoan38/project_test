@@ -1,54 +1,67 @@
+import axios from '@src/utility/axios'
+import useDerivedState from '@src/utility/hooks/useDerivedState'
 import { selectThemeColors } from '@utils'
 import classnames from 'classnames'
-import { useState } from 'react'
-import { useSelector } from 'react-redux'
+import { useEffect, useState, useRef, useCallback } from 'react'
 import Select from 'react-select'
-import { CustomInput, FormFeedback, FormGroup, Label } from 'reactstrap'
+import { Button, CustomInput, FormFeedback, FormGroup, Label } from 'reactstrap'
 import styled from 'styled-components'
-
-const levelOptions = [
-  { value: 1, label: 'Level 1' },
-  { value: 2, label: 'Level 2' },
-  { value: 3, label: 'Level 3' }
-]
+import ListAddSkills from './ListAddSkills'
 
 const ListSkills = (props) => {
-  const { skills: ititialSkills } = props
-  const employeeSkills = useSelector((state) => state.employees.skills)
+  const { skills: initialSkills, onSetSkills } = props
+  const [levelOptions, setLevelOptions] = useState({})
+  const [openAddSkills, setOpenAddSkills] = useState(false)
+  const ref = useRef(null)
 
-  const [errors, setErrors] = useState(() => {
-    return Object.values(employeeSkills).reduce((acc, val) => {
-      const { id } = val
-      acc[id] = null
+  const handleToggleAddSkills = () => {
+    setOpenAddSkills(!openAddSkills)
+  }
+
+  const [skills, setSkills] = useDerivedState(() => {
+    return initialSkills.reduce((acc, val) => {
+      const { skillId } = val
+      acc[skillId] = true
       return acc
     }, {})
   })
 
-  const [skills, setSkills] = useState(() => {
-    return Object.values(employeeSkills).reduce((acc, val) => {
-      const { id } = val
-      const checked =
-        ititialSkills.findIndex(({ skillId }) => id === skillId) !== -1
-      if (checked) {
-        acc[id] = true
-      } else {
-        acc[id] = false
+  const [levels, setLevels] = useDerivedState(() => {
+    return initialSkills.reduce((acc, val) => {
+      const { skillId } = val
+      acc[skillId] = val
+      return acc
+    }, {})
+  })
+
+  const [errors, setErrors] = useDerivedState(() => {
+    return initialSkills.reduce((acc, val) => {
+      const { skillId } = val
+      acc[skillId] = null
+      return acc
+    }, {})
+  })
+
+  const [addedSkills, setAddedSkills] = useState([])
+
+  const handleSetAddedSkills = useCallback((skills) => {
+    setAddedSkills(skills)
+  }, [])
+
+  useEffect(() => {
+    const skillFiltered = Object.keys(skills).reduce((acc, skillId) => {
+      if (skills[skillId] && levels[skillId]) {
+        const skill = levels[skillId]
+        acc.push(skill)
       }
       return acc
-    }, {})
-  })
+    }, [])
 
-  const [levels, setLevels] = useState(() => {
-    return Object.values(employeeSkills).reduce((acc, val) => {
-      const { id } = val
-      acc[id] = null
-      return acc
-    }, {})
-  })
+    onSetSkills([...skillFiltered, ...addedSkills])
+  }, [skills, levels, addedSkills])
 
   const handleSelectSkill = (skillId) => (event) => {
     const checked = event.target.checked
-
     if (!checked) {
       setLevels((state) => ({
         ...state,
@@ -59,7 +72,6 @@ const ListSkills = (props) => {
         [skillId]: null
       }))
     }
-
     setSkills((state) => ({
       ...state,
       [skillId]: checked
@@ -84,37 +96,47 @@ const ListSkills = (props) => {
     }))
   }
 
-  /*
   useEffect(() => {
-    const result = Object.keys(skills).reduce((acc, skillId) => {
-      const entry = {};
-      if (skills[skillId] && levels[skillId]) {
-        const { value } = levels[skillId];
-        entry.skillId = skillId;
-        entry.levelId = value;
-        acc.push(entry);
-      }
-      return acc;
-    }, []);
+    const allIds = []
+    const promises = initialSkills.map(({ skillId }) => {
+      allIds.push(skillId)
+      return axios.get('/resource/getLevelSkillById', {
+        params: { id: skillId }
+      })
+    })
+    Promise.all(promises)
+      .then((response) => {
+        const levelOptions = {}
+        response.forEach(({ data }, i) => {
+          const skillId = allIds[i]
+          levelOptions[skillId] = data
+        })
+        setLevelOptions(levelOptions)
+      })
+      .catch((error) => {
+        console.log(error)
+      })
+  }, [initialSkills])
 
-    const errorsFiltered = Object.keys(errors).reduce((acc, skillId) => {
-      if (errors[skillId]) {
-        acc[skillId] = errors[skillId];
-      }
-      return acc;
-    }, {});
-
-    // console.log(result);
-    // console.log(errorsFiltered);
-  }, [skills, levels, errors]);
-  */
+  useEffect(() => {
+    if (ref.current && openAddSkills) {
+      ref.current.scrollIntoView({
+        behavior: 'smooth',
+        block: 'center'
+      })
+    }
+  }, [openAddSkills])
 
   return (
-    <FormGroup>
+    <SkillFormGroup>
       <Label for="skills">Skills</Label>
-      <SkillWrapper>
-        <SkillContainer className="p-75 border-primary rounded">
-          {Object.entries(skills).map(([skillId, checked]) => {
+      <SkillWrapper ref={ref}>
+        <SkillContainer
+          className="p-75 border-primary rounded"
+          overFlow={openAddSkills}
+        >
+          {initialSkills.map(({ skillId, skillName }) => {
+            const checked = skills[skillId]
             return (
               <SkillItem key={skillId}>
                 <CustomInput
@@ -122,7 +144,7 @@ const ListSkills = (props) => {
                   type="checkbox"
                   id={skillId}
                   checked={checked}
-                  label={employeeSkills[skillId].name}
+                  label={skillName}
                   onChange={handleSelectSkill(skillId)}
                   className="m-0"
                 />
@@ -133,12 +155,18 @@ const ListSkills = (props) => {
                     theme={selectThemeColors}
                     className="react-select"
                     classNamePrefix="select"
-                    options={levelOptions}
+                    options={levelOptions[skillId]}
                     onChange={handleSelectLevel(skillId)}
                     value={levels[skillId]}
                     className={classnames({
                       'is-invalid': Boolean(errors[skillId])
                     })}
+                    getOptionLabel={(option) => {
+                      return option.levelSkillName
+                    }}
+                    getOptionValue={(option) => {
+                      return option.levelSkillId
+                    }}
                   />
                   {errors[skillId] && (
                     <FormFeedback>{errors[skillId]}</FormFeedback>
@@ -147,11 +175,31 @@ const ListSkills = (props) => {
               </SkillItem>
             )
           })}
+          <ListAddSkills
+            open={openAddSkills}
+            initialSkills={skills}
+            onAddSkills={handleSetAddedSkills}
+          />
         </SkillContainer>
       </SkillWrapper>
-    </FormGroup>
+      <AddSkillWrapper>
+        <Button.Ripple
+          color="primary"
+          outline
+          size="sm"
+          onClick={handleToggleAddSkills}
+        >
+          {openAddSkills ? 'Close' : 'Add Skills'}
+        </Button.Ripple>
+      </AddSkillWrapper>
+    </SkillFormGroup>
   )
 }
+
+const SkillFormGroup = styled(FormGroup)({
+  position: 'relative',
+  zIndex: 2
+})
 
 const SkillWrapper = styled('div')({
   display: 'grid',
@@ -159,23 +207,31 @@ const SkillWrapper = styled('div')({
   marginTop: '0.5rem'
 })
 
-const SkillContainer = styled('div')({
+const SkillContainer = styled('div')(({ overFlow }) => ({
+  position: 'relative',
   display: 'flex',
   flexDirection: 'column',
   '& > * + *': {
     marginTop: '0.75rem'
   },
-  maxHeight: 'calc(38px * 5 + 0.75rem * 6)',
-  overflowY: 'auto',
-  isolation: 'isolate'
-})
+  ...(overFlow && {
+    maxHeight: 'calc(38px * 7 + 0.75rem * 8)',
+    overflowY: 'auto'
+  })
+}))
 
-const SkillItem = styled('div')({
+export const SkillItem = styled('div')({
   display: 'flex',
   alignItems: 'center',
   '& > *': {
     flex: 1
   }
+})
+
+const AddSkillWrapper = styled('div')({
+  marginTop: '0.75rem',
+  display: 'flex',
+  justifyContent: 'flex-end'
 })
 
 export default ListSkills
