@@ -6,7 +6,8 @@ const initialState = {
   total: 1,
   params: {},
   skills: {},
-  roles: []
+  roles: [],
+  pending: false
 }
 
 // Employees reducer
@@ -19,6 +20,18 @@ const employees = (state = initialState, action) => {
     case 'GET_FILTERED_EMPLOYEES': {
       const { data, total } = action
       return { ...state, data, total }
+    }
+    case 'SET_EMPLOYEE_DETAILS': {
+      const { id } = action.payload
+      const employee = state.byId[id]
+      const byId = {
+        ...state.byId,
+        [id]: { ...employee, ...action.payload }
+      }
+      return { ...state, byId }
+    }
+    case 'PENDING': {
+      return { ...state, pending: action.payload }
     }
     default:
       return { ...state }

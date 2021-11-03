@@ -1,30 +1,23 @@
 import axios from 'axios'
+import { DOMAIN } from '@src/constant'
 
 const instance = axios.create({
-  baseURL: 'https://dlinh.online:9994/api',
+  baseURL: DOMAIN,
   headers: {
     'Content-Type': 'application/json'
   }
 })
 
-// Add a request interceptor
-instance.interceptors.request.use(function (config) {
-  // Do something before request is sent
-  return config
-}, function (error) {
-  // Do something with request error
-  return Promise.reject(error)
-})
+// Request interceptor
+instance.interceptors.request.use(
+  (config) => config,
+  (error) => Promise.reject(error)
+)
 
-// Add a response interceptor
-instance.interceptors.response.use(function (response) {
-  // Any status code that lie within the range of 2xx cause this function to trigger
-  // Do something with response data
-  return response.data
-}, function (error) {
-  // Any status codes that falls outside the range of 2xx cause this function to trigger
-  // Do something with response error
-  return Promise.reject(error)
-})
+// Response interceptor
+instance.interceptors.response.use(
+  (response) => response.data,
+  (error) => Promise.reject(error)
+)
 
 export default instance

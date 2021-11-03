@@ -1,11 +1,20 @@
 import axios from '@src/utility/axios'
 import keyBy from 'lodash.keyby'
+import { ToastContainer, toast } from 'react-toastify'
+
+// Chưa có API
+const statusOptions = [
+  { value: 1, label: 'Active' },
+  { value: 2, label: 'Inactive' },
+  { value: 3, label: 'Onboarding' },
+  { value: 4, label: 'Off Board' }
+]
 
 // Get employee details
 export const getEmployeeDetails = (params) => async (dispatch) => {
   try {
     const [employees, skills, roles] = await Promise.all([
-      axios.get('/resource/getListEmployee', params),
+      axios.post('/resource/getListEmployee', params),
       axios.get('/resource/getListEmployeeSkill'),
       axios.get('/resource/getListEmployeeRole')
     ])
@@ -16,9 +25,55 @@ export const getEmployeeDetails = (params) => async (dispatch) => {
         byId: keyBy(employees.data, 'id'),
         allIds: Object.keys(employees.data),
         total: employees.data.length,
-        skills: keyBy(skills, 'id'),
-        roles
+        skills: keyBy(skills.data, 'id'),
+        roles: roles.data
       }
+    })
+  } catch (error) {
+    console.log(error)
+  }
+}
+
+export const updateEmployee = (params) => async (dispatch) => {
+  try {
+    const { status, roles, location, dob, skills, ...rest } = params
+    const employee = {
+      ...rest,
+      status: status.value,
+      roles: roles.map(({ value }) => value),
+      location: location.value,
+      dob: dob.toISOString(),
+      skills: skills.map(({ skillId, levelSkillId }) => ({
+        skillId,
+        levelSkillId
+      }))
+    }
+
+    const employeeUpdated = {
+      ...rest,
+      statusDetail: {
+        id: status.value,
+        name: status.label
+      },
+      roles: roles.map(({ value, label }) => ({
+        empRoleId: value,
+        empRoleName: label
+      })),
+      locationDetail: {
+        id: location.value,
+        name: location.label
+      },
+      dob: dob.toISOString(),
+      skills
+    }
+
+    const result = await axios.post('/resource/editEmployee', employee)
+    toast('Employee updated successfully')
+    console.log(result)
+
+    dispatch({
+      type: 'SET_EMPLOYEE_DETAILS',
+      payload: employeeUpdated
     })
   } catch (error) {
     console.log(error)
