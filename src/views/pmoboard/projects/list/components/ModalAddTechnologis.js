@@ -56,25 +56,25 @@ const ModalExample = ({ modal, toggle, titleForm }) => {
             <Modal isOpen={modal} toggle={handleToggleForm} external={externalCloseBtn}>
                 <ModalHeader>ADD {titleForm}</ModalHeader>
                 <Form onSubmit={handleSubmit(onSubmit)}>
-                <ModalBody>
-                    <div className="col-12">
-                        <FormGroup>
-                            <Label for='name'>
-                            {titleForm} Name <span className='text-danger'>*</span>
-                            </Label>
-                            <Input
-                                name='name'
-                                id='name'
-                                innerRef={register({ required: true })}
-                                className={classnames({ 'is-invalid': errors['name'] })}
-                            />
-                        </FormGroup>
-                    </div>
-                </ModalBody>
-                <ModalFooter>
-                    <Button type='submit' color="primary" >Save</Button>{' '}
-                    <Button color="secondary" onClick={handleToggleForm}>Cancel</Button>
-                </ModalFooter>
+                    <ModalBody>
+                        <div className="col-12">
+                            <FormGroup>
+                                <Label for='name'>
+                                {titleForm} Name <span className='text-danger'>*</span>
+                                </Label>
+                                <Input
+                                    name='name'
+                                    id='name'
+                                    innerRef={register({ required: true })}
+                                    className={classnames({ 'is-invalid': errors['name'] })}
+                                />
+                            </FormGroup>
+                        </div>
+                    </ModalBody>
+                    <ModalFooter>
+                        <Button type='submit' color="primary" >Save</Button>{' '}
+                        <Button color="secondary" onClick={handleToggleForm}>Cancel</Button>
+                    </ModalFooter>
                 </Form>
             </Modal>
         </div>

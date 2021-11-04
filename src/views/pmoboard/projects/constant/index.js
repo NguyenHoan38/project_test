@@ -69,6 +69,22 @@ export const columns = [
     {
       id:8,
       background:'Navy'
+    },
+    {
+      id:9,
+      background:'Gray'
+    },
+    {
+      id:10,
+      background:'Black'
+    },
+    {
+      id:11,
+      background:'Yellow'
+    },
+    {
+      id:11,
+      background:'Green'
     }
   ]
   export default {

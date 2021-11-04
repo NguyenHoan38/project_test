@@ -44,19 +44,19 @@ function ProjectInformation(props) {
   const [lableCustomer, setLableCustomer] = useState(null)
   const [endProject, setEndProject] = useState(new Date())
   const [signal, setSignal] = useState('')
-  const [color, setColor] = useState('#ffff')
   const [status, setStatus] = useState(null)
   const [lableStatus, setLableStatus] = useState(null)
   const [pmLead, setPmLead] = useState(null)
   const [lablePmLead, setLablePmLead] = useState(null)
   const [technologyStack, setTechnologyStack] = useState(null)
   const [isOpen, setIsOpen] = useState(false)
-  const [checkColor, setcheckColor] = useState(null)
-  const [colorButton, setColorButton] = useState(null)
+  const [checkColor,  setcheckColor] = useState(1)
+  const [colorButton, setColorButton] = useState(projectColor[0])
   const [titleForm, setDataForm] = useState(null)
   const [industry, setIndustry] = useState(null)
   const toggle = () => setIsOpen(!isOpen)
   const [projectID, setprojectID] = useState(0)
+
   // ** Vars
   const { register, errors, handleSubmit } = useForm()
   // get state store
@@ -81,7 +81,6 @@ function ProjectInformation(props) {
         startDate,
         endDate,
         technology,
-        Milestones,
         statusDetail,
         domain
       } = projects.dataProject
@@ -236,7 +235,7 @@ function ProjectInformation(props) {
             />
           </FormGroup>
           <FormGroup>
-            <Label for="projectCode" className="mr-2 w-100">
+            <Label className="mr-2 w-100">
               Project Color
             </Label>
             <Button
@@ -352,8 +351,10 @@ function ProjectInformation(props) {
               onChange={setStatus}
               value={{ value: status, label: lableStatus }}
               onChange={(e) => {
-                setStatus(e.value)
+                if (e.value) {
+                  setStatus(e.value)
                 setLableStatus(e.label)
+                }
               }}
               options={typeData}
             />
@@ -458,11 +459,6 @@ function ProjectInformation(props) {
             </div>
           </FormGroup>
         </GridFormWrapper>
-        <ModalAddTechnologis
-          modal={modal}
-          toggle={toggleAddFormTech}
-          titleForm={titleForm}
-        />
         <div style={{ float: 'right' }}>
           <Button type="submit" className="mr-1" color="primary">
             Save
@@ -477,6 +473,11 @@ function ProjectInformation(props) {
           </Button>
         </div>
       </Form>
+      <ModalAddTechnologis
+          modal={modal}
+          toggle={toggleAddFormTech}
+          titleForm={titleForm}
+        />
     </div>
   )
 }
