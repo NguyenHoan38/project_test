@@ -12,9 +12,26 @@ const ListSkills = (props) => {
   const allSkills = useSelector((state) => state.employees.skills)
   const [levelOptions, setLevelOptions] = useState({})
 
-  const [skills, setSkills] = useState({})
-  const [levels, setLevels] = useState({})
-  const [errors, setErrors] = useState({})
+  const [skills, setSkills] = useState(() => {
+    return Object.keys(allSkills).reduce((acc, skillId) => {
+      acc[skillId] = false
+      return acc
+    }, {})
+  })
+
+  const [levels, setLevels] = useState(() => {
+    return Object.keys(allSkills).reduce((acc, skillId) => {
+      acc[skillId] = null
+      return acc
+    }, {})
+  })
+
+  const [errors, setErrors] = useState(() => {
+    return Object.keys(allSkills).reduce((acc, skillId) => {
+      acc[skillId] = null
+      return acc
+    }, {})
+  })
 
   const handleSelectSkill = (skillId) => (event) => {
     const checked = event.target.checked
@@ -63,20 +80,11 @@ const ListSkills = (props) => {
     Promise.all(promises)
       .then((response) => {
         const levelOptions = {}
-        const skills = {}
-        const levels = {}
-        const errors = {}
         response.forEach(({ data }, i) => {
           const skillId = allIds[i]
           levelOptions[skillId] = data
-          skills[skillId] = false
-          levels[skillId] = null
-          errors[skillId] = null
         })
         setLevelOptions(levelOptions)
-        setSkills(skills)
-        setLevels(levels)
-        setErrors(errors)
       })
       .catch((error) => {
         console.log(error)
@@ -92,8 +100,7 @@ const ListSkills = (props) => {
       return acc
     }, [])
 
-    // onAddSkills(skillFiltered)
-    console.log(skillFiltered)
+    onSetSkills(skillFiltered)
   }, [skills, levels])
 
   return (

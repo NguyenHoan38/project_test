@@ -20,7 +20,8 @@ import ListAddEmployee from './ListAddEmployee'
 const statusSchema = {
   1: 'light-success',
   2: 'light-warning',
-  3: 'light-secondary'
+  3: 'light-secondary',
+  4: 'light-info'
 }
 
 const EmployeesList = () => {
@@ -35,17 +36,7 @@ const EmployeesList = () => {
   const [openAddEmployee, setOpenAddEmployee] = useState(false)
 
   const handleOnChangeRowsPerPage = async (perPage, page) => {
-    // dispatch(
-    //   getData({
-    //     page: currentPage,
-    //     perPage,
-    //     role: currentRole.value,
-    //     currentPlan: currentPlan.value,
-    //     status: currentStatus.value,
-    //     q: searchTerm
-    //   })
-    // )
-    // setRowsPerPage(perPage)
+    setRowsPerPage(perPage)
   }
 
   const handleOnChangePage = (page) => {
