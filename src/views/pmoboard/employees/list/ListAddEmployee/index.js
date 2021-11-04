@@ -12,6 +12,7 @@ import { Button, Form, FormFeedback, FormGroup, Input, Label } from 'reactstrap'
 import styled from 'styled-components'
 import * as yup from 'yup'
 import Sidebar from '../ListSidebar'
+
 import ListSkills from './ListSkills'
 
 const EmployeeSchema = yup.object().shape({
