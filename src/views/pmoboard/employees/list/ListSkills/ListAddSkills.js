@@ -5,7 +5,7 @@ import React, { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
 import Select from 'react-select'
 import { CustomInput, FormFeedback, FormGroup } from 'reactstrap'
-import { SkillItem } from './ListSkills'
+import { SkillItem } from '.'
 
 const ListAddSkills = (props) => {
   const { open, initialSkills, onAddSkills } = props
@@ -55,7 +55,7 @@ const ListAddSkills = (props) => {
   useEffect(() => {
     const allIds = []
     const promises = Object.keys(allSkills)
-      .filter((skillId) => !(allSkills[skillId].id in initialSkills))
+      .filter((skillId) => !initialSkills.has(allSkills[skillId].id))
       .map((id) => {
         allIds.push(id)
         return axios.get('/resource/getLevelSkillById', {

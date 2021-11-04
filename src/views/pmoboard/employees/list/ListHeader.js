@@ -7,7 +7,7 @@ import { Button, Input, Label, Row } from 'reactstrap'
 import styled from 'styled-components'
 
 const ListHeader = (props) => {
-  const employeeSkills = useSelector((state) => state.employees.skills)
+  const allSkills = useSelector((state) => state.employees.skills)
   const { onSelectSkills, skills, onSearch, onAddEmployee } = props
   const [searchTerm, setSearchTerm] = useState('')
 
@@ -30,8 +30,8 @@ const ListHeader = (props) => {
   const overflowSkills = skills.length >= 3
 
   // map skills to options
-  const skillOptions = Object.entries(employeeSkills).map(([id, { name }]) => {
-    return { value: id, label: name }
+  const skillOptions = Object.keys(allSkills).map((skillId) => {
+    return allSkills[skillId]
   })
 
   return (
@@ -70,9 +70,15 @@ const ListHeader = (props) => {
               options={skillOptions}
               className="react-select ml-50 w-100"
               classNamePrefix="select"
+              getOptionLabel={(option) => {
+                return option.name
+              }}
+              getOptionValue={(option) => {
+                return option.id
+              }}
             />
           </div>
-          <Button.Ripple color="primary" onClick={onAddEmployee} disabled>
+          <Button.Ripple color="primary" onClick={onAddEmployee}>
             Add Employee
           </Button.Ripple>
         </SkillsWrapper>

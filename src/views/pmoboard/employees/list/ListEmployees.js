@@ -1,7 +1,9 @@
-// ** React Imports
 import Avatar from '@components/avatar'
+import {
+  getEmployeeDetails,
+  getFilteredEmployees
+} from '@src/slices/employees/thunk'
 import FormatFns from '@src/utility/FormatFns'
-// ** Styles
 import '@styles/react/libs/react-select/_react-select.scss'
 import '@styles/react/libs/tables/react-dataTable-component.scss'
 import join from 'lodash.join'
@@ -11,11 +13,9 @@ import { ChevronDown, Edit } from 'react-feather'
 import { useDispatch, useSelector } from 'react-redux'
 import { Link } from 'react-router-dom'
 import { Badge, Button, Card } from 'reactstrap'
-// ** Store & Actions
-import { getEmployeeDetails, getFilteredEmployees } from '../store/action'
 import ListEditEmployee from './ListEditEmployee'
-import ListAddEmployee from './ListAddEmployee'
 import ListHeader from './ListHeader'
+import ListAddEmployee from './ListAddEmployee'
 
 const statusSchema = {
   1: 'light-success',
@@ -24,11 +24,9 @@ const statusSchema = {
 }
 
 const EmployeesList = () => {
-  // ** Store Vars
   const dispatch = useDispatch()
   const store = useSelector((state) => state.employees)
 
-  // ** States
   const [searchTerm, setSearchTerm] = useState('')
   const [currentPage, setCurrentPage] = useState(1)
   const [rowsPerPage, setRowsPerPage] = useState(10)
@@ -69,10 +67,10 @@ const EmployeesList = () => {
   }
 
   const handleSelectSkills = (skills) => {
+    console.log(skills)
     setSkills(skills)
   }
 
-  // ** Get data on mount
   useEffect(() => {
     dispatch(getEmployeeDetails(null))
   }, [dispatch])
@@ -96,10 +94,8 @@ const EmployeesList = () => {
   useEffect(() => {
     dispatch(
       getFilteredEmployees({
-        page: currentPage,
-        perPage: rowsPerPage,
         searchTerm,
-        skills: skills.map((skill) => skill.value)
+        skills: skills.map((skill) => skill.id)
       })
     )
   }, [searchTerm, skills])
@@ -112,12 +108,8 @@ const EmployeesList = () => {
     setEmployeeId(null)
   }, [])
 
-  const handleOpenAddEmployee = () => {
-    setOpenAddEmployee(true)
-  }
-
-  const handleCloseAddEmployee = () => {
-    setOpenAddEmployee(false)
+  const handleToggleAddEmployee = () => {
+    setOpenAddEmployee(!openAddEmployee)
   }
 
   const columns = useMemo(
@@ -200,7 +192,7 @@ const EmployeesList = () => {
           const { roles } = row
           if (roles.length) {
             return join(
-              roles.map(({ empRoleName }) => empRoleName),
+              roles.map(({ name }) => name),
               ', '
             )
           }
@@ -269,7 +261,6 @@ const EmployeesList = () => {
     <Card>
       <DataTable
         noHeader
-        pagination
         subHeader
         responsive
         pagination
@@ -288,7 +279,7 @@ const EmployeesList = () => {
             searchTerm={searchTerm}
             onSelectSkills={handleSelectSkills}
             onSearch={handleOnSearch}
-            onAddEmployee={handleOpenAddEmployee}
+            onAddEmployee={handleToggleAddEmployee}
             skills={skills}
           />
         }
@@ -298,10 +289,10 @@ const EmployeesList = () => {
         employeeId={employeeId}
         onClose={handleCloseEditEmployee}
       />
-      {/* <ListAddEmployee
+      <ListAddEmployee
         open={openAddEmployee}
-        onClose={handleCloseAddEmployee}
-      /> */}
+        onClose={handleToggleAddEmployee}
+      />
     </Card>
   )
 }

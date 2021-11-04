@@ -1,37 +1,30 @@
-// ** React Import
-import { useState, useEffect } from 'react'
-import Select from 'react-select'
-import Flatpickr from 'react-flatpickr'
-
-import '@styles/react/libs/flatpickr/flatpickr.scss'
-import '@styles/base/pages/app-invoice.scss'
-import DataTable from 'react-data-table-component'
-
-// ** Custom Components
 import Sidebar from '@components/sidebar'
+import '@styles/base/pages/app-invoice.scss'
+import '@styles/react/libs/flatpickr/flatpickr.scss'
 
-// ** Utils
-import { isObjEmpty } from '@utils'
-// ** Third Party Components
 import classnames from 'classnames'
-import { useForm } from 'react-hook-form'
-import { Button, FormGroup, Label, FormText, Form, Input, TabContent, TabPane, Nav, NavItem, NavLink, Card, CardTitle, CardText, Row, Col } from 'reactstrap'
-
-// ** Store & Actions
-import { addProject, getCustomer, getResourceAllocation, getListProjectType,  getListEmployee, getListProjectTechnology, getListProjectDomain, getListEmployeeRole } from '../store/action'
+import { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import ColorPicker from '@components/pick-color'
+import { Nav, NavItem, NavLink, TabContent, TabPane } from 'reactstrap'
 
-import { columns } from '../constant'
-
-import ResourceAllocation from './components/ResourceAllocation'
+import {
+  getCustomer,
+  getListEmployee,
+  getListEmployeeRole,
+  getListProjectDomain,
+  getListProjectTechnology,
+  getListProjectType,
+  getResourceAllocation
+} from '../store/action'
 import ProjectInformation from './components/ProjectInformation'
+import ResourceAllocation from './components/ResourceAllocation'
+import ListSidebar from './ListSidebar'
 
 const SidebarNewProjects = ({ open, toggleSidebar, isNewProject }) => {
   // ** States
   const [milestone, setMilestone] = useState([new Date(), new Date()])
 
-  const projects = useSelector(state => state.projects)
+  const projects = useSelector((state) => state.projects)
   // ** Store Vars
   const dispatch = useDispatch()
   // GOI API
@@ -62,34 +55,31 @@ const SidebarNewProjects = ({ open, toggleSidebar, isNewProject }) => {
     dispatch(getListEmployeeRole())
   }, [dispatch, projects.dataListRoleEmployee.length])
 
-  const  hideSidebar = () => {
+  const hideSidebar = () => {
     toggleSidebar()
   }
   const [activeTab, setActiveTab] = useState('1')
-  const toggle = tab => {
+  const toggle = (tab) => {
     if (activeTab !== tab) setActiveTab(tab)
-    dispatch(
-      getResourceAllocation(isNewProject)
-    )
+    dispatch(getResourceAllocation(isNewProject))
   }
 
   return (
-
-    <Sidebar
-      width='70'
-      size='lg'
+    <ListSidebar
       open={open}
-      title={isNewProject > 0 ? `Edit ${projects.dataProject.name}` : 'New Project'}
-      headerClassName='mb-1'
-      contentClassName='pt-0'
-      toggleSidebar={toggleSidebar}
+      title={
+        isNewProject > 0 ? `Edit ${projects.dataProject.name}` : 'New Project'
+      }
+      onClose={toggleSidebar}
     >
       <div>
         <Nav tabs>
           <NavItem>
             <NavLink
               className={classnames({ active: activeTab === '1' })}
-              onClick={() => { toggle('1') }}
+              onClick={() => {
+                toggle('1')
+              }}
             >
               Project Information
             </NavLink>
@@ -98,7 +88,9 @@ const SidebarNewProjects = ({ open, toggleSidebar, isNewProject }) => {
             <NavItem>
               <NavLink
                 className={classnames({ active: activeTab === '2' })}
-                onClick={() => { toggle('2') }}
+                onClick={() => {
+                  toggle('2')
+                }}
               >
                 Resource Allocation
               </NavLink>
@@ -109,15 +101,13 @@ const SidebarNewProjects = ({ open, toggleSidebar, isNewProject }) => {
           <TabPane tabId="1">
             <ProjectInformation hideSidebar={hideSidebar} />
           </TabPane>
-          <TabPane tabId="2" >
+          <TabPane tabId="2">
             <ResourceAllocation />
           </TabPane>
         </TabContent>
       </div>
-
-    </Sidebar>
+    </ListSidebar>
   )
 }
-
 
 export default SidebarNewProjects

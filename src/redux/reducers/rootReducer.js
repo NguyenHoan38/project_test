@@ -1,5 +1,4 @@
-// ** Redux Imports
-import { combineReducers } from 'redux'
+import { combineReducers } from '@reduxjs/toolkit'
 
 // ** Reducers Imports
 import auth from './auth'
@@ -14,8 +13,7 @@ import calendar from '@src/views/apps/calendar/store/reducer'
 import ecommerce from '@src/views/apps/ecommerce/store/reducer'
 import dataTables from '@src/views/tables/data-tables/store/reducer'
 import projects from '@src/views/pmoboard/projects/store/reducer'
-import employees from '@src/views/pmoboard/employees/store/reducer'
-
+import employees from '@src/slices/employees'
 
 const rootReducer = combineReducers({
   auth,
