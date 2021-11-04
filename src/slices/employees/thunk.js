@@ -38,12 +38,12 @@ const editEmployee = createAsyncThunk(
       }))
     }
 
-    console.log(JSON.stringify(employee, null, 2))
+    // console.log(JSON.stringify(employee, null, 2))
 
-    // const { success } = await axios.post('/resource/editEmployee', employee)
-    // if (success) {
-    //   toast('Employee updated successfully')
-    // }
+    const { success } = await axios.post('/resource/editEmployee', employee)
+    if (success) {
+      toast('Employee updated successfully')
+    }
     return params
   }
 )

@@ -53,6 +53,11 @@ const locationOptions = [
 const ListAddEmployee = (props) => {
   const { open, onClose } = props
   const allRoles = useSelector((state) => state.employees.roles)
+  const [skills, setSkills] = useState([])
+
+  const handleSetSkills = (skills) => {
+    setSkills(skills)
+  }
 
   const { errors, handleSubmit, control } = useForm({
     mode: 'onChange',
@@ -216,7 +221,7 @@ const ListAddEmployee = (props) => {
             )}
           </FormGroup>
         </FormContainer>
-        {/* <ListSkills skills={skills} /> */}
+        <ListSkills onSetSkills={handleSetSkills} />
         <SideBarFooter className="mt-2">
           <Button color="primary" type="submit">
             Save
