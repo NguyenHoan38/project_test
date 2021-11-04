@@ -182,7 +182,7 @@ export const getListEmployeeRole = () => {
       .then((response) => {
         dispatch({
           type: 'GET_LIST_ROLE_EMPLOYEE',
-          data: response.data
+          data: response.data.data
         })
       })
       .catch((err) => console.log(err))

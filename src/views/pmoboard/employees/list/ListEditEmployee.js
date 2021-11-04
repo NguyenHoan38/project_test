@@ -1,5 +1,6 @@
 import Avatar from '@components/avatar'
 import { yupResolver } from '@hookform/resolvers/yup'
+import { editEmployee } from '@src/slices/employees/thunk'
 import '@styles/react/libs/flatpickr/flatpickr.scss'
 import '@styles/react/libs/react-select/_react-select.scss'
 import { selectThemeColors } from '@utils'
@@ -9,18 +10,9 @@ import Flatpickr from 'react-flatpickr'
 import { Controller, useForm } from 'react-hook-form'
 import { useDispatch, useSelector } from 'react-redux'
 import Select from 'react-select'
-import {
-  Button,
-  Form,
-  FormFeedback,
-  FormGroup,
-  Input,
-  Label,
-  Spinner
-} from 'reactstrap'
+import { Button, Form, FormFeedback, FormGroup, Input, Label } from 'reactstrap'
 import styled from 'styled-components'
 import * as yup from 'yup'
-import { updateEmployee } from '../store/action'
 import Sidebar from './ListSidebar'
 import ListSkills from './ListSkills'
 
@@ -32,12 +24,12 @@ const EmployeeSchema = yup.object().shape({
     .email('Email must be a valid email')
     .required('Email is a required field'),
   phone: yup.string().required('Phone is a required field'),
-  status: yup
+  statusDetail: yup
     .object()
     .required('Status is a required field')
     .nullable()
     .default(null),
-  location: yup
+  locationDetail: yup
     .object()
     .required('Location is a required field')
     .nullable()
@@ -48,34 +40,44 @@ const EmployeeSchema = yup.object().shape({
     .required('Roles is a required field')
 })
 
+const statusOptions = [
+  { id: 1, name: 'Active' },
+  { id: 2, name: 'Inactive' },
+  { id: 3, name: 'Onboarding' },
+  { id: 4, name: 'Off Board' }
+]
+
+const locationOptions = [
+  { id: 1, name: 'In house' },
+  { id: 2, name: 'Onsite' }
+]
+
 const ListEditEmployee = (props) => {
   const { employeeId, onClose } = props
   const dispatch = useDispatch()
-  const [loading, setLoading] = useState(false)
 
-  const selectedEmployee = useSelector((state) => {
+  const employee = useSelector((state) => {
     if (employeeId) {
       return state.employees.byId[employeeId]
     }
     return null
   })
 
-  const employeeRoles = useSelector((state) => state.employees.roles)
+  const allRoles = useSelector((state) => state.employees.roles)
 
   const [name, setName] = useState('')
   const [dob, setDob] = useState(new Date())
   const [email, setEmail] = useState('')
   const [phone, setPhone] = useState('')
   const [roles, setRoles] = useState([])
-  const [status, setStatus] = useState(null)
+  const [statusDetail, setStatusDetail] = useState(null)
   const [projects, setProjects] = useState([])
   const [employeeSkills, setEmployeeSkills] = useState([])
-  const [location, setLocation] = useState(null)
+  const [locationDetail, setLocationDetail] = useState(null)
   const [skills, setSkills] = useState([])
 
-  // Map unnormalized data to state
   useEffect(() => {
-    if (selectedEmployee) {
+    if (employee) {
       const {
         dob,
         email,
@@ -86,34 +88,19 @@ const ListEditEmployee = (props) => {
         projects,
         skills,
         locationDetail
-      } = selectedEmployee
-
-      const employeeRoles = roles.map((role) => {
-        const { empRoleId, empRoleName } = role
-        return { value: empRoleId, label: empRoleName }
-      })
-
-      const employeeStatus = {
-        value: statusDetail.id,
-        label: statusDetail.name
-      }
-
-      const employeeLocation = {
-        value: locationDetail.id,
-        label: locationDetail.name
-      }
+      } = employee
 
       setDob(new Date(dob))
       setEmail(email)
       setPhone(phone)
       setName(name)
-      setRoles(employeeRoles)
-      setStatus(employeeStatus)
+      setRoles(roles)
+      setStatusDetail(statusDetail)
       setProjects(projects)
       setEmployeeSkills(skills)
-      setLocation(employeeLocation)
+      setLocationDetail(locationDetail)
     }
-  }, [selectedEmployee])
+  }, [employee])
 
   const { errors, handleSubmit, control, reset } = useForm({
     mode: 'onChange',
@@ -128,42 +115,24 @@ const ListEditEmployee = (props) => {
       email,
       phone,
       roles,
-      status,
-      location
+      statusDetail,
+      locationDetail
     })
-  }, [dob, name, email, phone, roles, status, location])
+  }, [dob, name, email, phone, roles, statusDetail, locationDetail])
 
   const handleSetSkills = (skills) => {
     setSkills(skills)
   }
 
   const onSubmit = async (data) => {
-    const { id } = selectedEmployee
-    setLoading(true)
-    await dispatch(updateEmployee({ ...data, id, skills }))
-    setLoading(false)
+    const { id } = employee
+    const dobFormatted = dob.toISOString()
+    await dispatch(editEmployee({ ...data, id, dob: dobFormatted, skills }))
   }
-
-  const roleOptions = employeeRoles.map((role) => {
-    const { id, name } = role
-    return { value: id, label: name }
-  })
-
-  const statusOptions = [
-    { value: 1, label: 'Active' },
-    { value: 2, label: 'Inactive' },
-    { value: 3, label: 'Onboarding' },
-    { value: 4, label: 'Off Board' }
-  ]
-
-  const locationOptions = [
-    { value: 1, label: 'In House' },
-    { value: 2, label: 'Onsite' }
-  ]
 
   return (
     <Sidebar
-      open={Boolean(employeeId && selectedEmployee)}
+      open={Boolean(employeeId && employee)}
       title="Employee Infomation"
       onClose={onClose}
     >
@@ -233,20 +202,26 @@ const ListEditEmployee = (props) => {
             <Controller
               isClearable
               as={Select}
-              id="status"
+              id="statusDetail"
               control={control}
-              name="status"
+              name="statusDetail"
               options={statusOptions}
               className="react-select"
               classNamePrefix="select"
               theme={selectThemeColors}
-              defaultValue={status}
+              defaultValue={statusDetail}
               className={classnames({
-                'is-invalid': Boolean(errors?.status?.message)
+                'is-invalid': Boolean(errors?.statusDetail?.message)
               })}
+              getOptionLabel={(option) => {
+                return option.name
+              }}
+              getOptionValue={(option) => {
+                return option.id
+              }}
             />
-            {errors?.status?.message && (
-              <FormFeedback>{errors.status.message}</FormFeedback>
+            {errors?.statusDetail?.message && (
+              <FormFeedback>{errors.statusDetail.message}</FormFeedback>
             )}
           </StatusFormGroup>
           <FormGroup>
@@ -254,20 +229,26 @@ const ListEditEmployee = (props) => {
             <Controller
               isClearable
               as={Select}
-              id="location"
-              name="location"
+              id="locationDetail"
+              name="locationDetail"
               control={control}
               options={locationOptions}
               className="react-select"
               classNamePrefix="select"
               theme={selectThemeColors}
-              defaultValue={location}
+              defaultValue={locationDetail}
               className={classnames({
-                'is-invalid': Boolean(errors?.location?.message)
+                'is-invalid': Boolean(errors?.locationDetail?.message)
               })}
+              getOptionLabel={(option) => {
+                return option.name
+              }}
+              getOptionValue={(option) => {
+                return option.id
+              }}
             />
-            {errors?.location?.message && (
-              <FormFeedback>{errors.location.message}</FormFeedback>
+            {errors?.locationDetail?.message && (
+              <FormFeedback>{errors.locationDetail.message}</FormFeedback>
             )}
           </FormGroup>
         </FormContainer>
@@ -278,7 +259,7 @@ const ListEditEmployee = (props) => {
               isClearable
               as={Select}
               control={control}
-              options={roleOptions}
+              options={allRoles}
               className="react-select"
               classNamePrefix="select"
               theme={selectThemeColors}
@@ -289,6 +270,12 @@ const ListEditEmployee = (props) => {
               className={classnames({
                 'is-invalid': Boolean(errors?.roles?.message)
               })}
+              getOptionLabel={(option) => {
+                return option.name
+              }}
+              getOptionValue={(option) => {
+                return option.id
+              }}
             />
             {errors?.roles?.message && (
               <FormFeedback>{errors.roles.message}</FormFeedback>
@@ -314,19 +301,8 @@ const ListEditEmployee = (props) => {
           </ProjectWrapper>
         </FormGroup>
         <SideBarFooter className="mt-2">
-          <Button
-            color="primary"
-            type="submit"
-            disabled={Object.keys(errors).length > 0}
-          >
-            {loading ? (
-              <>
-                <Spinner color="white" size="sm" />
-                <span className="ml-50">Save</span>
-              </>
-            ) : (
-              'Save'
-            )}
+          <Button color="primary" type="submit">
+            Save
           </Button>
           <Button color="primary" outline className="ml-50" onClick={onClose}>
             Cancel

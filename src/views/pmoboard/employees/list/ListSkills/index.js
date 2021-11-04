@@ -21,9 +21,9 @@ const ListSkills = (props) => {
   const [skills, setSkills] = useDerivedState(() => {
     return initialSkills.reduce((acc, val) => {
       const { skillId } = val
-      acc[skillId] = true
+      acc.set(skillId, true)
       return acc
-    }, {})
+    }, new Map())
   })
 
   const [levels, setLevels] = useDerivedState(() => {
@@ -49,14 +49,13 @@ const ListSkills = (props) => {
   }, [])
 
   useEffect(() => {
-    const skillFiltered = Object.keys(skills).reduce((acc, skillId) => {
-      if (skills[skillId] && levels[skillId]) {
+    const skillFiltered = []
+    for (const [skillId, value] of skills) {
+      if (value && levels[skillId]) {
         const skill = levels[skillId]
-        acc.push(skill)
+        skillFiltered.push(skill)
       }
-      return acc
-    }, [])
-
+    }
     onSetSkills([...skillFiltered, ...addedSkills])
   }, [skills, levels, addedSkills])
 
@@ -72,10 +71,11 @@ const ListSkills = (props) => {
         [skillId]: null
       }))
     }
-    setSkills((state) => ({
-      ...state,
-      [skillId]: checked
-    }))
+    setSkills((state) => {
+      const map = new Map(state)
+      map.set(skillId, checked)
+      return map
+    })
   }
 
   const handleSelectLevel = (skillId) => (result) => {
@@ -136,7 +136,7 @@ const ListSkills = (props) => {
           overFlow={openAddSkills}
         >
           {initialSkills.map(({ skillId, skillName }) => {
-            const checked = skills[skillId]
+            const checked = skills.get(skillId)
             return (
               <SkillItem key={skillId}>
                 <CustomInput

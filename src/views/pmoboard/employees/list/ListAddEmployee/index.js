@@ -1,4 +1,3 @@
-import Avatar from '@components/avatar'
 import { yupResolver } from '@hookform/resolvers/yup'
 import '@styles/react/libs/flatpickr/flatpickr.scss'
 import '@styles/react/libs/react-select/_react-select.scss'
@@ -12,7 +11,7 @@ import Select from 'react-select'
 import { Button, Form, FormFeedback, FormGroup, Input, Label } from 'reactstrap'
 import styled from 'styled-components'
 import * as yup from 'yup'
-import Sidebar from './ListSidebar'
+import Sidebar from '../ListSidebar'
 import ListSkills from './ListSkills'
 
 const EmployeeSchema = yup.object().shape({
@@ -23,12 +22,12 @@ const EmployeeSchema = yup.object().shape({
     .email('Email must be a valid email')
     .required('Email is a required field'),
   phone: yup.string().required('Phone is a required field'),
-  status: yup
+  statusDetail: yup
     .object()
     .required('Status is a required field')
     .nullable()
     .default(null),
-  location: yup
+  locationDetail: yup
     .object()
     .required('Location is a required field')
     .nullable()
@@ -39,54 +38,39 @@ const EmployeeSchema = yup.object().shape({
     .required('Roles is a required field')
 })
 
+const statusOptions = [
+  { id: 1, name: 'Active' },
+  { id: 2, name: 'Inactive' },
+  { id: 3, name: 'Onboarding' },
+  { id: 4, name: 'Off Board' }
+]
+
+const locationOptions = [
+  { id: 1, name: 'In house' },
+  { id: 2, name: 'Onsite' }
+]
+
 const ListAddEmployee = (props) => {
   const { open, onClose } = props
-
-  const employeeRoles = useSelector((state) => state.employees.roles)
-
-  const [name, setName] = useState('')
-  const [dob, setDob] = useState(new Date())
-  const [email, setEmail] = useState('')
-  const [phone, setPhone] = useState('')
-  const [roles, setRoles] = useState([])
-  const [data, setData] = useState(null)
-  const [status, setStatus] = useState(null)
-  const [projects, setProjects] = useState([])
-  const [skills, setSkills] = useState([])
+  const allRoles = useSelector((state) => state.employees.roles)
 
   const { errors, handleSubmit, control } = useForm({
     mode: 'onChange',
     resolver: yupResolver(EmployeeSchema),
     defaultValues: {
-      name,
-      dob,
-      email,
-      phone,
-      roles,
-      status
+      name: '',
+      dob: new Date(),
+      email: '',
+      phone: '',
+      statusDetail: null,
+      locationDetail: null,
+      roles: []
     }
   })
 
   const onSubmit = async (data) => {
-    setData(data)
+    console.log(JSON.stringify(data, null, 2))
   }
-
-  const roleOptions = employeeRoles.map((role) => {
-    const { id, name } = role
-    return { value: id, label: name }
-  })
-
-  const locationOptions = [
-    { value: 1, label: 'In House' },
-    { value: 2, label: 'On site' }
-  ]
-
-  const statusOptions = [
-    { value: 1, label: 'Active' },
-    { value: 2, label: 'Inactive' },
-    { value: 3, label: 'Onboarding' },
-    { value: 4, label: 'Off Board' }
-  ]
 
   return (
     <Sidebar open={open} title="Add Employee" onClose={onClose}>
@@ -100,10 +84,10 @@ const ListAddEmployee = (props) => {
               name="name"
               as={Input}
               className={classnames({
-                'is-invalid': Boolean(errors?.name?.message)
+                'is-invalid': Boolean(errors.name?.message)
               })}
             />
-            {errors?.name?.message && (
+            {errors.name?.message && (
               <FormFeedback>{errors.name.message}</FormFeedback>
             )}
           </FormGroup>
@@ -115,10 +99,10 @@ const ListAddEmployee = (props) => {
               name="phone"
               as={Input}
               className={classnames({
-                'is-invalid': Boolean(errors?.phone?.message)
+                'is-invalid': Boolean(errors.phone?.message)
               })}
             />
-            {errors?.phone?.message && (
+            {errors.phone?.message && (
               <FormFeedback>{errors.phone.message}</FormFeedback>
             )}
           </FormGroup>
@@ -143,10 +127,10 @@ const ListAddEmployee = (props) => {
               name="email"
               as={Input}
               className={classnames({
-                'is-invalid': Boolean(errors?.email?.message)
+                'is-invalid': Boolean(errors.email?.message)
               })}
             />
-            {errors?.email?.message && (
+            {errors.email?.message && (
               <FormFeedback>{errors.email.message}</FormFeedback>
             )}
           </FormGroup>
@@ -155,20 +139,25 @@ const ListAddEmployee = (props) => {
             <Controller
               isClearable
               as={Select}
-              id="status"
-              name="status"
+              id="statusDetail"
               control={control}
+              name="statusDetail"
               options={statusOptions}
               className="react-select"
               classNamePrefix="select"
               theme={selectThemeColors}
-              defaultValue={status}
               className={classnames({
-                'is-invalid': Boolean(errors?.status?.message)
+                'is-invalid': Boolean(errors.statusDetail?.message)
               })}
+              getOptionLabel={(option) => {
+                return option.name
+              }}
+              getOptionValue={(option) => {
+                return option.id
+              }}
             />
-            {errors?.status?.message && (
-              <FormFeedback>{errors.status.message}</FormFeedback>
+            {errors.statusDetail?.message && (
+              <FormFeedback>{errors.statusDetail.message}</FormFeedback>
             )}
           </FormGroup>
           <FormGroup>
@@ -176,20 +165,25 @@ const ListAddEmployee = (props) => {
             <Controller
               isClearable
               as={Select}
-              id="location"
-              name="location"
+              id="locationDetail"
+              name="locationDetail"
               control={control}
               options={locationOptions}
               className="react-select"
               classNamePrefix="select"
               theme={selectThemeColors}
-              defaultValue={null}
               className={classnames({
-                'is-invalid': Boolean(errors?.location?.message)
+                'is-invalid': Boolean(errors.locationDetail?.message)
               })}
+              getOptionLabel={(option) => {
+                return option.name
+              }}
+              getOptionValue={(option) => {
+                return option.id
+              }}
             />
-            {errors?.location?.message && (
-              <FormFeedback>{errors.location.message}</FormFeedback>
+            {errors.locationDetail?.message && (
+              <FormFeedback>{errors.locationDetail.message}</FormFeedback>
             )}
           </FormGroup>
         </FormContainer>
@@ -200,39 +194,37 @@ const ListAddEmployee = (props) => {
               isClearable
               as={Select}
               control={control}
-              options={roleOptions}
+              options={allRoles}
               className="react-select"
               classNamePrefix="select"
               theme={selectThemeColors}
               isMulti
               name="roles"
               id="roles"
-              defaultValue={roles}
               className={classnames({
-                'is-invalid': Boolean(errors?.roles?.message)
+                'is-invalid': Boolean(errors.roles?.message)
               })}
+              getOptionLabel={(option) => {
+                return option.name
+              }}
+              getOptionValue={(option) => {
+                return option.id
+              }}
             />
-            {errors?.roles?.message && (
+            {errors.roles?.message && (
               <FormFeedback>{errors.roles.message}</FormFeedback>
             )}
           </FormGroup>
         </FormContainer>
-        <ListSkills skills={skills} />
+        {/* <ListSkills skills={skills} /> */}
         <SideBarFooter className="mt-2">
-          <Button
-            color="primary"
-            type="submit"
-            disabled={Object.keys(errors).length > 0}
-          >
+          <Button color="primary" type="submit">
             Save
           </Button>
-          <Button color="primary" outline className="ml-1" onClick={onClose}>
+          <Button color="primary" outline className="ml-50" onClick={onClose}>
             Cancel
           </Button>
         </SideBarFooter>
-        <Result>
-          <pre>{JSON.stringify(data, null, 4)}</pre>
-        </Result>
       </Form>
     </Sidebar>
   )
@@ -264,13 +256,6 @@ const ProjectContainer = styled('div')({
   flexDirection: 'column',
   '& > * + *': {
     marginTop: '0.75rem'
-  }
-})
-
-const Result = styled('div')({
-  margin: '1rem 0',
-  '& > pre': {
-    padding: '1rem'
   }
 })
 

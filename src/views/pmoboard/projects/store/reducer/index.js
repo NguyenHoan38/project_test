@@ -19,11 +19,17 @@ const projects = (state = initialState, action) => {
   switch (action.type) {
     case 'GET_ALL_DATA':
       return { ...state, allData: action.data }
-      case 'GET_RESOURCE_ALLOCATIONBYID':
-        return { ...state, dataResourceAllocationByID: action.data }
-      
-    case 'GET_LIST_ROLE_EMPLOYEE':
-      return { ...state, dataListRoleEmployee: action.data.map(res => { return { ...res, value: res.id, label: res.name } }) }  
+    case 'GET_RESOURCE_ALLOCATIONBYID':
+      return { ...state, dataResourceAllocationByID: action.data }
+
+    case 'GET_LIST_ROLE_EMPLOYEE': {
+      return {
+        ...state,
+        dataListRoleEmployee: action.data.map((res) => {
+          return { ...res, value: res.id, label: res.name }
+        })
+      }
+    }
     case 'GET_DATA':
       return {
         ...state,
@@ -34,27 +40,42 @@ const projects = (state = initialState, action) => {
     case 'GET_PROJECT':
       return { ...state, dataProject: action.data }
     case 'GET_RESOURCE_ALLOCATION':
-        return { ...state, dataResourceAllocation: action.data }
-       
+      return { ...state, dataResourceAllocation: action.data }
+
     case 'GET_CUSTOMER':
       return {
-        ...state, dataCustomer: action.data.map(res => { return { ...res, value: res.id, label: res.name } })
+        ...state,
+        dataCustomer: action.data.map((res) => {
+          return { ...res, value: res.id, label: res.name }
+        })
       }
     case 'GET_LIST_PROJECT_TYPE':
       return {
-        ...state, dataListProjectType: action.data.map(res => { return { ...res, value: res.id, label: res.name } })
+        ...state,
+        dataListProjectType: action.data.map((res) => {
+          return { ...res, value: res.id, label: res.name }
+        })
       }
     case 'GET_LIST_EMPLOYEE':
       return {
-        ...state, dataListEmployee: action.data.map(res => { return { ...res, value: res.id, label: res.name } })
+        ...state,
+        dataListEmployee: action.data.map((res) => {
+          return { ...res, value: res.id, label: res.name }
+        })
       }
     case 'GET_LIST_PROJECT_TECHNOLOGY':
       return {
-        ...state, dataListProjectTechnology: action.data.map(res => { return { ...res, value: res.id, label: res.name } })
+        ...state,
+        dataListProjectTechnology: action.data.map((res) => {
+          return { ...res, value: res.id, label: res.name }
+        })
       }
     case 'GET_LIST_PROJECT_DOMAIN':
       return {
-        ...state, dataListProjectDomain: action.data.map(res => { return { ...res, value: res.id, label: res.name } })
+        ...state,
+        dataListProjectDomain: action.data.map((res) => {
+          return { ...res, value: res.id, label: res.name }
+        })
       }
 
     case 'ADD_USER':
