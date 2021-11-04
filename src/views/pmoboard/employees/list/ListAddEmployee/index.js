@@ -108,6 +108,7 @@ const ListAddEmployee = (props) => {
               control={control}
               id="phone"
               name="phone"
+              type="number"
               as={Input}
               className={classnames({
                 'is-invalid': Boolean(errors.phone?.message)

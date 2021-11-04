@@ -40,16 +40,6 @@ const EmployeesList = () => {
   }
 
   const handleOnChangePage = (page) => {
-    // dispatch(
-    //   getData({
-    //     page: page + 1,
-    //     perPage: rowsPerPage,
-    //     role: currentRole.value,
-    //     currentPlan: currentPlan.value,
-    //     status: currentStatus.value,
-    //     q: searchTerm
-    //   })
-    // )
     // setCurrentPage(page + 1)
   }
 
@@ -65,22 +55,6 @@ const EmployeesList = () => {
   useEffect(() => {
     dispatch(getEmployeeDetails(null))
   }, [dispatch])
-
-  // ** Function in get data on rows per page
-  const handlePerPage = (e) => {
-    const value = parseInt(e.currentTarget.value)
-    // dispatch(
-    //   getData({
-    //     page: currentPage,
-    //     perPage: value,
-    //     role: currentRole.value,
-    //     currentPlan: currentPlan.value,
-    //     status: currentStatus.value,
-    //     q: searchTerm
-    //   })
-    // )
-    setRowsPerPage(value)
-  }
 
   useEffect(() => {
     dispatch(
@@ -265,9 +239,6 @@ const EmployeesList = () => {
         data={dataToRender()}
         subHeaderComponent={
           <ListHeader
-            handlePerPage={handlePerPage}
-            rowsPerPage={rowsPerPage}
-            searchTerm={searchTerm}
             onSelectSkills={handleSelectSkills}
             onSearch={handleOnSearch}
             onAddEmployee={handleToggleAddEmployee}
