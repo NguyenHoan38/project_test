@@ -124,6 +124,8 @@ function ResourceAllocation(props) {
             }
 
         }
+        setRole(null)
+        setLabelRole(null)
     }
     return (
         <div>
@@ -204,7 +206,9 @@ function ResourceAllocation(props) {
                         <div className='col-6'>
                             <FormGroup >
                                 <label className='title mr-4 w-100'> Main Headcount:</label>
-                                <CustomInput  type='checkbox' id='user-1' label='' checked={mainHeadcount === 1} value={mainHeadcount} onChange={date => {
+                                <CustomInput
+                                    className="zIndex0"
+                                    type='checkbox' id='user-1' label='' checked={mainHeadcount === 1} value={mainHeadcount} onChange={date => {
                                     setMainHeadcount(date.target.checked ? 1 : 0)
                                     setShadowId(null)
                                     
