@@ -20,7 +20,8 @@ import ListAddEmployee from './ListAddEmployee'
 const statusSchema = {
   1: 'light-success',
   2: 'light-warning',
-  3: 'light-secondary'
+  3: 'light-secondary',
+  4: 'light-info'
 }
 
 const EmployeesList = () => {
@@ -35,30 +36,10 @@ const EmployeesList = () => {
   const [openAddEmployee, setOpenAddEmployee] = useState(false)
 
   const handleOnChangeRowsPerPage = async (perPage, page) => {
-    // dispatch(
-    //   getData({
-    //     page: currentPage,
-    //     perPage,
-    //     role: currentRole.value,
-    //     currentPlan: currentPlan.value,
-    //     status: currentStatus.value,
-    //     q: searchTerm
-    //   })
-    // )
-    // setRowsPerPage(perPage)
+    setRowsPerPage(perPage)
   }
 
   const handleOnChangePage = (page) => {
-    // dispatch(
-    //   getData({
-    //     page: page + 1,
-    //     perPage: rowsPerPage,
-    //     role: currentRole.value,
-    //     currentPlan: currentPlan.value,
-    //     status: currentStatus.value,
-    //     q: searchTerm
-    //   })
-    // )
     // setCurrentPage(page + 1)
   }
 
@@ -74,22 +55,6 @@ const EmployeesList = () => {
   useEffect(() => {
     dispatch(getEmployeeDetails(null))
   }, [dispatch])
-
-  // ** Function in get data on rows per page
-  const handlePerPage = (e) => {
-    const value = parseInt(e.currentTarget.value)
-    // dispatch(
-    //   getData({
-    //     page: currentPage,
-    //     perPage: value,
-    //     role: currentRole.value,
-    //     currentPlan: currentPlan.value,
-    //     status: currentStatus.value,
-    //     q: searchTerm
-    //   })
-    // )
-    setRowsPerPage(value)
-  }
 
   useEffect(() => {
     dispatch(
@@ -274,9 +239,6 @@ const EmployeesList = () => {
         data={dataToRender()}
         subHeaderComponent={
           <ListHeader
-            handlePerPage={handlePerPage}
-            rowsPerPage={rowsPerPage}
-            searchTerm={searchTerm}
             onSelectSkills={handleSelectSkills}
             onSearch={handleOnSearch}
             onAddEmployee={handleToggleAddEmployee}

@@ -1,4 +1,4 @@
-import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
+import { createAsyncThunk } from '@reduxjs/toolkit'
 import axios from '@src/utility/axios'
 import keyBy from 'lodash.keyby'
 import { toast } from 'react-toastify'
@@ -48,6 +48,38 @@ const editEmployee = createAsyncThunk(
   }
 )
 
+const addEmployee = createAsyncThunk(
+  'employees/extra/addEmployee',
+  async (params) => {
+    const { statusDetail, roles, locationDetail, skills, ...rest } = params
+
+    const employee = {
+      ...rest,
+      status: statusDetail.id,
+      roles: roles.map(({ id }) => id),
+      location: locationDetail.id,
+      skills: skills.map(({ skillId, levelSkillId }) => ({
+        skillId,
+        levelSkillId
+      }))
+    }
+
+    const { success, data } = await axios.post(
+      '/resource/addEmployee',
+      employee
+    )
+
+    const { empId } = data
+
+    if (success) {
+      toast('Employee added successfully')
+      return { ...params, id: empId, projects: [] }
+    }
+
+    return null
+  }
+)
+
 const getFilteredEmployees = createAsyncThunk(
   'employees/extra/getFilteredEmployees',
   async (params, { getState }) => {
@@ -82,4 +114,4 @@ const getFilteredEmployees = createAsyncThunk(
   }
 )
 
-export { getEmployeeDetails, editEmployee, getFilteredEmployees }
+export { getEmployeeDetails, editEmployee, getFilteredEmployees, addEmployee }

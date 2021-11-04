@@ -1,5 +1,10 @@
 import { createSlice } from '@reduxjs/toolkit'
-import { editEmployee, getEmployeeDetails, getFilteredEmployees } from './thunk'
+import {
+  editEmployee,
+  getEmployeeDetails,
+  getFilteredEmployees,
+  addEmployee
+} from './thunk'
 
 const initialState = {
   byId: {},
@@ -35,6 +40,12 @@ const employees = createSlice({
         const { data, total } = action.payload
         state.data = data
         state.total = total
+      })
+      .addCase(addEmployee.fulfilled, (state, action) => {
+        if (action.payload) {
+          const { id } = action.payload
+          state.byId[id] = action.payload
+        }
       })
       .addDefaultCase((state) => state)
   }

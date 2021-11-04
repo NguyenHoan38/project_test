@@ -13,8 +13,9 @@ import Select from 'react-select'
 import { Button, Form, FormFeedback, FormGroup, Input, Label } from 'reactstrap'
 import styled from 'styled-components'
 import * as yup from 'yup'
-import Sidebar from './ListSidebar'
-import ListSkills from './ListSkills'
+import Sidebar from '../ListSidebar'
+import ListSkills from './ListEditEmployeeSkills'
+import axios from '@src/utility/axios'
 
 const EmployeeSchema = yup.object().shape({
   name: yup.string().required('Employee name is a required field'),
@@ -72,6 +73,7 @@ const ListEditEmployee = (props) => {
   const [roles, setRoles] = useState([])
   const [statusDetail, setStatusDetail] = useState(null)
   const [projects, setProjects] = useState([])
+  const [projectDetails, setProjectDetails] = useState({})
   const [employeeSkills, setEmployeeSkills] = useState([])
   const [locationDetail, setLocationDetail] = useState(null)
   const [skills, setSkills] = useState([])
@@ -102,6 +104,25 @@ const ListEditEmployee = (props) => {
     }
   }, [employee])
 
+  useEffect(() => {
+    if (employee) {
+      const { projects } = employee
+      Promise.all(
+        projects.map((project) => {
+          const { projectId } = project
+          return axios.get(`/resource/getProjectInfo/${projectId}`)
+        })
+      ).then((response) => {
+        const projectDetails = {}
+        response.forEach(({ data }) => {
+          const { id } = data
+          projectDetails[id] = data
+        })
+        setProjectDetails(projectDetails)
+      })
+    }
+  }, [employee])
+
   const { errors, handleSubmit, control, reset } = useForm({
     mode: 'onChange',
     resolver: yupResolver(EmployeeSchema)
@@ -128,6 +149,7 @@ const ListEditEmployee = (props) => {
     const { id } = employee
     const dobFormatted = dob.toISOString()
     await dispatch(editEmployee({ ...data, id, dob: dobFormatted, skills }))
+    onClose()
   }
 
   return (
@@ -283,23 +305,42 @@ const ListEditEmployee = (props) => {
           </RoleFormGroup>
         </FormContainer>
         <ListSkills skills={employeeSkills} onSetSkills={handleSetSkills} />
-        <FormGroup>
-          <Label for="projects">Projects</Label>
-          <ProjectWrapper>
-            <ProjectContainer>
-              {projects.map(({ projectId, projectName }) => (
-                <div className="d-flex align-items-center" key={projectId}>
-                  <Avatar
-                    color="light-primary"
-                    content="N/A"
-                    className="rounded"
-                  />
-                  <span className="font-weight-bold ml-1">{projectName}</span>
-                </div>
-              ))}
-            </ProjectContainer>
-          </ProjectWrapper>
-        </FormGroup>
+        {projects.length > 0 ? (
+          <FormGroup>
+            <Label for="projects">Projects</Label>
+            <ProjectWrapper>
+              <ProjectContainer>
+                {projects.map(({ projectId, projectName }) => {
+                  if (projectId in projectDetails) {
+                    const projectManager =
+                      projectDetails[projectId].projectManager.name
+                    return (
+                      <div
+                        className="d-flex align-items-center"
+                        key={projectId}
+                      >
+                        <Avatar
+                          color="light-primary"
+                          content="N/A"
+                          className="rounded"
+                        />
+                        <span className="font-weight-bold ml-1">
+                          {projectName}
+                        </span>
+                        <div className="d-flex align-items-center ml-auto">
+                          <Avatar color="light-primary" content="N/A" />
+                          <span className="ml-1">{projectManager}</span>
+                        </div>
+                      </div>
+                    )
+                  } else {
+                    return null
+                  }
+                })}
+              </ProjectContainer>
+            </ProjectWrapper>
+          </FormGroup>
+        ) : null}
         <SideBarFooter className="mt-2">
           <Button color="primary" type="submit">
             Save
@@ -340,7 +381,6 @@ const SideBarFooter = styled('div')({
 const ProjectWrapper = styled('div')({
   display: 'grid',
   gridTemplateColumns: '1fr',
-  marginLeft: '0.5rem',
   marginTop: '0.5rem'
 })
 
@@ -351,12 +391,5 @@ const ProjectContainer = styled('div')({
     marginTop: '0.75rem'
   }
 })
-
-/**
- <div className="d-flex align-items-center ml-auto">
-  <Avatar color="light-primary" content="N/A" />
-  <span className="ml-1">{name}</span>
-</div>
-*/
 
 export default memo(ListEditEmployee)

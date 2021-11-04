@@ -6,14 +6,14 @@ import classnames from 'classnames'
 import { memo, useState } from 'react'
 import Flatpickr from 'react-flatpickr'
 import { Controller, useForm } from 'react-hook-form'
-import { useSelector } from 'react-redux'
+import { useSelector, useDispatch } from 'react-redux'
 import Select from 'react-select'
 import { Button, Form, FormFeedback, FormGroup, Input, Label } from 'reactstrap'
 import styled from 'styled-components'
 import * as yup from 'yup'
 import Sidebar from '../ListSidebar'
-
-import ListSkills from './ListSkills'
+import ListSkills from './ListAddEmployeeSkills'
+import { addEmployee } from '@src/slices/employees/thunk'
 
 const EmployeeSchema = yup.object().shape({
   name: yup.string().required('Employee name is a required field'),
@@ -53,6 +53,8 @@ const locationOptions = [
 
 const ListAddEmployee = (props) => {
   const { open, onClose } = props
+  const dispatch = useDispatch()
+
   const allRoles = useSelector((state) => state.employees.roles)
   const [skills, setSkills] = useState([])
 
@@ -75,7 +77,10 @@ const ListAddEmployee = (props) => {
   })
 
   const onSubmit = async (data) => {
-    console.log(JSON.stringify(data, null, 2))
+    const { dob } = data
+    const dobFormatted = dob.toISOString()
+    await dispatch(addEmployee({ ...data, dob: dobFormatted, skills }))
+    onClose()
   }
 
   return (
@@ -103,6 +108,7 @@ const ListAddEmployee = (props) => {
               control={control}
               id="phone"
               name="phone"
+              type="number"
               as={Input}
               className={classnames({
                 'is-invalid': Boolean(errors.phone?.message)
@@ -140,7 +146,7 @@ const ListAddEmployee = (props) => {
               <FormFeedback>{errors.email.message}</FormFeedback>
             )}
           </FormGroup>
-          <FormGroup>
+          <StatusFormGroup>
             <Label for="status">Status *</Label>
             <Controller
               isClearable
@@ -165,7 +171,7 @@ const ListAddEmployee = (props) => {
             {errors.statusDetail?.message && (
               <FormFeedback>{errors.statusDetail.message}</FormFeedback>
             )}
-          </FormGroup>
+          </StatusFormGroup>
           <FormGroup>
             <Label for="location">Location *</Label>
             <Controller
@@ -194,7 +200,7 @@ const ListAddEmployee = (props) => {
           </FormGroup>
         </FormContainer>
         <FormContainer>
-          <FormGroup>
+          <RoleFormGroup>
             <Label for="roles">Roles *</Label>
             <Controller
               isClearable
@@ -220,7 +226,7 @@ const ListAddEmployee = (props) => {
             {errors.roles?.message && (
               <FormFeedback>{errors.roles.message}</FormFeedback>
             )}
-          </FormGroup>
+          </RoleFormGroup>
         </FormContainer>
         <ListSkills onSetSkills={handleSetSkills} />
         <SideBarFooter className="mt-2">
@@ -250,19 +256,14 @@ const SideBarFooter = styled('div')({
   justifyContent: 'flex-end'
 })
 
-const ProjectWrapper = styled('div')({
-  display: 'grid',
-  gridTemplateColumns: '1fr',
-  marginLeft: '0.5rem',
-  marginTop: '0.5rem'
+const StatusFormGroup = styled(FormGroup)({
+  position: 'relative',
+  zIndex: 4
 })
 
-const ProjectContainer = styled('div')({
-  display: 'flex',
-  flexDirection: 'column',
-  '& > * + *': {
-    marginTop: '0.75rem'
-  }
+const RoleFormGroup = styled(FormGroup)({
+  position: 'relative',
+  zIndex: 3
 })
 
 export default memo(ListAddEmployee)

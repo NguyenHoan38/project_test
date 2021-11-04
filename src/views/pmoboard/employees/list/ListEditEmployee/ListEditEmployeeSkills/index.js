@@ -6,7 +6,7 @@ import { useEffect, useState, useRef, useCallback } from 'react'
 import Select from 'react-select'
 import { Button, CustomInput, FormFeedback, FormGroup, Label } from 'reactstrap'
 import styled from 'styled-components'
-import ListAddSkills from './ListAddSkills'
+import AddSkills from './AddSkills'
 
 const ListSkills = (props) => {
   const { skills: initialSkills, onSetSkills } = props
@@ -175,7 +175,7 @@ const ListSkills = (props) => {
               </SkillItem>
             )
           })}
-          <ListAddSkills
+          <AddSkills
             open={openAddSkills}
             initialSkills={skills}
             onAddSkills={handleSetAddedSkills}
