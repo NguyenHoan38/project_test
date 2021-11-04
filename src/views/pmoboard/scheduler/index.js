@@ -1,7 +1,7 @@
 import React from 'react'
 
-const index = () => {
-  return <div>schedule calendar</div>
+const Scheduler = () => {
+  return <div>Schedule calendar</div>
 }
 
-export default index
+export default Scheduler
