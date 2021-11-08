@@ -19,7 +19,7 @@ import { isObjEmpty } from '@utils'
 import { projectColor } from '../../constant'
 import ModalAddTechnologis from './ModalAddTechnologis'
 // ** Store & Actions
-import { addProject, updateProject, getAllData } from '../../store/action'
+import { addProject, updateProject, getData } from '../../store/action'
 import { useDispatch, useSelector } from 'react-redux'
 import styled from 'styled-components'
 
@@ -33,6 +33,7 @@ const typeData = [
 // ** Store Vars
 //   const dispatch = useDispatch()
 function ProjectInformation(props) {
+  const {currentPage, rowsPerPage, searchObj} = props
   // ** Store Vars
   const dispatch = useDispatch()
   const [milestone, setMilestone] = useState([new Date()])
@@ -144,7 +145,7 @@ function ProjectInformation(props) {
         ).then((res) => {
           if (res && res.data && res.data && res.data.success) {
             props.hideSidebar()
-            dispatch(getAllData())
+            dispatch(getData({currentPage, rowsPerPage, searchObj}))
             toast.success(<ToastContent title={'Successful new creation!'} />, {
               transition: Slide,
               hideProgressBar: true,
@@ -172,7 +173,7 @@ function ProjectInformation(props) {
         ).then((res) => {
           if (res && res.data && res.data && res.data.success) {
             props.hideSidebar()
-            dispatch(getAllData())
+            dispatch(getData({currentPage, rowsPerPage, searchObj}))
             toast.success(<ToastContent title={'Update Successful!'} />, {
               transition: Slide,
               hideProgressBar: true,
@@ -275,7 +276,6 @@ function ProjectInformation(props) {
               isClearable={true}
               maxMenuHeight={220}
               name="type"
-              value={type}
               onChange={settype}
               value={{ value: type, label: typeLable }}
               onChange={(e) => {

@@ -3,7 +3,7 @@ import { Modal, ModalBody, ModalHeader } from 'reactstrap'
 import styled from 'styled-components'
 
 const Sidebar = (props) => {
-  const { open, onClose, title, children } = props
+  const { open, onClose, title, children, rowsPerPage, searchObj, currentPage } = props
 
   const CloseIcon = (
     <XSquare className="cursor-pointer" size={20} onClick={onClose} />

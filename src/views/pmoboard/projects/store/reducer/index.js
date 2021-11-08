@@ -1,6 +1,5 @@
 // ** Initial State
 const initialState = {
-  allData: [],
   data: [],
   total: 1,
   params: {},
@@ -17,8 +16,8 @@ const initialState = {
 
 const projects = (state = initialState, action) => {
   switch (action.type) {
-    case 'GET_ALL_DATA':
-      return { ...state, allData: action.data }
+    case 'GET_DATA':
+      return { ...state, data: action.data }
     case 'GET_RESOURCE_ALLOCATIONBYID':
       return { ...state, dataResourceAllocationByID: action.data }
 
@@ -30,13 +29,6 @@ const projects = (state = initialState, action) => {
         })
       }
     }
-    case 'GET_DATA':
-      return {
-        ...state,
-        data: action.data,
-        total: action.totalPages,
-        params: action.params
-      }
     case 'GET_PROJECT':
       return { ...state, dataProject: action.data }
     case 'GET_RESOURCE_ALLOCATION':

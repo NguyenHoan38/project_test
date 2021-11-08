@@ -5,7 +5,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { Slide, toast } from 'react-toastify'
 import { Badge, UncontrolledTooltip } from 'reactstrap'
 import { projectColor } from '../constant'
-import { deleteProject, getAllData, getProject } from '../store/action'
+import { deleteProject, getData, getProject } from '../store/action'
 
 const statusObj = {
   1: { color: 'light-success', name: 'active' },
@@ -81,7 +81,7 @@ const renderDuration = (row) => {
   )
 }
 
-export const columns = (showFormEdit) => {
+export const columns = (showFormEdit, currentPage, searchObj, rowsPerPage) => {
   // ** Store Vars
   const dispatch = useDispatch()
   const projects = useSelector((state) => state.projects)
@@ -93,7 +93,7 @@ export const columns = (showFormEdit) => {
   const delteProject = (id) => {
     dispatch(deleteProject({ id })).then((res) => {
       if (res && res.data && res.data && res.data.success) {
-        dispatch(getAllData())
+        dispatch(getData({currentPage, searchObj, rowsPerPage}))
         toast.success(<ToastContent title={'Successful delete!'} />, {
           transition: Slide,
           hideProgressBar: true,

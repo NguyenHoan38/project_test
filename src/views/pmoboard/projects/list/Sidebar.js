@@ -20,7 +20,7 @@ import ProjectInformation from './components/ProjectInformation'
 import ResourceAllocation from './components/ResourceAllocation'
 import ListSidebar from './ListSidebar'
 
-const SidebarNewProjects = ({ open, toggleSidebar, isNewProject }) => {
+const SidebarNewProjects = ({ open, toggleSidebar, isNewProject, currentPage, rowsPerPage, searchObj }) => {
   // ** States
   const [milestone, setMilestone] = useState([new Date(), new Date()])
 
@@ -99,10 +99,16 @@ const SidebarNewProjects = ({ open, toggleSidebar, isNewProject }) => {
         </Nav>
         <TabContent activeTab={activeTab}>
           <TabPane tabId="1">
-            <ProjectInformation hideSidebar={hideSidebar} />
+            <ProjectInformation
+            hideSidebar={hideSidebar}
+            rowsPerPage={rowsPerPage}
+            currentPage={currentPage}
+            searchObj={searchObj}
+            />
           </TabPane>
           <TabPane tabId="2">
-            <ResourceAllocation />
+            <ResourceAllocation
+            />
           </TabPane>
         </TabContent>
       </div>

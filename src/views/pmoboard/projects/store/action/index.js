@@ -18,20 +18,15 @@ export const setDataProject = () => {
   }
 }
 
-export const getAllData = () => {
+export const getData = (projectDto) => {
   return async (dispatch) => {
     await axios
-      .post(`${DOMAIN}/resource/getAllProjectInfo`, null)
+      .post(`${DOMAIN}/resource/getAllProjectInfo`, projectDto)
       .then((response) => {
+        const data = response?.data?.data ? response.data.data : null
         dispatch({
-          type: 'GET_ALL_DATA',
-          data:
-            response &&
-            response.data &&
-            response.data.data &&
-            response.data.data.length > 0
-              ? response.data.data
-              : []
+          type: 'GET_DATA',
+          data
         })
       })
       .catch((err) => console.log(err))
@@ -73,21 +68,6 @@ export const getListProjectDomain = () => {
         })
       })
       .catch((err) => console.log(err))
-  }
-}
-// ** Get data on page or row change
-export const getData = (params) => {
-  console.log(params)
-  let i = 0
-  i++
-  console.log(i)
-  return async (dispatch) => {
-    dispatch({
-      type: 'GET_DATA',
-      data: dataTest,
-      totalPages: 1,
-      params
-    })
   }
 }
 
