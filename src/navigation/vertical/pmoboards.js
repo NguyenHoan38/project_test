@@ -16,5 +16,11 @@ export default [
     title: "Employees",
     icon: <Users size={20} />,
     navLink: "/pmoboard/employees/list"
+  },
+  {
+    id: "allocation-resource",
+    title: "Allocation-resource",
+    icon: <Circle size={20} />,
+    navLink: "/pmoboard/allocation-resource"
   }
 ]

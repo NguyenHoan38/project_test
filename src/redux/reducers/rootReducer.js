@@ -14,7 +14,7 @@ import ecommerce from '@src/views/apps/ecommerce/store/reducer'
 import dataTables from '@src/views/tables/data-tables/store/reducer'
 import projects from '@src/views/pmoboard/projects/store/reducer'
 import employees from '@src/slices/employees'
-
+import resources from '@src/views/pmoboard/allocation-resource/store/reducer'
 const rootReducer = combineReducers({
   auth,
   todo,
@@ -28,7 +28,8 @@ const rootReducer = combineReducers({
   calendar,
   ecommerce,
   dataTables,
-  projects
+  projects,
+  resources
 })
 
 export default rootReducer

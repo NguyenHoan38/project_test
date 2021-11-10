@@ -12,8 +12,8 @@ const PmoBoardRoutes = [
     exact: true
   },
   {
-    path: "/pmoboard/employees/list",
-    component: lazy(() => import("../../views/pmoboard/employees/list")),
+    path: "/pmoboard/allocation-resource",
+    component: lazy(() => import("../../views/pmoboard/allocation-resource")),
     exact: true
   }
 ]
