@@ -1,93 +1,140 @@
-import Scheduler, { SchedulerData, ViewTypes } from 'react-big-scheduler'
+import React, { Component } from 'react'
+import * as moment from 'moment'
+//import 'moment/locale/zh-cn'
+import Scheduler, {
+  SchedulerData,
+  ViewTypes
+} from 'react-big-scheduler'
 import withDragDropContext from './withDnDContext'
 import 'react-big-scheduler/lib/css/style.css'
-import { Fragment, useEffect, useState } from 'react'
-import { useSelector, useDispatch } from 'react-redux'
-import { getData } from './store/action'
+import axios from 'axios'
+import { DOMAIN, DATE_FORMAT } from './../../../constant'
+class ResourceAllocation extends Component {
 
-const ResourceAllocation = () => {
-  const dispatch = useDispatch()
-  const { data } = useSelector((state) => state.resources)
-  //let schedulerData = new SchedulerData(new moment("2017-12-18").format(DATE_FORMAT), ViewTypes.Week)
-  const schedulerInit = new SchedulerData(
-    '2017-12-18',
-    ViewTypes.Week,
-    false,
-    false,
-    {
-      minuteStep: 15
+  state = {
+    viewModel: null
+  }
+
+  async getDataResource() {
+    const data = await axios.get(`${DOMAIN}/resource/getResourceAllocationCalendar`)
+   return data.data.data
+  }
+
+  data
+
+  constructor(props) {
+    super(props)
+  }
+
+  async componentDidMount() {
+    const dateNow = moment().format(DATE_FORMAT)
+    const data = await this.getDataResource()
+    this.data = data
+    const schedulerData = new SchedulerData(
+      dateNow,
+      ViewTypes.Week,
+      false,
+      false,
+      {
+        // minuteStep: 15
+      }
+    )
+    // schedulerData.localeMoment.locale('en')
+    schedulerData.setResources(data.resources)
+    schedulerData.setEvents(data.events)
+    schedulerData.config.schedulerWidth = '85%'
+    this.setState({viewModel: schedulerData})
+  }
+
+
+  render() {
+    const { viewModel } = this.state
+    if (viewModel) {
+      return (
+        <div>
+          <div>
+            <Scheduler
+              schedulerData={viewModel}
+              prevClick={this.prevClick}
+              nextClick={this.nextClick}
+              onSelectDate={this.onSelectDate}
+              onViewChange={this.onViewChange}
+              eventItemClick={this.eventClicked}
+              viewEventClick={this.ops1}
+              viewEventText="Detail 1"
+              viewEvent2Text=""
+              // viewEvent2Click={this.ops2}
+              updateEventStart={this.updateEventStart}
+              updateEventEnd={this.updateEventEnd}
+              moveEvent={this.moveEvent}
+              newEvent={this.newEvent}
+            />
+          </div>
+        </div>
+      )
     }
-  )
-  // schedulerData.localeMoment.locale('en')
-  schedulerInit.config.schedulerWidth = '85%'
-  const [viewModel, setViewModel] = useState(schedulerInit)
-  
-  useEffect(() => {
-    dispatch(getData())
-    schedulerInit.setResources(data.resources)
-    schedulerInit.setEvents(data.events)
-    setViewModel(schedulerInit)
-    // console.log(viewModel)
-  }, [data.resources.length])
 
-  useEffect(() => {
-    console.log(viewModel)
-  }, [viewModel])
+    return (
+      <div></div>
+    )
+    
+  }
 
-  const prevClick = (schedulerData) => {
+  prevClick = (schedulerData) => {
     schedulerData.prev()
-    schedulerData.setEvents(schedulerData.events)
+    schedulerData.setEvents(this.data.events)
+    this.setState({
+      viewModel: schedulerData
+    })
   }
 
-  const nextClick = (schedulerData) => {
+  nextClick = (schedulerData) => {
     schedulerData.next()
-    schedulerData.setEvents(schedulerData.events)
-    setViewModel(schedulerData)
+    schedulerData.setEvents(this.data.events)
+    this.setState({
+      viewModel: schedulerData
+    })
   }
 
-  const onViewChange = (schedulerData, view) => {
+  onViewChange = (schedulerData, view) => {
     schedulerData.setViewType(
       view.viewType,
       view.showAgenda,
       view.isEventPerspective
     )
-    schedulerData.setEvents(schedulerData.events)
-    setViewModel(schedulerData)
+    schedulerData.setEvents(this.data.events)
+    this.setState({
+      viewModel: schedulerData
+    })
   }
 
-  const onSelectDate = (schedulerData, date) => {
+  onSelectDate = (schedulerData, date) => {
+    console.log(111)
     schedulerData.setDate(date)
-    schedulerData.setEvents(schedulerData.events)
-    setViewModel(schedulerData)
+    schedulerData.setEvents(this.data.events)
+    this.setState({
+      viewModel: schedulerData
+    })
   }
 
-  const eventClicked = (schedulerData, event) => {
+  eventClicked = (schedulerData, event) => {
     alert(`You just clicked an event: {id: ${event.id}, title: ${event.title}}`)
   }
 
-  const ops1 = (schedulerData, event) => {
+  ops1 = (schedulerData, event) => {
     alert(
       `You just executed ops1 to event: {id: ${event.id}, title: ${event.title}}`
     )
   }
 
-  const ops2 = (schedulerData, event) => {
+  ops2 = (schedulerData, event) => {
     alert(
       `You just executed ops2 to event: {id: ${event.id}, title: ${event.title}}`
     )
   }
 
-  const newEvent = (
-    schedulerData,
-    slotId,
-    slotName,
-    start,
-    end,
-    type,
-    item
-  ) => {
+  newEvent = (schedulerData, slotId, slotName, start, end, type, item) => {
     let newFreshId = 0
-
     schedulerData.events.forEach((item) => {
       if (item.id >= newFreshId) newFreshId = item.id + 1
     })
@@ -101,46 +148,31 @@ const ResourceAllocation = () => {
       bgColor: 'purple'
     }
     schedulerData.addEvent(newEvent)
-    setViewModel(schedulerData)
+    this.setState({
+      viewModel: schedulerData
+    })
   }
 
-  const updateEventStart = (schedulerData, event, newStart) => {
+  updateEventStart = (schedulerData, event, newStart) => {
     schedulerData.updateEventStart(event, newStart)
-    setViewModel(schedulerData)
+    this.setState({
+      viewModel: schedulerData
+    })
   }
 
-  const updateEventEnd = (schedulerData, event, newEnd) => {
+  updateEventEnd = (schedulerData, event, newEnd) => {
     schedulerData.updateEventEnd(event, newEnd)
-    setViewModel(schedulerData)
+    this.setState({
+      viewModel: schedulerData
+    })
   }
 
-  const moveEvent = (schedulerData, event, slotId, slotName, start, end) => {
+  moveEvent = (schedulerData, event, slotId, slotName, start, end) => {
     schedulerData.moveEvent(event, slotId, slotName, start, end)
-    setViewModel(schedulerData)
+    this.setState({
+      viewModel: schedulerData
+    })
   }
-
-  return (
-    <Fragment>
-      <div>
-        <Scheduler
-          schedulerData={viewModel}
-          prevClick={prevClick}
-          nextClick={nextClick}
-          onSelectDate={onSelectDate}
-          onViewChange={onViewChange}
-          eventItemClick={eventClicked}
-          viewEventClick={ops1}
-          viewEventText="Ops 1"
-          viewEvent2Text="Ops 2"
-          viewEvent2Click={ops2}
-          updateEventStart={updateEventStart}
-          updateEventEnd={updateEventEnd}
-          moveEvent={moveEvent}
-          newEvent={newEvent}
-        />
-      </div>
-    </Fragment>
-  )
 }
 
-export default ResourceAllocation
+export default withDragDropContext(ResourceAllocation)
