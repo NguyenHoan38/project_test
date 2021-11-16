@@ -3,8 +3,8 @@
 //Template config options
 const themeConfig = {
   app: {
-    appName: 'Sphinx Insight',
-    appLogoImage: require('@src/assets/images/logo/logo.svg').default
+    appName: '',
+    appLogoImage: require('@src/assets/images/logo/sphinx.jpg').default
   },
   layout: {
     isRTL: false,
