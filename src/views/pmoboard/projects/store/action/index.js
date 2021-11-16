@@ -155,6 +155,18 @@ export const getCustomer = () => {
   }
 }
 
+//add Customer
+export const addCustomer = (customer) => {
+  return async (dispatch) => {
+    const res = await axios.post(
+      `${DOMAIN}/resource/addCustomer`,
+      customer
+    )
+    return res
+  }
+}
+
+
 export const getListEmployeeRole = () => {
   return async (dispatch) => {
     await axios

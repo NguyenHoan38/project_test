@@ -2,8 +2,10 @@ import React, { useState } from 'react'
 import { Button, Modal, ModalHeader, FormGroup, Label, ModalBody, ModalFooter, Input, Form } from 'reactstrap'
 import classnames from 'classnames'
 import { useForm } from 'react-hook-form'
-import {useDispatch} from 'react-redux'
-import { addProjectTechnology, addProjectDomain, getListProjectTechnology, getListProjectDomain } from './../../store/action'
+import { useDispatch } from 'react-redux'
+import { addProjectTechnology, addProjectDomain,
+    getListProjectTechnology, getListProjectDomain,
+    addCustomer, getCustomer } from './../../store/action'
 import ToastContent from '@components/common/ToastContent'
 import { toast, Slide } from 'react-toastify'
 import { isObjEmpty } from '@utils'
@@ -32,7 +34,7 @@ const ModalExample = ({ modal, toggle, titleForm }) => {
                     }
                 })
 
-            } else {
+            } else if (titleForm === 'Technologies') {
                 dispatch(
                     addProjectTechnology({
                         name: values['name']
@@ -41,6 +43,22 @@ const ModalExample = ({ modal, toggle, titleForm }) => {
                     if (res && res.data && res.data && res.data.success) {
                         toggle()
                         dispatch(getListProjectTechnology())
+                        toast.success(
+                            <ToastContent title={'Tạo mới thành công!'} />,
+                            { transition: Slide, hideProgressBar: true, autoClose: 2000 }
+                        )
+                    }
+                })
+            } else if (titleForm === 'Customer') {
+                dispatch(
+                    addCustomer({
+                        name: values['name'],
+                        address: values['address']
+                    })
+                ).then(res => {
+                    if (res && res.data && res.data && res.data.success) {
+                        toggle()
+                        dispatch(getCustomer())
                         toast.success(
                             <ToastContent title={'Tạo mới thành công!'} />,
                             { transition: Slide, hideProgressBar: true, autoClose: 2000 }
@@ -60,7 +78,7 @@ const ModalExample = ({ modal, toggle, titleForm }) => {
                         <div className="col-12">
                             <FormGroup>
                                 <Label for='name'>
-                                {titleForm} Name <span className='text-danger'>*</span>
+                                    {titleForm} Name <span className='text-danger'>*</span>
                                 </Label>
                                 <Input
                                     name='name'
@@ -69,6 +87,21 @@ const ModalExample = ({ modal, toggle, titleForm }) => {
                                     className={classnames({ 'is-invalid': errors['name'] })}
                                 />
                             </FormGroup>
+                            {titleForm === 'Customer' && (
+                                <FormGroup>
+                                    <Label for='address'>
+                                        {titleForm} Address <span className='text-danger'>*</span>
+                                    </Label>
+                                    <Input
+                                        values=''
+                                        name='address'
+                                        id='address'
+                                        innerRef={register({ required: true })}
+                                        className={classnames({ 'is-invalid': errors['address'] })}
+                                    />
+                                </FormGroup>
+                            )}
+
                         </div>
                     </ModalBody>
                     <ModalFooter>

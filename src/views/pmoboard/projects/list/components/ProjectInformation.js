@@ -287,9 +287,10 @@ function ProjectInformation(props) {
           </FormGroup>
           <FormGroup>
             <Label for="customerId">Customer</Label>
+            <div className="d-flex align-items-center">
             <Select
               id="customerId"
-              className="basic-single"
+              className="basic-single w-100 mr-2"
               classNamePrefix="select"
               isSearchable={true}
               isClearable={true}
@@ -303,11 +304,16 @@ function ProjectInformation(props) {
               }}
               options={projects.dataCustomer}
             />
+            <FaPlusCircle
+                size="25px"
+                onClick={() => toggleAddFormTech('Customer')}
+              />
+            </div>
           </FormGroup>
           <FormGroup>
             <Label for="pmLead">PM/Lead</Label>
             <Select
-              className="basic-single"
+              className="basic-single w-100 mr-2"
               classNamePrefix="select"
               isSearchable={true}
               isClearable={true}
