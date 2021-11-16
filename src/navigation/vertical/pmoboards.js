@@ -19,7 +19,7 @@ export default [
   },
   {
     id: "allocation-resource",
-    title: "Allocation-resource",
+    title: "Resource Usage",
     icon: <Circle size={20} />,
     navLink: "/pmoboard/allocation-resource"
   }

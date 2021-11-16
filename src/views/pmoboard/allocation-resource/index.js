@@ -1,57 +1,160 @@
 import React, { Component } from 'react'
 import * as moment from 'moment'
 //import 'moment/locale/zh-cn'
-import Scheduler, {
-  SchedulerData,
-  ViewTypes
-} from 'react-big-scheduler'
+import Scheduler, { SchedulerData, ViewTypes } from 'react-big-scheduler'
 import withDragDropContext from './withDnDContext'
 import 'react-big-scheduler/lib/css/style.css'
 import axios from 'axios'
-import { DOMAIN, DATE_FORMAT } from './../../../constant'
-class ResourceAllocation extends Component {
+import {
+  DOMAIN,
+  DATE_FORMAT,
+  DATE_FORMAT_NOT_TIMESTAMP
+} from './../../../constant'
+import {
+  Card,
+  CardHeader,
+  CardBody,
+  CardTitle,
+  Input,
+  Label,
+  FormGroup,
+  Row,
+  Col
+} from 'reactstrap'
+import Flatpickr from 'react-flatpickr'
+import '@styles/react/libs/flatpickr/flatpickr.scss'
+import '@styles/react/libs/react-select/_react-select.scss'
+import styled from 'styled-components'
+import SearchField from './store/SearchField'
+import { selectThemeColors } from '@utils'
+import Select from 'react-select'
+import { prev } from 'dom7'
 
+class ResourceAllocation extends Component {
   state = {
-    viewModel: null
+    viewModel: null,
+    startProject: '',
+    endProject: '',
+    searchName: '',
+    skillOptions: [],
+    searchSkills: [],
+    schedulerData: new SchedulerData(
+      moment().format(DATE_FORMAT),
+      ViewTypes.Week,
+      false,
+      false,
+      {}
+    )
   }
 
   async getDataResource() {
-    const data = await axios.get(`${DOMAIN}/resource/getResourceAllocationCalendar`)
-   return data.data.data
+    const { searchName, startProject, endProject, searchSkills } = this.state
+    console.log(searchSkills.map((skill) => skill.id))
+    const searchSkillIds = searchSkills.map((skill) => skill.id)
+    const data = await axios.post(
+      `${DOMAIN}/resource/getResourceAllocationCalendar`,
+      {
+        searchObj: {
+          name: searchName,
+          startDate: startProject,
+          endDate: endProject,
+          skills: searchSkillIds.length > 0 ? searchSkillIds : ''
+        }
+      }
+    )
+    return data.data.data
   }
 
-  data
+  async componentDidUpdate(prevProps, prevState) {
+    // console.log(sS)
+    if (
+      prevState.searchName !== this.state.searchName ||
+      prevState.startProject !== this.state.startProject ||
+      prevState.endProject !== this.state.endProject ||
+      prevState.searchSkills !== this.state.searchSkills
+    ) {
+      const data = await this.getDataResource()
+      const { schedulerData } = this.state
+      schedulerData.setResources(data.resources)
+      schedulerData.setEvents(data.events)
+      schedulerData.config.schedulerWidth = '85%'
+      this.setState({ viewModel: schedulerData })
+    }
+  }
 
   constructor(props) {
     super(props)
   }
 
-  async componentDidMount() {
-    const dateNow = moment().format(DATE_FORMAT)
-    const data = await this.getDataResource()
-    this.data = data
-    const schedulerData = new SchedulerData(
-      dateNow,
-      ViewTypes.Week,
-      false,
-      false,
-      {
-        // minuteStep: 15
-      }
-    )
-    // schedulerData.localeMoment.locale('en')
-    schedulerData.setResources(data.resources)
-    schedulerData.setEvents(data.events)
-    schedulerData.config.schedulerWidth = '85%'
-    this.setState({viewModel: schedulerData})
+  componentDidMount() {
+    // fetch resource data
+    this.fetchResourceData()
+    // get skills
+    this.fetchSkills()
   }
-
 
   render() {
     const { viewModel } = this.state
     if (viewModel) {
       return (
         <div>
+          <Card>
+            <CardHeader className="border-bottom">
+              <CardTitle tag="h4">Search</CardTitle>
+            </CardHeader>
+            <CardBody>
+              <Row form className="mt-1 mb-50">
+                <Col lg="6" md="6">
+                  <SearchField onSearch={this.handleSearch} />
+                </Col>
+                <Col lg="3" md="4">
+                  <FormGroup>
+                    <Label for="name">Date from:</Label>
+                    <Flatpickr
+                      value={this.startProject}
+                      onChange={this.handleStartProjectChange}
+                      className="form-control invoice-edit-input date-picker"
+                    />
+                  </FormGroup>
+                </Col>
+                <Col lg="3" md="4">
+                  <FormGroup>
+                    <Label for="name">Date to:</Label>
+                    <Flatpickr
+                      value={this.endProject}
+                      onChange={this.handleEndProjectChange}
+                      className="form-control invoice-edit-input date-picker"
+                    />
+                  </FormGroup>
+                </Col>
+                <Col lg="6" md="4">
+                  <div style={{ zIndex: 100, position: 'relative' }}>
+                    <div>
+                      <Label for="skills">Skills:</Label>
+                    </div>
+                    <Select
+                      theme={selectThemeColors}
+                      onChange={this.handleOnChangeSelect}
+                      value={this.state.searchSkills}
+                      isMulti
+                      name="skills"
+                      id="select-skills"
+                      options={this.state.skillOptions}
+                      className="react-select  w-100"
+                      classNamePrefix="select"
+                      getOptionLabel={(option) => {
+                        return option.name
+                      }}
+                      getOptionValue={(option) => {
+                        return option.id
+                      }}
+                    />
+                  </div>
+                </Col>
+              </Row>
+            </CardBody>
+          </Card>
+
           <div>
             <Scheduler
               schedulerData={viewModel}
@@ -68,16 +171,77 @@ class ResourceAllocation extends Component {
               updateEventEnd={this.updateEventEnd}
               moveEvent={this.moveEvent}
               newEvent={this.newEvent}
+              eventItemPopoverTemplateResolver={
+                this.eventItemPopoverTemplateResolver
+              }
             />
           </div>
         </div>
       )
     }
 
-    return (
-      <div></div>
-    )
-    
+    return <div></div>
+  }
+
+  handleOnChangeSelect = (skills) => {
+    // const skillIds = skills.map((skill) => skill.id)
+    this.setState({ searchSkills: skills })
+    // console.log(this.state.skills)
+  }
+
+  fetchResourceData = () => {
+    ;(async () => {
+      const data = await this.getDataResource()
+      this.data = data
+      const { schedulerData } = this.state
+      schedulerData.setResources(data.resources)
+      schedulerData.setEvents(data.events)
+      schedulerData.config.schedulerWidth = '85%'
+      this.setState({ viewModel: schedulerData })
+    })()
+  }
+
+  fetchSkills = () => {
+    ;(async () => {
+      const res = await axios.get(`${DOMAIN}/resource/getListEmployeeSkill`)
+      this.setState({ skillOptions: [...res?.data?.data] })
+    })()
+  }
+
+  // search endDate
+  handleEndProjectChange = (date) => {
+    console.log(date)
+    if (date[0]) {
+      // this.setState({ endProject: date[0].toISOString() })
+      this.setState({
+        endProject: moment(date[0]).format(DATE_FORMAT)
+      })
+    } else {
+      this.setState({ endProject: '' })
+    }
+  }
+
+  // search startDate
+  handleStartProjectChange = (date) => {
+    if (date[0]) {
+      this.setState({
+        startProject: moment(date[0]).format(DATE_FORMAT)
+      })
+    } else {
+      this.setState({ startProject: '' })
+    }
+  }
+
+  // search Resource name
+  handleSearch = (text) => {
+    this.setState({ searchName: text })
+    const { endProject, startProject, searchName } = this.state
+  }
+
+  handleSearchNameChange = (e) => {
+    this.setState({
+      searchName: e.target.value
+    })
   }
 
   prevClick = (schedulerData) => {
@@ -173,6 +337,80 @@ class ResourceAllocation extends Component {
       viewModel: schedulerData
     })
   }
+
+  eventItemPopoverTemplateResolver = (
+    schedulerData,
+    eventItem,
+    title,
+    start,
+    end,
+    statusColor
+  ) => {
+    const [newTitle, effort] = title.split(',')
+    console.log(title)
+    return (
+      <CustomPopoverTemplateResolver>
+        <div className="popoverTop">
+          <div className="color" style={{ backgroundColor: statusColor }}></div>
+          <div>{newTitle}</div>
+        </div>
+        <div className="popoverTimeTitle">
+          {moment(start).format(DATE_FORMAT_NOT_TIMESTAMP)} -{' '}
+          {moment(end).format(DATE_FORMAT_NOT_TIMESTAMP)}
+        </div>
+        <div className="popoverEffort">{effort}%</div>
+      </CustomPopoverTemplateResolver>
+    )
+  }
 }
+
+const CustomPopoverTemplateResolver = styled.div`
+  & .popoverTop {
+    display: flex;
+    font-size: 16px;
+    align-items: center;
+  }
+
+  & .color {
+    border-radius: 50%;
+    width: 15px;
+    height: 15px;
+    margin-right: 8px;
+  }
+
+  & .popoverTimeTitle {
+    color: #6e6b7b;
+    font-size: 18px;
+    margin-top: 15px;
+    font-weight: bold;
+  }
+
+  & .popoverEffort {
+    text-transform: capitalize;
+    font-size: 16px;
+  }
+`
+
+// const SkillsWrapper = styled('div')(({ grow }) => ({
+//   transition: 'flex-grow 0.3s',
+//   ...(grow && {
+//     flexGrow: 3
+//   })
+// }))
+
+const StyledRow = styled(Row)({
+  flexWrap: 'wrap',
+  '& > *': {
+    flex: 1
+  }
+})
+
+const SearchWrapper = styled('div')(({ shink }) => ({
+  transition: 'flex-grow 0.3s',
+  ...(shink && {
+    flexGrow: 1,
+    marginRight: '1rem'
+  })
+}))
 
 export default withDragDropContext(ResourceAllocation)
