@@ -7,8 +7,8 @@ const PmoBoardRoutes = [
     exact: true
   },
   {
-    path: "/pmoboard/employees",
-    component: lazy(() => import("../../views/pmoboard/employees/list")),
+    path: '/pmoboard/employees/list',
+    component: lazy(() => import('../../views/pmoboard/employees/list')),
     exact: true
   },
   {

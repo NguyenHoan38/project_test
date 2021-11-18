@@ -1,4 +1,5 @@
 import { yupResolver } from '@hookform/resolvers/yup'
+import { addEmployee, getEmployeeDetails } from '@src/slices/employees/thunk'
 import '@styles/react/libs/flatpickr/flatpickr.scss'
 import '@styles/react/libs/react-select/_react-select.scss'
 import { selectThemeColors } from '@utils'
@@ -6,14 +7,13 @@ import classnames from 'classnames'
 import { memo, useState } from 'react'
 import Flatpickr from 'react-flatpickr'
 import { Controller, useForm } from 'react-hook-form'
-import { useSelector, useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import Select from 'react-select'
 import { Button, Form, FormFeedback, FormGroup, Input, Label } from 'reactstrap'
 import styled from 'styled-components'
 import * as yup from 'yup'
 import Sidebar from '../ListSidebar'
 import ListSkills from './ListAddEmployeeSkills'
-import { addEmployee } from '@src/slices/employees/thunk'
 
 const EmployeeSchema = yup.object().shape({
   name: yup.string().required('Employee name is a required field'),
@@ -77,10 +77,15 @@ const ListAddEmployee = (props) => {
   })
 
   const onSubmit = async (data) => {
-    const { dob } = data
-    const dobFormatted = dob.toISOString()
-    await dispatch(addEmployee({ ...data, dob: dobFormatted, skills }))
-    onClose()
+    try {
+      const { dob } = data
+      const dobFormatted = dob.toISOString()
+      await dispatch(addEmployee({ ...data, dob: dobFormatted, skills }))
+      onClose()
+      await dispatch(getEmployeeDetails(null))
+    } catch (error) {
+      console.log(error)
+    }
   }
 
   return (

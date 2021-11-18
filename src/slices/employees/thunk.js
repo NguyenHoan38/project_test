@@ -38,12 +38,12 @@ const editEmployee = createAsyncThunk(
       }))
     }
 
-    // console.log(JSON.stringify(employee, null, 2))
-
     const { success } = await axios.post('/resource/editEmployee', employee)
+
     if (success) {
       toast('Employee updated successfully')
     }
+
     return params
   }
 )
@@ -99,9 +99,9 @@ const getFilteredEmployees = createAsyncThunk(
       // Search for skills
       const skillsMatched = skills.length
         ? userSkills.some((skill) => {
-            const { skillId } = skill
-            return skills.includes(skillId)
-          })
+          const { skillId } = skill
+          return skills.includes(skillId)
+        })
         : true
 
       return (nameMatched || emailMatched) && skillsMatched

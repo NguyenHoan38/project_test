@@ -12,10 +12,10 @@ export default [
 
   },
   {
-    id: "employees",
-    title: "Employees",
+    id: 'employees',
+    title: 'Employees',
     icon: <Users size={20} />,
-    navLink: "/pmoboard/employees/list"
+    navLink: '/pmoboard/employees/list'
   },
   {
     id: "allocation-resource",
