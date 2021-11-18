@@ -1,6 +1,7 @@
 import Avatar from '@components/avatar'
 import { yupResolver } from '@hookform/resolvers/yup'
-import { editEmployee } from '@src/slices/employees/thunk'
+import { editEmployee, getEmployeeDetails } from '@src/slices/employees/thunk'
+import axios from '@src/utility/axios'
 import '@styles/react/libs/flatpickr/flatpickr.scss'
 import '@styles/react/libs/react-select/_react-select.scss'
 import { selectThemeColors } from '@utils'
@@ -15,7 +16,6 @@ import styled from 'styled-components'
 import * as yup from 'yup'
 import Sidebar from '../ListSidebar'
 import ListSkills from './ListEditEmployeeSkills'
-import axios from '@src/utility/axios'
 
 const EmployeeSchema = yup.object().shape({
   name: yup.string().required('Employee name is a required field'),
@@ -146,10 +146,15 @@ const ListEditEmployee = (props) => {
   }
 
   const onSubmit = async (data) => {
-    const { id } = employee
-    const dobFormatted = dob.toISOString()
-    await dispatch(editEmployee({ ...data, id, dob: dobFormatted, skills }))
-    onClose()
+    try {
+      const { id } = employee
+      const dobFormatted = dob.toISOString()
+      await dispatch(editEmployee({ ...data, id, dob: dobFormatted, skills }))
+      onClose()
+      await dispatch(getEmployeeDetails(null))
+    } catch (error) {
+      console.log(error)
+    }
   }
 
   return (

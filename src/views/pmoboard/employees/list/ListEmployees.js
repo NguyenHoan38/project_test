@@ -40,7 +40,7 @@ const EmployeesList = () => {
   }
 
   const handleOnChangePage = (page) => {
-    // setCurrentPage(page + 1)
+    //  setCurrentPage(page + 1)
   }
 
   const handleOnSearch = (searchTerm) => {
