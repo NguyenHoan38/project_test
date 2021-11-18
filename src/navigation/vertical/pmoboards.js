@@ -15,11 +15,5 @@ export default [
     title: 'Employees',
     icon: <Users size={20} />,
     navLink: '/pmoboard/employees/list'
-  },
-  {
-    id: 'scheduler',
-    title: 'Scheduler',
-    icon: <Calendar size={20} />,
-    navLink: '/pmoboard/scheduler'
   }
 ]

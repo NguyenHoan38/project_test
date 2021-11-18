@@ -15,11 +15,6 @@ const PmoBoardRoutes = [
     path: '/pmoboard/employees/list',
     component: lazy(() => import('../../views/pmoboard/employees/list')),
     exact: true
-  },
-  {
-    path: '/pmoboard/scheduler',
-    component: lazy(() => import('../../views/pmoboard/scheduler')),
-    exact: true
   }
 ]
 
