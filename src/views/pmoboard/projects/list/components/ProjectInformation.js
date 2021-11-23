@@ -39,6 +39,7 @@ function ProjectInformation(props) {
   const [milestone, setMilestone] = useState([new Date()])
   const [typeLable, setTypeLable] = useState(null)
   const [name, setName] = useState('')
+  const [desc, setDesc] = useState('')
   const [startProject, setStartProject] = useState('')
   const [type, settype] = useState(null)
   const [customerId, setCustomerId] = useState(null)
@@ -155,6 +156,7 @@ function ProjectInformation(props) {
           }
         })
       } else {
+        console.log(customerId)
         dispatch(
           updateProject({
             id: projectID,
@@ -167,7 +169,7 @@ function ProjectInformation(props) {
             status,
             pmId: pmLead,
             mileStone: milestone,
-            customerId: customerId.value,
+            customerId,
             technologys,
             domains: dataIndustry
           })
@@ -295,7 +297,6 @@ function ProjectInformation(props) {
                 isClearable={true}
                 maxMenuHeight={220}
                 name="name"
-                value={customerId}
                 value={{ value: customerId, label: lableCustomer }}
                 onChange={(e) => {
                   setCustomerId(e.id)
@@ -364,6 +365,7 @@ function ProjectInformation(props) {
               options={typeData}
             />
           </FormGroup>
+          
           <FormGroup>
             <span className="title">Milestones:</span>
             <div>
@@ -423,6 +425,18 @@ function ProjectInformation(props) {
               </div>
             </div>
           </FormGroup>
+          <FormGroup>
+            <Label for="desc">Description</Label>
+            <Input
+              name="desc"
+              id="desc"
+              value={desc}
+              onChange={(e) => setDesc(e.target.value)}
+              // innerRef={register({ required: true })}
+              // className={classnames({ 'is-invalid': errors['name'] })}
+            />
+          </FormGroup>
+          <div></div>
           <FormGroup>
             <Label for="technologyStack">Technologies </Label>
             <div className="d-flex align-items-center">
