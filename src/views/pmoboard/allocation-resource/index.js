@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import React, { Component, Fragment } from 'react'
 import * as moment from 'moment'
 //import 'moment/locale/zh-cn'
 import Scheduler, { SchedulerData, ViewTypes } from 'react-big-scheduler'
@@ -21,6 +21,7 @@ import {
   Row,
   Col
 } from 'reactstrap'
+import keyBy from 'lodash.keyby'
 import Flatpickr from 'react-flatpickr'
 import '@styles/react/libs/flatpickr/flatpickr.scss'
 import '@styles/react/libs/react-select/_react-select.scss'
@@ -29,9 +30,17 @@ import SearchField from './store/SearchField'
 import { selectThemeColors } from '@utils'
 import Select from 'react-select'
 import { prev } from 'dom7'
+import ListEditEmployee from '../employees/list/ListEditEmployee'
+import { getListEmployee } from '../projects/store/action'
+import { connect, useDispatch, useSelector } from 'react-redux'
+import { compose } from 'redux'
+import { createSelector } from '@reduxjs/toolkit'
+import Sidebar from '../employees/list/ListSidebar'
 
 class ResourceAllocation extends Component {
   state = {
+    employeeInfo: {},
+    isOpenInfo: false,
     viewModel: null,
     startProject: '',
     endProject: '',
@@ -46,7 +55,6 @@ class ResourceAllocation extends Component {
       {}
     )
   }
-
   async getDataResource() {
     const { searchName, startProject, endProject, searchSkills } = this.state
     console.log(searchSkills.map((skill) => skill.id))
@@ -95,6 +103,9 @@ class ResourceAllocation extends Component {
 
   render() {
     const { viewModel } = this.state
+    const employee = this.state.employeeInfo
+    console.log(employee.skills)
+
     if (viewModel) {
       return (
         <div>
@@ -154,9 +165,16 @@ class ResourceAllocation extends Component {
               </Row>
             </CardBody>
           </Card>
-
+          <Sidebar
+            open={this.state.isOpenInfo && Object.keys(employee).length > 0}
+            title="Employee Infomation"
+            onClose={this.handleCloseEditEmployee}
+          >
+            <GridFormWrapper>{this.renderDataInfo(employee)}</GridFormWrapper>
+          </Sidebar>
           <div>
             <Scheduler
+              slotClickedFunc={this.slotClickedFunc}
               schedulerData={viewModel}
               prevClick={this.prevClick}
               nextClick={this.nextClick}
@@ -182,7 +200,31 @@ class ResourceAllocation extends Component {
 
     return <div></div>
   }
-
+  handleCloseEditEmployee = () => {
+    this.setState({ isOpenInfo: false })
+    // this.setState({ employeeInfo: {} })
+  }
+  renderDataInfo = (employee) => {
+    const skills = employee.skills
+    return (
+      <Fragment>
+        <p>{`Name: ${employee.name}`}</p>
+        <p>{`Email: ${employee.email}`}</p>
+        <p>{`Phone Number: ${employee.phone}`}</p>
+        <p>{`Status: ${keyBy(employee.statusDetail, 'name').undefined}`}</p>
+        <p>{`Location: ${keyBy(employee.locationDetail, 'name').undefined}`}</p>
+      </Fragment>
+    )
+  }
+  slotClickedFunc = (schedulerData, slot) => {
+    this.setState({ isOpenInfo: true })
+    const { ListEmployee } = this.props
+    const employeeInfo = ListEmployee.filter(
+      (employee) => employee.name === slot.slotName
+    )
+    this.setState({ employeeInfo: employeeInfo[0] })
+    ;[...employeeInfo[0].skills].map((item) => console.log(item))
+  }
   handleOnChangeSelect = (skills) => {
     // const skillIds = skills.map((skill) => skill.id)
     this.setState({ searchSkills: skills })
@@ -273,7 +315,6 @@ class ResourceAllocation extends Component {
   }
 
   onSelectDate = (schedulerData, date) => {
-    console.log(111)
     schedulerData.setDate(date)
     schedulerData.setEvents(this.data.events)
     this.setState({
@@ -390,7 +431,11 @@ const CustomPopoverTemplateResolver = styled.div`
     font-size: 16px;
   }
 `
-
+const GridFormWrapper = styled('div')({
+  display: 'grid',
+  gridTemplateColumns: 'repeat(3, 1fr)',
+  gap: '1rem'
+})
 // const SkillsWrapper = styled('div')(({ grow }) => ({
 //   transition: 'flex-grow 0.3s',
 //   ...(grow && {
@@ -405,6 +450,15 @@ const StyledRow = styled(Row)({
   }
 })
 
+const mapStateToProps = (state) => {
+  const { projects } = state
+  return { ListEmployee: projects.dataListEmployee }
+}
+
+const mapDispatchToProps = (dispatch) => ({
+  getListEmployee: dispatch(getListEmployee())
+})
+
 const SearchWrapper = styled('div')(({ shink }) => ({
   transition: 'flex-grow 0.3s',
   ...(shink && {
@@ -413,4 +467,6 @@ const SearchWrapper = styled('div')(({ shink }) => ({
   })
 }))
 
-export default withDragDropContext(ResourceAllocation)
+export default withDragDropContext(
+  connect(mapStateToProps, mapDispatchToProps)(ResourceAllocation)
+)
