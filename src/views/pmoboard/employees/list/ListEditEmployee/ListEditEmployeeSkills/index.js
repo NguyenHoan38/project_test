@@ -10,6 +10,7 @@ import AddSkills from './AddSkills'
 
 const ListSkills = (props) => {
   const { skills: initialSkills, onSetSkills } = props
+  // console.log(initialSkills)
   const [levelOptions, setLevelOptions] = useState({})
   const [openAddSkills, setOpenAddSkills] = useState(false)
   const ref = useRef(null)
@@ -25,7 +26,7 @@ const ListSkills = (props) => {
       return acc
     }, new Map())
   })
-
+  console.log(skills)
   const [levels, setLevels] = useDerivedState(() => {
     return initialSkills.reduce((acc, val) => {
       const { skillId } = val
@@ -33,6 +34,7 @@ const ListSkills = (props) => {
       return acc
     }, {})
   })
+  console.log(levels)
 
   const [errors, setErrors] = useDerivedState(() => {
     return initialSkills.reduce((acc, val) => {

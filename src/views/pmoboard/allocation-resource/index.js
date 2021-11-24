@@ -223,8 +223,8 @@ class ResourceAllocation extends Component {
       (employee) => employee.name === slot.slotName
     )
     this.setState({ employeeInfo: employeeInfo[0] })
-    ;[...employeeInfo[0].skills].map((item) => console.log(item))
   }
+
   handleOnChangeSelect = (skills) => {
     // const skillIds = skills.map((skill) => skill.id)
     this.setState({ searchSkills: skills })

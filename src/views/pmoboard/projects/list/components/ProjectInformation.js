@@ -22,6 +22,7 @@ import ModalAddTechnologis from './ModalAddTechnologis'
 import { addProject, updateProject, getData } from '../../store/action'
 import { useDispatch, useSelector } from 'react-redux'
 import styled from 'styled-components'
+import ListMilestones from '../ListMilestones'
 
 // fake data
 const typeData = [
@@ -85,7 +86,8 @@ function ProjectInformation(props) {
         endDate,
         technology,
         statusDetail,
-        domain
+        domain,
+        mileStones
       } = projects.dataProject
       const technologyNew = technology.map((res) => {
         return { ...res, value: res.id, label: res.name }
@@ -101,6 +103,7 @@ function ProjectInformation(props) {
       setcheckColor(color)
       setCustomerId(customer.id)
       setLableCustomer(customer.name)
+      setMilestone(mileStones)
       setPmLead(projectManager.id)
       setLablePmLead(projectManager.name)
       setStartProject(startDate)
@@ -362,11 +365,11 @@ function ProjectInformation(props) {
                   setLableStatus(e.label)
                 }
               }}
-              options={typeData}
+              // options={typeData}
             />
           </FormGroup>
-          
-          <FormGroup>
+
+          {/* <FormGroup>
             <span className="title">Milestones:</span>
             <div>
               <div>
@@ -432,11 +435,10 @@ function ProjectInformation(props) {
               id="desc"
               value={desc}
               onChange={(e) => setDesc(e.target.value)}
-              // innerRef={register({ required: true })}
-              // className={classnames({ 'is-invalid': errors['name'] })}
             />
           </FormGroup>
-          <div></div>
+          <div></div> */}
+          <ListMilestones milestones={milestone} />
           <FormGroup>
             <Label for="technologyStack">Technologies </Label>
             <div className="d-flex align-items-center">
