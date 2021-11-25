@@ -180,7 +180,7 @@ export const columns = (showFormEdit, currentPage, searchObj, rowsPerPage) => {
           {row.mileStones.map((m, i) => {
             return (
               <span key={i} className="d-block">
-                {moment(m.description).format('MM-DD-YYYY')}
+                {moment(m.expiration).format('MM-DD-YYYY')}
               </span>
             )
           })}

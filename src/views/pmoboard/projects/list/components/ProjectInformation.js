@@ -37,10 +37,9 @@ function ProjectInformation(props) {
   const { currentPage, rowsPerPage, searchObj } = props
   // ** Store Vars
   const dispatch = useDispatch()
-  const [milestone, setMilestone] = useState([new Date()])
+  const [milestones, setMilestone] = useState([])
   const [typeLable, setTypeLable] = useState(null)
   const [name, setName] = useState('')
-  const [desc, setDesc] = useState('')
   const [startProject, setStartProject] = useState('')
   const [type, settype] = useState(null)
   const [customerId, setCustomerId] = useState(null)
@@ -57,9 +56,9 @@ function ProjectInformation(props) {
   const [colorButton, setColorButton] = useState(projectColor[0])
   const [titleForm, setDataForm] = useState(null)
   const [industry, setIndustry] = useState(null)
-  const toggle = () => setIsOpen(!isOpen)
   const [projectID, setprojectID] = useState(0)
-  const [descIndustry, setdescIndustry] = useState(null)
+  const [milestoneEdit, setMilestonEdit] = useState([])
+  const toggle = () => setIsOpen(!isOpen)
 
   // ** Vars
   const { register, errors, handleSubmit } = useForm()
@@ -103,8 +102,8 @@ function ProjectInformation(props) {
       setcheckColor(color)
       setCustomerId(customer.id)
       setLableCustomer(customer.name)
-      setMilestone(mileStones)
       setPmLead(projectManager.id)
+      setMilestone(mileStones)
       setLablePmLead(projectManager.name)
       setStartProject(startDate)
       setEndProject(endDate)
@@ -142,7 +141,7 @@ function ProjectInformation(props) {
             endDate: endProject,
             status,
             pmId: pmLead,
-            mileStone: milestone,
+            mileStones: milestoneEdit,
             customerId,
             technologys,
             domains: dataIndustry
@@ -159,7 +158,8 @@ function ProjectInformation(props) {
           }
         })
       } else {
-        console.log(customerId)
+        console.log(endProject)
+        console.log(milestones)
         dispatch(
           updateProject({
             id: projectID,
@@ -171,7 +171,7 @@ function ProjectInformation(props) {
             endDate: endProject,
             status,
             pmId: pmLead,
-            mileStone: milestone,
+            mileStones: milestoneEdit,
             customerId,
             technologys,
             domains: dataIndustry
@@ -190,18 +190,12 @@ function ProjectInformation(props) {
       }
     }
   }
-  // add mileStone
-  function handleAddMilestone() {
-    const a = new Date()
-    setMilestone([...milestone, a])
+  console.log(endProject)
+
+  function handelChangeMilesStone(milistones) {
+    setMilestonEdit(milistones)
   }
-  function handleDeleteMilestone(i) {
-    const newMilestone = milestone.filter((item, index) => index !== i)
-    setMilestone(newMilestone)
-  }
-  const editMilestones = (date, i) => {
-    milestone[i] = date
-  }
+
   function handleClickColor(m) {
     setIsOpen(false)
     setcheckColor(m.id)
@@ -365,80 +359,14 @@ function ProjectInformation(props) {
                   setLableStatus(e.label)
                 }
               }}
-              // options={typeData}
+              options={typeData}
             />
           </FormGroup>
 
-          {/* <FormGroup>
-            <span className="title">Milestones:</span>
-            <div>
-              <div>
-                {milestone &&
-                  milestone.length > 0 &&
-                  milestone.map((m, i) => {
-                    return (
-                      <div className="d-flex" key={i}>
-                        <div style={{ width: '100%' }}>
-                          <Flatpickr
-                            key={i}
-                            value={m}
-                            onChange={(date) => editMilestones(date[0], i)}
-                            className="form-control invoice-edit-input date-picker mr-4 mb-2"
-                          />
-                        </div>
-                        {milestone.length === i + 1 && (
-                          <span
-                            className="ml-4"
-                            data-toggle="tooltip"
-                            data-placement="top"
-                            title="Add milestones"
-                            color="success"
-                            size="lg"
-                            onClick={handleAddMilestone}
-                            active
-                          >
-                            {' '}
-                            <FaPlusCircle size="25px" color="success" />{' '}
-                          </span>
-                        )}
-                        <span
-                          className="ml-4"
-                          onClick={() => handleDeleteMilestone(i)}
-                        >
-                          {' '}
-                          <FaTrash />
-                        </span>
-                      </div>
-                    )
-                  })}
-                {milestone.length === 0 && (
-                  <span
-                    data-toggle="tooltip"
-                    data-placement="top"
-                    title="Add milestones"
-                    color="success"
-                    size="lg"
-                    onClick={handleAddMilestone}
-                    active
-                  >
-                    {' '}
-                    <FaPlusCircle size="25px" color="success" />{' '}
-                  </span>
-                )}
-              </div>
-            </div>
-          </FormGroup>
-          <FormGroup>
-            <Label for="desc">Description</Label>
-            <Input
-              name="desc"
-              id="desc"
-              value={desc}
-              onChange={(e) => setDesc(e.target.value)}
-            />
-          </FormGroup>
-          <div></div> */}
-          <ListMilestones milestones={milestone} />
+          <ListMilestones
+            milestones={milestones}
+            changeMilestones={handelChangeMilesStone}
+          />
           <FormGroup>
             <Label for="technologyStack">Technologies </Label>
             <div className="d-flex align-items-center">
