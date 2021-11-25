@@ -158,14 +158,10 @@ export const getCustomer = () => {
 //add Customer
 export const addCustomer = (customer) => {
   return async (dispatch) => {
-    const res = await axios.post(
-      `${DOMAIN}/resource/addCustomer`,
-      customer
-    )
+    const res = await axios.post(`${DOMAIN}/resource/addCustomer`, customer)
     return res
   }
 }
-
 
 export const getListEmployeeRole = () => {
   return async (dispatch) => {
@@ -200,6 +196,7 @@ export const editResourceAllocation = (project) => {
 }
 
 export const updateProject = (project) => {
+  console.log(project)
   return async (dispatch) => {
     const res = await axios.post(`${DOMAIN}/resource/editProject`, project)
     return res

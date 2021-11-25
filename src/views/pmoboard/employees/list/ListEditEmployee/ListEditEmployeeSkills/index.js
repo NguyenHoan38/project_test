@@ -25,7 +25,6 @@ const ListSkills = (props) => {
       return acc
     }, new Map())
   })
-
   const [levels, setLevels] = useDerivedState(() => {
     return initialSkills.reduce((acc, val) => {
       const { skillId } = val
@@ -33,6 +32,7 @@ const ListSkills = (props) => {
       return acc
     }, {})
   })
+  console.log(levels)
 
   const [errors, setErrors] = useDerivedState(() => {
     return initialSkills.reduce((acc, val) => {

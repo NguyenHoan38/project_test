@@ -5,9 +5,7 @@ import usePrevious from './usePrevious'
 const useDerivedState = (initialState) => {
   const computedState =
     initialState instanceof Function ? initialState() : initialState
-
   const [state, setState] = useState(computedState)
-
   const prevState = usePrevious(computedState)
 
   useEffect(() => {

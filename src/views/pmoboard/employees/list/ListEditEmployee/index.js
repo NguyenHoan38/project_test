@@ -156,7 +156,9 @@ const ListEditEmployee = (props) => {
       console.log(error)
     }
   }
-
+  {
+    console.log(statusDetail)
+  }
   return (
     <Sidebar
       open={Boolean(employeeId && employee)}
@@ -241,6 +243,7 @@ const ListEditEmployee = (props) => {
                 'is-invalid': Boolean(errors?.statusDetail?.message)
               })}
               getOptionLabel={(option) => {
+                console.log(option)
                 return option.name
               }}
               getOptionValue={(option) => {

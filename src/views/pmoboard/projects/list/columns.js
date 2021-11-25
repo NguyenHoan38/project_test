@@ -93,7 +93,7 @@ export const columns = (showFormEdit, currentPage, searchObj, rowsPerPage) => {
   const delteProject = (id) => {
     dispatch(deleteProject({ id })).then((res) => {
       if (res && res.data && res.data && res.data.success) {
-        dispatch(getData({currentPage, searchObj, rowsPerPage}))
+        dispatch(getData({ currentPage, searchObj, rowsPerPage }))
         toast.success(<ToastContent title={'Successful delete!'} />, {
           transition: Slide,
           hideProgressBar: true,
@@ -177,10 +177,10 @@ export const columns = (showFormEdit, currentPage, searchObj, rowsPerPage) => {
       sortable: true,
       cell: (row) => (
         <span className="text-capitalize">
-          {row.mileStone.map((m, i) => {
+          {row.mileStones.map((m, i) => {
             return (
               <span key={i} className="d-block">
-                {moment(m).format('MM-DD-YYYY')}
+                {moment(m.expiration).format('MM-DD-YYYY')}
               </span>
             )
           })}

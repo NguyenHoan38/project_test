@@ -110,6 +110,9 @@ const ListSkills = (props) => {
         <SkillContainer className="p-75 border-primary rounded">
           {Object.entries(levelOptions).map(([skillId, options]) => {
             const checked = skills[skillId]
+            {
+              console.log(options)
+            }
             return (
               <SkillItem key={skillId}>
                 <CustomInput
