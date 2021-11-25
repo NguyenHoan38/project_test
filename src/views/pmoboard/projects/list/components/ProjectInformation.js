@@ -37,7 +37,7 @@ function ProjectInformation(props) {
   const { currentPage, rowsPerPage, searchObj } = props
   // ** Store Vars
   const dispatch = useDispatch()
-  const [milestones, setMilestone] = useState([])
+  const [milestones, setMilestones] = useState([])
   const [typeLable, setTypeLable] = useState(null)
   const [name, setName] = useState('')
   const [startProject, setStartProject] = useState('')
@@ -57,13 +57,14 @@ function ProjectInformation(props) {
   const [titleForm, setDataForm] = useState(null)
   const [industry, setIndustry] = useState(null)
   const [projectID, setprojectID] = useState(0)
-  const [milestoneEdit, setMilestonEdit] = useState([])
+  // const [milestoneEdit, setMilestonesdit] = useState([])
   const toggle = () => setIsOpen(!isOpen)
 
   // ** Vars
   const { register, errors, handleSubmit } = useForm()
   // get state store
   const projects = useSelector((state) => state.projects)
+  console.log(projects, 'projects')
   const [modal, setModal] = useState(false)
 
   const toggleAddFormTech = (title) => {
@@ -103,7 +104,7 @@ function ProjectInformation(props) {
       setCustomerId(customer.id)
       setLableCustomer(customer.name)
       setPmLead(projectManager.id)
-      setMilestone(mileStones)
+      setMilestones(mileStones)
       setLablePmLead(projectManager.name)
       setStartProject(startDate)
       setEndProject(endDate)
@@ -141,7 +142,7 @@ function ProjectInformation(props) {
             endDate: endProject,
             status,
             pmId: pmLead,
-            mileStones: milestoneEdit,
+            mileStones: milestones,
             customerId,
             technologys,
             domains: dataIndustry
@@ -158,8 +159,6 @@ function ProjectInformation(props) {
           }
         })
       } else {
-        console.log(endProject)
-        console.log(milestones)
         dispatch(
           updateProject({
             id: projectID,
@@ -171,7 +170,7 @@ function ProjectInformation(props) {
             endDate: endProject,
             status,
             pmId: pmLead,
-            mileStones: milestoneEdit,
+            mileStones: milestones,
             customerId,
             technologys,
             domains: dataIndustry
@@ -192,8 +191,9 @@ function ProjectInformation(props) {
   }
   console.log(endProject)
 
-  function handelChangeMilesStone(milistones) {
-    setMilestonEdit(milistones)
+  function handelChangeMilesStone(changeMilestone) {
+    console.log('test')
+    setMilestones(changeMilestone)
   }
 
   function handleClickColor(m) {
@@ -365,7 +365,7 @@ function ProjectInformation(props) {
 
           <ListMilestones
             milestones={milestones}
-            changeMilestones={handelChangeMilesStone}
+            changeMilestones={(newMilestones) => handelChangeMilesStone(newMilestones)}
           />
           <FormGroup>
             <Label for="technologyStack">Technologies </Label>

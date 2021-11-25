@@ -9,16 +9,16 @@ import { Controller, useForm } from 'react-hook-form'
 import { FaPlusCircle, FaTrash } from 'react-icons/fa'
 
 const ListMilestones = (props) => {
-  const { milestones: initialMilestones, changeMilestones } = props
+  const { milestones, changeMilestones } = props
   const optionsStatus = [
     { value: 1, label: 'Unfinished' },
     { value: 2, label: 'Finished' }
   ]
-  const [milestones, setMilestones] = useState(initialMilestones)
+  const [newMilestones, setNewMileStones] = useState(milestones)
 
   useEffect(() => {
-    setMilestones(initialMilestones)
-  }, [initialMilestones])
+    changeMilestones(newMilestones)
+  }, [newMilestones])
 
   // useEffect(() => {
   //   changeMilestones(milestones)
@@ -30,33 +30,33 @@ const ListMilestones = (props) => {
       status: 1,
       description: ''
     }
-    setMilestones([...milestones, newMilestone])
+    setNewMileStones([...newMilestones, newMilestone])
   }
   const editExpiration = (date, index) => {
-    // console.log(date)
-    console.log(initialMilestones)
-    // console.log(milestones, 'trc')
-    const cloneMileStone = milestones
-    cloneMileStone[index].expiration = date.toISOString()
-    // console.log(cloneMileStone[index].expiration)
-    setMilestones(cloneMileStone)
-    console.log(milestones, 'sau')
+    if (!newMilestones || newMilestones.length === 0) return
+    const tempMileStones = [...newMilestones]
+    tempMileStones[index].expiration = date.toISOString()
+    setNewMileStones(tempMileStones)
   }
 
   function handleEditDesc(value, index) {
-    const cloneMileStone = milestones.slice()
-    cloneMileStone[index].description = value
-    setMilestones(cloneMileStone)
+    if (!newMilestones || newMilestones.length === 0) return
+    const tempMileStones = [...newMilestones]
+    tempMileStones[index].description = value
+    setNewMileStones(tempMileStones)
   }
 
   function handleEditStatus(value, index) {
-    const cloneMileStone = milestones.slice()
-    cloneMileStone[index].status = value
-    setMilestones(cloneMileStone)
+    if (!newMilestones || newMilestones.length === 0) return
+    const tempMileStones = [...newMilestones]
+    tempMileStones[index].status = value
+    setNewMileStones(tempMileStones)
   }
+
   function handleDeleteMilestone(i) {
-    const newMilestone = milestones.filter((item, index) => index !== i)
-    setMilestones(newMilestone)
+    if (!newMilestones || newMilestones.length === 0) return
+    const tempMileStones = newMilestones.filter((item, index) => index !== i)
+    setNewMileStones(tempMileStones)
   }
   return (
     <Fragment>
