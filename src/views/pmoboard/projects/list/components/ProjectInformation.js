@@ -33,12 +33,13 @@ const typeData = [
 // ** Store Vars
 //   const dispatch = useDispatch()
 function ProjectInformation(props) {
-  const {currentPage, rowsPerPage, searchObj} = props
+  const { currentPage, rowsPerPage, searchObj } = props
   // ** Store Vars
   const dispatch = useDispatch()
   const [milestone, setMilestone] = useState([new Date()])
   const [typeLable, setTypeLable] = useState(null)
   const [name, setName] = useState('')
+  const [desc, setDesc] = useState('')
   const [startProject, setStartProject] = useState('')
   const [type, settype] = useState(null)
   const [customerId, setCustomerId] = useState(null)
@@ -51,12 +52,13 @@ function ProjectInformation(props) {
   const [lablePmLead, setLablePmLead] = useState(null)
   const [technologyStack, setTechnologyStack] = useState(null)
   const [isOpen, setIsOpen] = useState(false)
-  const [checkColor,  setcheckColor] = useState(1)
+  const [checkColor, setcheckColor] = useState(1)
   const [colorButton, setColorButton] = useState(projectColor[0])
   const [titleForm, setDataForm] = useState(null)
   const [industry, setIndustry] = useState(null)
   const toggle = () => setIsOpen(!isOpen)
   const [projectID, setprojectID] = useState(0)
+  const [descIndustry, setdescIndustry] = useState(null)
 
   // ** Vars
   const { register, errors, handleSubmit } = useForm()
@@ -145,7 +147,7 @@ function ProjectInformation(props) {
         ).then((res) => {
           if (res && res.data && res.data && res.data.success) {
             props.hideSidebar()
-            dispatch(getData({currentPage, rowsPerPage, searchObj}))
+            dispatch(getData({ currentPage, rowsPerPage, searchObj }))
             toast.success(<ToastContent title={'Successful new creation!'} />, {
               transition: Slide,
               hideProgressBar: true,
@@ -154,6 +156,7 @@ function ProjectInformation(props) {
           }
         })
       } else {
+        console.log(customerId)
         dispatch(
           updateProject({
             id: projectID,
@@ -166,14 +169,14 @@ function ProjectInformation(props) {
             status,
             pmId: pmLead,
             mileStone: milestone,
-            customerId: customerId.value,
+            customerId,
             technologys,
             domains: dataIndustry
           })
         ).then((res) => {
           if (res && res.data && res.data && res.data.success) {
             props.hideSidebar()
-            dispatch(getData({currentPage, rowsPerPage, searchObj}))
+            dispatch(getData({ currentPage, rowsPerPage, searchObj }))
             toast.success(<ToastContent title={'Update Successful!'} />, {
               transition: Slide,
               hideProgressBar: true,
@@ -236,9 +239,7 @@ function ProjectInformation(props) {
             />
           </FormGroup>
           <FormGroup>
-            <Label className="mr-2 w-100">
-              Project Color
-            </Label>
+            <Label className="mr-2 w-100">Project Color</Label>
             <Button
               style={colorButton}
               color="color-Button"
@@ -288,23 +289,22 @@ function ProjectInformation(props) {
           <FormGroup>
             <Label for="customerId">Customer</Label>
             <div className="d-flex align-items-center">
-            <Select
-              id="customerId"
-              className="basic-single w-100 mr-2"
-              classNamePrefix="select"
-              isSearchable={true}
-              isClearable={true}
-              maxMenuHeight={220}
-              name="name"
-              value={customerId}
-              value={{ value: customerId, label: lableCustomer }}
-              onChange={(e) => {
-                setCustomerId(e.id)
-                setLableCustomer(e.label)
-              }}
-              options={projects.dataCustomer}
-            />
-            <FaPlusCircle
+              <Select
+                id="customerId"
+                className="basic-single w-100 mr-2"
+                classNamePrefix="select"
+                isSearchable={true}
+                isClearable={true}
+                maxMenuHeight={220}
+                name="name"
+                value={{ value: customerId, label: lableCustomer }}
+                onChange={(e) => {
+                  setCustomerId(e.id)
+                  setLableCustomer(e.label)
+                }}
+                options={projects.dataCustomer}
+              />
+              <FaPlusCircle
                 size="25px"
                 onClick={() => toggleAddFormTech('Customer')}
               />
@@ -359,12 +359,13 @@ function ProjectInformation(props) {
               onChange={(e) => {
                 if (e.value) {
                   setStatus(e.value)
-                setLableStatus(e.label)
+                  setLableStatus(e.label)
                 }
               }}
               options={typeData}
             />
           </FormGroup>
+          
           <FormGroup>
             <span className="title">Milestones:</span>
             <div>
@@ -425,6 +426,18 @@ function ProjectInformation(props) {
             </div>
           </FormGroup>
           <FormGroup>
+            <Label for="desc">Description</Label>
+            <Input
+              name="desc"
+              id="desc"
+              value={desc}
+              onChange={(e) => setDesc(e.target.value)}
+              // innerRef={register({ required: true })}
+              // className={classnames({ 'is-invalid': errors['name'] })}
+            />
+          </FormGroup>
+          <div></div>
+          <FormGroup>
             <Label for="technologyStack">Technologies </Label>
             <div className="d-flex align-items-center">
               <Select
@@ -480,10 +493,10 @@ function ProjectInformation(props) {
         </div>
       </Form>
       <ModalAddTechnologis
-          modal={modal}
-          toggle={toggleAddFormTech}
-          titleForm={titleForm}
-        />
+        modal={modal}
+        toggle={toggleAddFormTech}
+        titleForm={titleForm}
+      />
     </div>
   )
 }
