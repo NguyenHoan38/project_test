@@ -1,4 +1,11 @@
-import { useEffect, useState } from 'react'
+import {
+  useEffect,
+  useState,
+  Fragment,
+  useMemo,
+  Component,
+  useCallback
+} from 'react'
 import { useForm } from 'react-hook-form'
 import Select from 'react-select'
 import Flatpickr from 'react-flatpickr'
@@ -57,14 +64,13 @@ function ProjectInformation(props) {
   const [titleForm, setDataForm] = useState(null)
   const [industry, setIndustry] = useState(null)
   const [projectID, setprojectID] = useState(0)
-  // const [milestoneEdit, setMilestonesdit] = useState([])
+  const [milestonesEdit, setMilestonesEdit] = useState([])
   const toggle = () => setIsOpen(!isOpen)
 
   // ** Vars
   const { register, errors, handleSubmit } = useForm()
   // get state store
   const projects = useSelector((state) => state.projects)
-  console.log(projects, 'projects')
   const [modal, setModal] = useState(false)
 
   const toggleAddFormTech = (title) => {
@@ -142,7 +148,7 @@ function ProjectInformation(props) {
             endDate: endProject,
             status,
             pmId: pmLead,
-            mileStones: milestones,
+            mileStones: milestonesEdit,
             customerId,
             technologys,
             domains: dataIndustry
@@ -159,6 +165,7 @@ function ProjectInformation(props) {
           }
         })
       } else {
+        console.log('milestonesEdit', milestonesEdit)
         dispatch(
           updateProject({
             id: projectID,
@@ -170,7 +177,7 @@ function ProjectInformation(props) {
             endDate: endProject,
             status,
             pmId: pmLead,
-            mileStones: milestones,
+            mileStones: milestonesEdit,
             customerId,
             technologys,
             domains: dataIndustry
@@ -189,13 +196,6 @@ function ProjectInformation(props) {
       }
     }
   }
-  console.log(endProject)
-
-  function handelChangeMilesStone(changeMilestone) {
-    console.log('test')
-    setMilestones(changeMilestone)
-  }
-
   function handleClickColor(m) {
     setIsOpen(false)
     setcheckColor(m.id)
@@ -208,6 +208,12 @@ function ProjectInformation(props) {
   const hideSidebar = () => {
     props.hideSidebar()
   }
+
+  const handelChangeMilestone = (milestones) => {
+    setMilestonesEdit(milestones)
+    console.log('handelChangeMilestone', milestones)
+  }
+
   return (
     <div>
       <Form onSubmit={handleSubmit(onSubmit)}>
@@ -219,8 +225,6 @@ function ProjectInformation(props) {
               id="name"
               value={name}
               onChange={(e) => setName(e.target.value)}
-              // innerRef={register({ required: true })}
-              // className={classnames({ 'is-invalid': errors['name'] })}
             />
           </FormGroup>
           <FormGroup>
@@ -232,7 +236,6 @@ function ProjectInformation(props) {
               value={signal}
               // onChange={setSignal}
               onChange={handleChangeSignal}
-              // className={classnames({ 'is-invalid': errors['signal'] })}
             />
           </FormGroup>
           <FormGroup>
@@ -318,7 +321,6 @@ function ProjectInformation(props) {
               value={{ value: pmLead, label: lablePmLead }}
               onChange={(e) => {
                 setPmLead(e.id)
-                console.log(pmLead)
                 setLablePmLead(e.label)
               }}
               options={projects.dataListEmployee}
@@ -362,10 +364,9 @@ function ProjectInformation(props) {
               options={typeData}
             />
           </FormGroup>
-
           <ListMilestones
             milestones={milestones}
-            changeMilestones={(newMilestones) => handelChangeMilesStone(newMilestones)}
+            changeMilestones={handelChangeMilestone}
           />
           <FormGroup>
             <Label for="technologyStack">Technologies </Label>

@@ -43,21 +43,21 @@ const ProjectsList = () => {
   // ** Store Vars
   const dispatch = useDispatch()
   const store = useSelector((state) => state.projects)
-  const dataTechnology = store.dataListProjectTechnology.map(technology => {
+  const dataTechnology = store.dataListProjectTechnology.map((technology) => {
     return {
       value: technology.id,
       label: technology.name
     }
   })
 
-  const dataDomain = store.dataListProjectDomain.map(domain => {
+  const dataDomain = store.dataListProjectDomain.map((domain) => {
     return {
       value: domain.id,
       label: domain.name
     }
   })
 
-  const dataType = store.dataListProjectType.map(type => {
+  const dataType = store.dataListProjectType.map((type) => {
     return {
       value: type.id,
       label: type.name
@@ -85,6 +85,7 @@ const ProjectsList = () => {
   }
 
   const toggleSidebar = (id) => {
+    console.log('toggleSidebar')
     setSidebarOpen(!sidebarOpen)
     setIsNewProject(id)
     dispatch(setDataProject())
@@ -168,9 +169,12 @@ const ProjectsList = () => {
                   classNamePrefix="select"
                   isSearchable={true}
                   isClearable={true}
-                  maxMenuHeight={220}                 
+                  maxMenuHeight={220}
                   onChange={(techs) => {
-                    const techArr = techs && techs.length > 0 ? techs.map(tech => tech.value) : null
+                    const techArr =
+                      techs && techs.length > 0
+                        ? techs.map((tech) => tech.value)
+                        : null
                     handleFilter(techArr, 'technology')
                   }}
                   options={dataTechnology}
@@ -190,9 +194,12 @@ const ProjectsList = () => {
                   classNamePrefix="select"
                   isSearchable={true}
                   isClearable={true}
-                  maxMenuHeight={220}                 
+                  maxMenuHeight={220}
                   onChange={(domains) => {
-                    const domainArr = domains && domains.length > 0 ? domains.map(domain => domain.value) : null
+                    const domainArr =
+                      domains && domains.length > 0
+                        ? domains.map((domain) => domain.value)
+                        : null
                     handleFilter(domainArr, 'domain')
                   }}
                   options={dataDomain}
@@ -211,9 +218,12 @@ const ProjectsList = () => {
                   classNamePrefix="select"
                   isSearchable={true}
                   isClearable={true}
-                  maxMenuHeight={220}                 
+                  maxMenuHeight={220}
                   onChange={(types) => {
-                    const typeArr = types && types.length > 0 ? types.map(type => type.value) : null
+                    const typeArr =
+                      types && types.length > 0
+                        ? types.map((type) => type.value)
+                        : null
                     handleFilter(typeArr, 'type')
                   }}
                   options={dataType}
@@ -230,7 +240,12 @@ const ProjectsList = () => {
           paginationServer
           paginationPerPage={currentPage}
           paginationTotalRows={store.data.totalPage}
-          columns={columns((showFormEdit) => toggleSidebar(showFormEdit), currentPage, searchObj, rowsPerPage)}
+          columns={columns(
+            (showFormEdit) => toggleSidebar(showFormEdit),
+            currentPage,
+            searchObj,
+            rowsPerPage
+          )}
           sortIcon={<ChevronDown />}
           className="react-dataTable"
           data={dataToRender()}
