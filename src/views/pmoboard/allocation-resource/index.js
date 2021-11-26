@@ -104,7 +104,6 @@ class ResourceAllocation extends Component {
   render() {
     const { viewModel } = this.state
     const employee = this.state.employeeInfo
-    console.log(employee.skills)
 
     if (viewModel) {
       return (

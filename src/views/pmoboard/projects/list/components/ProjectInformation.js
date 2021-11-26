@@ -1,4 +1,11 @@
-import { useEffect, useState } from 'react'
+import {
+  useEffect,
+  useState,
+  Fragment,
+  useMemo,
+  Component,
+  useCallback
+} from 'react'
 import { useForm } from 'react-hook-form'
 import Select from 'react-select'
 import Flatpickr from 'react-flatpickr'
@@ -57,21 +64,23 @@ function ProjectInformation(props) {
   const [titleForm, setDataForm] = useState(null)
   const [industry, setIndustry] = useState(null)
   const [projectID, setprojectID] = useState(0)
-  // const [milestoneEdit, setMilestonesdit] = useState([])
+  const [milestoneEdit, setMilestonesEdit] = useState([])
   const toggle = () => setIsOpen(!isOpen)
 
   // ** Vars
   const { register, errors, handleSubmit } = useForm()
   // get state store
   const projects = useSelector((state) => state.projects)
-  console.log(projects, 'projects')
   const [modal, setModal] = useState(false)
 
   const toggleAddFormTech = (title) => {
     setModal(!modal)
     setDataForm(title)
   }
-
+  const optionsStatus = [
+    { value: 1, label: 'Unfinished' },
+    { value: 2, label: 'Finished' }
+  ]
   useEffect(() => {
     if (projects.dataProject?.id) {
       const {
@@ -117,6 +126,7 @@ function ProjectInformation(props) {
     }
   }, [projects.dataProject])
   // ** Function to handle form submit
+  console.log(status)
   const onSubmit = (values) => {
     const technologys = []
     if (technologyStack && technologyStack.length > 0) {
@@ -189,12 +199,6 @@ function ProjectInformation(props) {
       }
     }
   }
-  console.log(endProject)
-
-  function handelChangeMilesStone(changeMilestone) {
-    console.log('test')
-    setMilestones(changeMilestone)
-  }
 
   function handleClickColor(m) {
     setIsOpen(false)
@@ -208,6 +212,36 @@ function ProjectInformation(props) {
   const hideSidebar = () => {
     props.hideSidebar()
   }
+  const handleAddMilestone = useCallback(() => {
+    const newMilestone = {
+      id: 1,
+      expiration: new Date(),
+      status: 1,
+      description: '',
+      projectId: 9
+    }
+    setMilestones([...milestones, newMilestone])
+  }, [])
+  const editExpiration = (date, index) => {
+    const tempMileStones = [...milestones]
+    tempMileStones[index].expiration = date
+    setMilestones(tempMileStones)
+  }
+  function handleEditDesc(value, index) {
+    const tempMileStones = [...milestones]
+    tempMileStones[index].description = value
+    setMilestones(tempMileStones)
+  }
+
+  function handleEditStatus(value, index) {
+    const tempMileStones = [...milestones]
+    tempMileStones[index].status = value
+    setMilestones(tempMileStones)
+  }
+  function handleDeleteMilestone(i) {
+    const tempMileStones = milestones.filter((item, index) => index !== i)
+    setMilestones(tempMileStones)
+  }
   return (
     <div>
       <Form onSubmit={handleSubmit(onSubmit)}>
@@ -219,8 +253,6 @@ function ProjectInformation(props) {
               id="name"
               value={name}
               onChange={(e) => setName(e.target.value)}
-              // innerRef={register({ required: true })}
-              // className={classnames({ 'is-invalid': errors['name'] })}
             />
           </FormGroup>
           <FormGroup>
@@ -232,7 +264,6 @@ function ProjectInformation(props) {
               value={signal}
               // onChange={setSignal}
               onChange={handleChangeSignal}
-              // className={classnames({ 'is-invalid': errors['signal'] })}
             />
           </FormGroup>
           <FormGroup>
@@ -362,11 +393,108 @@ function ProjectInformation(props) {
               options={typeData}
             />
           </FormGroup>
-
-          <ListMilestones
+          {/* <ListMilestones
             milestones={milestones}
-            changeMilestones={(newMilestones) => handelChangeMilesStone(newMilestones)}
-          />
+            changeMilestones={handelChangeMilestone}
+          /> */}
+          {milestones ? (
+            milestones.map(({ status, expiration, description }, i) => {
+              return (
+                <Fragment key={i}>
+                  <FormGroup>
+                    <span htmlFor="expiration">Milestones:</span>
+                    <div className="d-flex align-items-center">
+                      <Flatpickr
+                        id="expiration"
+                        value={expiration}
+                        onChange={(date) => editExpiration(date[0], i)}
+                        className="form-control invoice-edit-input date-picker mr-4 mb-2"
+                      ></Flatpickr>
+                    </div>
+                  </FormGroup>
+                  <FormGroup>
+                    <span className="title">Description</span>
+                    <Input
+                      name="description"
+                      id="description"
+                      defaultValue={description}
+                      className="description"
+                      onChange={(e) => handleEditDesc(e.target.value, i)}
+                    />
+                  </FormGroup>
+                  <div>
+                    <FormGroup>
+                      <span className="title">Status milestones</span>
+
+                      <div className="d-flex align-items-center">
+                        <Select
+                          styles={{ width: '100%' }}
+                          onChange={(e) => {
+                            handleEditStatus(e.value, i)
+                          }}
+                          isSearchable={true}
+                          options={optionsStatus}
+                          name="milistones"
+                          id="type"
+                          className="basic-single w-100 mr-2"
+                          classNamePrefix="select"
+                          defaultValue={optionsStatus[status - 1]}
+                          getOptionLabel={(option) => {
+                            return option.label
+                          }}
+                          getOptionValue={(option) => {
+                            return option.value
+                          }}
+                        ></Select>
+                        <span
+                          className="ml-4"
+                          data-toggle="tooltip"
+                          data-placement="top"
+                          title="Add milestones"
+                          color="success"
+                          size="lg"
+                          onClick={handleAddMilestone}
+                          active
+                        >
+                          <FaPlusCircle size="22px" color="success" />{' '}
+                        </span>
+                        <span
+                          className="ml-4"
+                          data-toggle="tooltip"
+                          data-placement="top"
+                          title="Remove milestones"
+                          color="success"
+                          size="lg"
+                          onClick={() => handleDeleteMilestone(i)}
+                          active
+                        >
+                          <FaTrash size="22px" />
+                        </span>
+                      </div>
+                    </FormGroup>
+                  </div>
+                </Fragment>
+              )
+            })
+          ) : (
+            <></>
+          )}
+          {milestones.length === 0 ? (
+            <span
+              className="d-flex align-items-center justify-content-center"
+              data-toggle="tooltip"
+              data-placement="top"
+              title="Add milestones"
+              color="success"
+              size="lg"
+              onClick={handleAddMilestone}
+              active
+            >
+              <FaPlusCircle size="25px" color="success" />{' '}
+            </span>
+          ) : (
+            <></>
+          )}
           <FormGroup>
             <Label for="technologyStack">Technologies </Label>
             <div className="d-flex align-items-center">

@@ -196,7 +196,6 @@ export const editResourceAllocation = (project) => {
 }
 
 export const updateProject = (project) => {
-  console.log(project)
   return async (dispatch) => {
     const res = await axios.post(`${DOMAIN}/resource/editProject`, project)
     return res
