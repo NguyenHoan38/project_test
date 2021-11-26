@@ -11,6 +11,7 @@ import Flatpickr from 'react-flatpickr'
 import Select from 'react-select'
 import { FormGroup, Input } from 'reactstrap'
 import { FaPlusCircle, FaTrash } from 'react-icons/fa'
+import { useSelector } from 'react-redux'
 
 function ListMilestones(props) {
   const { milestones, changeMilestones } = props
@@ -20,7 +21,7 @@ function ListMilestones(props) {
     { value: 2, label: 'Finished' }
   ]
   const [newMilestones, setNewMileStones] = useState(milestones)
-  console.log(milestones)
+
   useEffect(() => {
     changeMilestones(newMilestones)
   }, [newMilestones])
@@ -28,15 +29,15 @@ function ListMilestones(props) {
   useEffect(() => {
     setNewMileStones(milestones)
   }, [milestones])
-
+  const projects = useSelector((state) => state.projects)
   const handleAddMilestone = () => {
     const newMilestone = {
       expiration: new Date().toISOString(),
       status: 1,
       description: '',
-      projectId: null
+      projectId: projects.dataProject?.id
     }
-      setNewMileStones([...newMilestones, newMilestone])
+    setNewMileStones([...newMilestones, newMilestone])
   }
   const editExpiration = (date, index) => {
     const tempMileStones = [...newMilestones]

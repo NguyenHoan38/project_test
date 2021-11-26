@@ -165,7 +165,6 @@ function ProjectInformation(props) {
           }
         })
       } else {
-        console.log('milestonesEdit', milestonesEdit)
         dispatch(
           updateProject({
             id: projectID,
@@ -211,7 +210,6 @@ function ProjectInformation(props) {
 
   const handelChangeMilestone = (milestones) => {
     setMilestonesEdit(milestones)
-    console.log('handelChangeMilestone', milestones)
   }
 
   return (
