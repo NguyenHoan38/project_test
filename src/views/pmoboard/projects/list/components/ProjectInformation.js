@@ -64,7 +64,7 @@ function ProjectInformation(props) {
   const [titleForm, setDataForm] = useState(null)
   const [industry, setIndustry] = useState(null)
   const [projectID, setprojectID] = useState(0)
-  const [milestoneEdit, setMilestonesEdit] = useState([])
+  const [milestonesEdit, setMilestonesEdit] = useState([])
   const toggle = () => setIsOpen(!isOpen)
 
   // ** Vars
@@ -77,10 +77,7 @@ function ProjectInformation(props) {
     setModal(!modal)
     setDataForm(title)
   }
-  const optionsStatus = [
-    { value: 1, label: 'Unfinished' },
-    { value: 2, label: 'Finished' }
-  ]
+
   useEffect(() => {
     if (projects.dataProject?.id) {
       const {
@@ -126,7 +123,6 @@ function ProjectInformation(props) {
     }
   }, [projects.dataProject])
   // ** Function to handle form submit
-  console.log(status)
   const onSubmit = (values) => {
     const technologys = []
     if (technologyStack && technologyStack.length > 0) {
@@ -152,7 +148,7 @@ function ProjectInformation(props) {
             endDate: endProject,
             status,
             pmId: pmLead,
-            mileStones: milestones,
+            mileStones: milestonesEdit,
             customerId,
             technologys,
             domains: dataIndustry
@@ -169,6 +165,7 @@ function ProjectInformation(props) {
           }
         })
       } else {
+        console.log(milestonesEdit)
         dispatch(
           updateProject({
             id: projectID,
@@ -180,7 +177,7 @@ function ProjectInformation(props) {
             endDate: endProject,
             status,
             pmId: pmLead,
-            mileStones: milestones,
+            mileStones: milestonesEdit,
             customerId,
             technologys,
             domains: dataIndustry
@@ -212,36 +209,28 @@ function ProjectInformation(props) {
   const hideSidebar = () => {
     props.hideSidebar()
   }
-  const handleAddMilestone = useCallback(() => {
-    const newMilestone = {
-      id: 1,
-      expiration: new Date(),
-      status: 1,
-      description: '',
-      projectId: 9
-    }
-    setMilestones([...milestones, newMilestone])
-  }, [])
-  const editExpiration = (date, index) => {
-    const tempMileStones = [...milestones]
-    tempMileStones[index].expiration = date
-    setMilestones(tempMileStones)
-  }
-  function handleEditDesc(value, index) {
-    const tempMileStones = [...milestones]
-    tempMileStones[index].description = value
-    setMilestones(tempMileStones)
-  }
 
-  function handleEditStatus(value, index) {
-    const tempMileStones = [...milestones]
-    tempMileStones[index].status = value
-    setMilestones(tempMileStones)
+  const handelChangeMilestone = (milestones) => {
+    setMilestonesEdit(milestones)
+    console.log('handelChangeMilestone', milestones)
   }
-  function handleDeleteMilestone(i) {
-    const tempMileStones = milestones.filter((item, index) => index !== i)
-    setMilestones(tempMileStones)
-  }
+  const mockMilestones = [
+    {
+      id: 1,
+      projectId: 9,
+      expiration: '2021-11-26T05:37:05.412Z',
+      status: 1,
+      description: 'mocks Milestones'
+    },
+    {
+      id: 2,
+      projectId: 9,
+      expiration: '2021-11-26T05:37:05.412Z',
+      status: 2,
+      description: 'mocks Milestones 2'
+    }
+  ]
+  console.log('milestonesEdit', milestonesEdit)
   return (
     <div>
       <Form onSubmit={handleSubmit(onSubmit)}>
@@ -349,7 +338,6 @@ function ProjectInformation(props) {
               value={{ value: pmLead, label: lablePmLead }}
               onChange={(e) => {
                 setPmLead(e.id)
-                console.log(pmLead)
                 setLablePmLead(e.label)
               }}
               options={projects.dataListEmployee}
@@ -393,108 +381,10 @@ function ProjectInformation(props) {
               options={typeData}
             />
           </FormGroup>
-          {/* <ListMilestones
+          <ListMilestones
             milestones={milestones}
             changeMilestones={handelChangeMilestone}
-          /> */}
-          {milestones ? (
-            milestones.map(({ status, expiration, description }, i) => {
-              return (
-                <Fragment key={i}>
-                  <FormGroup>
-                    <span htmlFor="expiration">Milestones:</span>
-                    <div className="d-flex align-items-center">
-                      <Flatpickr
-                        id="expiration"
-                        value={expiration}
-                        onChange={(date) => editExpiration(date[0], i)}
-                        className="form-control invoice-edit-input date-picker mr-4 mb-2"
-                      ></Flatpickr>
-                    </div>
-                  </FormGroup>
-                  <FormGroup>
-                    <span className="title">Description</span>
-                    <Input
-                      name="description"
-                      id="description"
-                      defaultValue={description}
-                      className="description"
-                      onChange={(e) => handleEditDesc(e.target.value, i)}
-                    />
-                  </FormGroup>
-                  <div>
-                    <FormGroup>
-                      <span className="title">Status milestones</span>
-
-                      <div className="d-flex align-items-center">
-                        <Select
-                          styles={{ width: '100%' }}
-                          onChange={(e) => {
-                            handleEditStatus(e.value, i)
-                          }}
-                          isSearchable={true}
-                          options={optionsStatus}
-                          name="milistones"
-                          id="type"
-                          className="basic-single w-100 mr-2"
-                          classNamePrefix="select"
-                          defaultValue={optionsStatus[status - 1]}
-                          getOptionLabel={(option) => {
-                            return option.label
-                          }}
-                          getOptionValue={(option) => {
-                            return option.value
-                          }}
-                        ></Select>
-                        <span
-                          className="ml-4"
-                          data-toggle="tooltip"
-                          data-placement="top"
-                          title="Add milestones"
-                          color="success"
-                          size="lg"
-                          onClick={handleAddMilestone}
-                          active
-                        >
-                          <FaPlusCircle size="22px" color="success" />{' '}
-                        </span>
-                        <span
-                          className="ml-4"
-                          data-toggle="tooltip"
-                          data-placement="top"
-                          title="Remove milestones"
-                          color="success"
-                          size="lg"
-                          onClick={() => handleDeleteMilestone(i)}
-                          active
-                        >
-                          <FaTrash size="22px" />
-                        </span>
-                      </div>
-                    </FormGroup>
-                  </div>
-                </Fragment>
-              )
-            })
-          ) : (
-            <></>
-          )}
-          {milestones.length === 0 ? (
-            <span
-              className="d-flex align-items-center justify-content-center"
-              data-toggle="tooltip"
-              data-placement="top"
-              title="Add milestones"
-              color="success"
-              size="lg"
-              onClick={handleAddMilestone}
-              active
-            >
-              <FaPlusCircle size="25px" color="success" />{' '}
-            </span>
-          ) : (
-            <></>
-          )}
+          />
           <FormGroup>
             <Label for="technologyStack">Technologies </Label>
             <div className="d-flex align-items-center">

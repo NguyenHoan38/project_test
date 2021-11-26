@@ -9,6 +9,7 @@ const useDerivedState = (initialState) => {
   const prevState = usePrevious(computedState)
 
   useEffect(() => {
+    console.log('useDerivedState')
     if (!isEqual(computedState, prevState)) {
       setState(computedState)
     }

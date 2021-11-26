@@ -4,7 +4,8 @@ import {
   useMemo,
   useState,
   Component,
-  useCallback
+  useCallback,
+  memo
 } from 'react'
 import Flatpickr from 'react-flatpickr'
 import Select from 'react-select'
@@ -18,14 +19,15 @@ function ListMilestones(props) {
     { value: 2, label: 'Finished' }
   ]
   const [newMilestones, setNewMileStones] = useState(milestones)
+
   useEffect(() => {
     changeMilestones(newMilestones)
   }, [newMilestones])
 
-  useEffect(() => {
-    setNewMileStones(newMilestones)
-  }, [milestones])
-  const handleAddMilestone = useCallback(() => {
+  // useEffect(() => {
+  //   setNewMileStones(milestones)
+  // }, [milestones])
+  const handleAddMilestone = () => {
     const newMilestone = {
       id: 1,
       projectId: 9,
@@ -34,23 +36,19 @@ function ListMilestones(props) {
       description: ''
     }
     setNewMileStones([...newMilestones, newMilestone])
-  }, [])
+  }
   const editExpiration = (date, index) => {
-    if (!newMilestones || newMilestones.length === 0) return
     const tempMileStones = [...newMilestones]
     tempMileStones[index].expiration = date
     setNewMileStones(tempMileStones)
   }
   function handleEditDesc(value, index) {
-    if (!newMilestones || newMilestones.length === 0) return
     const tempMileStones = [...newMilestones]
     tempMileStones[index].description = value
     setNewMileStones(tempMileStones)
   }
-  console.log(newMilestones)
-  console.log(milestones)
+
   function handleEditStatus(value, index) {
-    if (!newMilestones || newMilestones.length === 0) return
     const tempMileStones = [...newMilestones]
     tempMileStones[index].status = value
     setNewMileStones(tempMileStones)
@@ -61,7 +59,7 @@ function ListMilestones(props) {
   }
   return (
     <Fragment>
-      {newMilestones ? (
+      {newMilestones.length > 0 ? (
         newMilestones.map(({ status, expiration, description }, i) => {
           return (
             <Fragment key={i}>
@@ -162,4 +160,4 @@ function ListMilestones(props) {
     </Fragment>
   )
 }
-export default ListMilestones
+export default memo(ListMilestones)

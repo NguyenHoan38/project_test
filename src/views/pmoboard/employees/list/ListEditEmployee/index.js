@@ -156,9 +156,7 @@ const ListEditEmployee = (props) => {
       console.log(error)
     }
   }
-  {
-    console.log(statusDetail)
-  }
+
   return (
     <Sidebar
       open={Boolean(employeeId && employee)}
