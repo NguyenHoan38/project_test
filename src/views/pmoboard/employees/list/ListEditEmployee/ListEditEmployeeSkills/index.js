@@ -13,7 +13,6 @@ const ListSkills = (props) => {
   const [levelOptions, setLevelOptions] = useState({})
   const [openAddSkills, setOpenAddSkills] = useState(false)
   const ref = useRef(null)
-  console.log('levelOptions', levelOptions)
   const handleToggleAddSkills = () => {
     setOpenAddSkills(!openAddSkills)
   }
@@ -25,17 +24,13 @@ const ListSkills = (props) => {
     }, new Map())
   })
   const [levels, setLevels] = useDerivedState(() => {
-    console.log('setLevels')
-
     return initialSkills.reduce((acc, val) => {
       const { skillId } = val
-      console.log('acc[skillId]', val)
       acc[skillId] = val
       return acc
     }, {})
   })
-  console.log('levels', levels)
-
+  console.log(levels)
   const [errors, setErrors] = useDerivedState(() => {
     return initialSkills.reduce((acc, val) => {
       const { skillId } = val
@@ -74,6 +69,7 @@ const ListSkills = (props) => {
       }))
     }
     setSkills((state) => {
+      console.log(state)
       const map = new Map(state)
       map.set(skillId, checked)
       return map
@@ -81,6 +77,7 @@ const ListSkills = (props) => {
   }
 
   const handleSelectLevel = (skillId) => (result) => {
+    console.log(result)
     if (!result) {
       setErrors((state) => ({
         ...state,

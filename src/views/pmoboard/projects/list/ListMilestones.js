@@ -14,43 +14,50 @@ import { FaPlusCircle, FaTrash } from 'react-icons/fa'
 
 function ListMilestones(props) {
   const { milestones, changeMilestones } = props
+
   const optionsStatus = [
     { value: 1, label: 'Unfinished' },
     { value: 2, label: 'Finished' }
   ]
   const [newMilestones, setNewMileStones] = useState(milestones)
-
+  console.log(milestones)
   useEffect(() => {
     changeMilestones(newMilestones)
   }, [newMilestones])
 
-  // useEffect(() => {
-  //   setNewMileStones(milestones)
-  // }, [milestones])
+  useEffect(() => {
+    setNewMileStones(milestones)
+  }, [milestones])
+
   const handleAddMilestone = () => {
     const newMilestone = {
-      id: 1,
-      projectId: 9,
-      expiration: new Date(),
+      expiration: new Date().toISOString(),
       status: 1,
-      description: ''
+      description: '',
+      projectId: null
     }
-    setNewMileStones([...newMilestones, newMilestone])
+      setNewMileStones([...newMilestones, newMilestone])
   }
   const editExpiration = (date, index) => {
     const tempMileStones = [...newMilestones]
-    tempMileStones[index].expiration = date
+    const milestone = { ...tempMileStones[index] }
+    milestone.expiration = date
+    tempMileStones[index] = milestone
     setNewMileStones(tempMileStones)
   }
   function handleEditDesc(value, index) {
     const tempMileStones = [...newMilestones]
-    tempMileStones[index].description = value
+    const milestone = { ...tempMileStones[index] }
+    milestone.description = value
+    tempMileStones[index] = milestone
     setNewMileStones(tempMileStones)
   }
 
-  function handleEditStatus(value, index) {
+  const handleEditStatus = (value, index) => {
     const tempMileStones = [...newMilestones]
-    tempMileStones[index].status = value
+    const milestone = { ...tempMileStones[index] }
+    milestone.status = value
+    tempMileStones[index] = milestone
     setNewMileStones(tempMileStones)
   }
   function handleDeleteMilestone(i) {
@@ -87,7 +94,6 @@ function ListMilestones(props) {
               <div>
                 <FormGroup>
                   <span className="title">Status milestones</span>
-
                   <div className="d-flex align-items-center">
                     <Select
                       styles={{ width: '100%' }}

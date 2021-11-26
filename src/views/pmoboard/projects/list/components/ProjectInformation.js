@@ -165,7 +165,7 @@ function ProjectInformation(props) {
           }
         })
       } else {
-        console.log(milestonesEdit)
+        console.log('milestonesEdit', milestonesEdit)
         dispatch(
           updateProject({
             id: projectID,
@@ -196,7 +196,6 @@ function ProjectInformation(props) {
       }
     }
   }
-
   function handleClickColor(m) {
     setIsOpen(false)
     setcheckColor(m.id)
@@ -214,23 +213,7 @@ function ProjectInformation(props) {
     setMilestonesEdit(milestones)
     console.log('handelChangeMilestone', milestones)
   }
-  const mockMilestones = [
-    {
-      id: 1,
-      projectId: 9,
-      expiration: '2021-11-26T05:37:05.412Z',
-      status: 1,
-      description: 'mocks Milestones'
-    },
-    {
-      id: 2,
-      projectId: 9,
-      expiration: '2021-11-26T05:37:05.412Z',
-      status: 2,
-      description: 'mocks Milestones 2'
-    }
-  ]
-  console.log('milestonesEdit', milestonesEdit)
+
   return (
     <div>
       <Form onSubmit={handleSubmit(onSubmit)}>
